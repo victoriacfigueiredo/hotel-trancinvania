@@ -24,6 +24,16 @@ And Tento realizar o cadastro
 Then Eu vejo a mensagem indicando que é necessário o preenchimento de todos os campos 
 And Eu continuo na página “Cadastro de promoção”
 
+Scenario 3: Deletar todas as promoções
+
+Given Eu estou logada como “Hoteleiro” com o login “Maria”  e a senha “let123”
+And Eu estou na página “Reservas publicadas”
+And O hotel “Flores” tem uma promoção de “30%” cadastrada com o valor promocional de “R$ 910,00” a noite
+And O hotel “Campos” tem uma promoção de “20%” cadastrada com o valor promocional de “R$ 1120,00” a noite
+When Eu seleciono “Deletar todas as promoções” 
+Then Eu vejo uma mensagem de confirmação de remoção das promoções
+And Eu vejo a  listagem de todas as reservas na página “Reservas publicadas” com seus valores originais sem desconto
+
 Scenario 6: Deletar todas as promoções com nenhuma promoção cadastrada
 
 Given Eu estou logada como “Hoteleiro” com o login “Maria”  e a senha “let123”
