@@ -16,10 +16,21 @@ And Eu vejo a promoção na reserva na página de “reservas publicadas” com 
 
 Scenario 2: Tentativa de cadastro da promoção com algum campo não preenchido
 
-Given Eu estou logada como “Hoteleiro” com o login “Maria”  e a senha “let123”
+Given Eu estou logada como “Hoteleiro” com o login “Marialet”  e a senha “let123”
 And Eu estou na página “Cadastro de promoção” da reserva do hotel “ Flores” com o valor da noite por “R$ 1300,00” 
 When Eu preencho o campo “desconto” com “20%”
 And Eu preencho o campo “promoção” com “limite de quarto”
 And Tento realizar o cadastro
 Then Eu vejo a mensagem indicando que é necessário o preenchimento de todos os campos 
 And Eu continuo na página “Cadastro de promoção”
+
+Scenario 6: Deletar todas as promoções com nenhuma promoção cadastrada
+
+Given Eu estou logada como “Hoteleiro” com o login “Maria”  e a senha “let123”
+And Eu estou na página “Reservas publicadas”
+And Não há nenhum hotel com promoção cadastrada
+When Eu seleciono “Deletar todas as promoções” 
+And Eu altero o desconto para “60%”
+Then Eu vejo uma mensagem de erro de que não há nenhuma promoção cadastrada
+And Eu continuo na página "Reservas publicadas"
+
