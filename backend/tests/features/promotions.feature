@@ -12,11 +12,11 @@ And Eu preencho o campo “promoção” com “limite de quarto”
 And Eu preencho o campo “quantidade de quartos” com “2”
 And Tento realizar o cadastro
 Then Eu vejo a mensagem de confirmação de cadastro 
-And Eu vejo a promoção na reserva na página de “reservas publicadas” com o valor atualizado para “R$ 1040,00”
+And Eu vejo a promoção no hotel "Flores" na página “reservas publicadas” com o valor atualizado para “R$ 1040,00”
 
 Scenario 2: Tentativa de cadastro da promoção com algum campo não preenchido
 
-Given Eu estou logada como “Hoteleiro” com o login “Marialet”  e a senha “let123”
+Given Eu estou logada como “Hoteleiro” com o login “Maria”  e a senha “let123”
 And Eu estou na página “Cadastro de promoção” da reserva do hotel “ Flores” com o valor da noite por “R$ 1300,00” 
 When Eu preencho o campo “desconto” com “20%”
 And Eu preencho o campo “promoção” com “limite de quarto”
@@ -32,7 +32,8 @@ And O hotel “Flores” tem uma promoção de “30%” cadastrada com o valor 
 And O hotel “Campos” tem uma promoção de “20%” cadastrada com o valor promocional de “R$ 1120,00” a noite
 When Eu seleciono “Deletar todas as promoções” 
 Then Eu vejo uma mensagem de confirmação de remoção das promoções
-And Eu vejo a  listagem de todas as reservas na página “Reservas publicadas” com seus valores originais sem desconto
+And Eu vejo o hotel "Flores" com seu valor original "R$ 1300,00" a noite
+And Eu vejo o hotel "Campos" com seu valor original "R$ 1400,00" a noite
 
 Scenario 4: Cadastrar uma promoção em todas as reservas publicadas
 
