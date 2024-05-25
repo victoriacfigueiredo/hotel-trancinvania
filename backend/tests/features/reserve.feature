@@ -67,7 +67,7 @@ And preencho o campo "quantidade de parcelas" com "12"
 And tento finalizar a reserva 
 Then posso ver uma mensagem "Dados ausentes ou incorretos"
 And continuo na página "Manaíra Hotel"
-And não tenho um método de pagamento cadastrado 
+And ainda não tenho um método de pagamento cadastrado 
 
 
 Scenario: Nenhum quarto que acomoda as exigências do usuário
