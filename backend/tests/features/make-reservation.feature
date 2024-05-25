@@ -77,6 +77,7 @@ And preencho o campo "check-out" com "26/07/2024"
 And preencho o campo "quantidade de quartos" com "1"
 And preencho o campo "quantidade de adultos" com "2" em "quarto 1"
 And preencho o campo "quantidade de crianças" com "3" em "quarto 1"
+And tento realizar a reserva
 Then posso ver uma mensagem "Não há quartos que atendam às exigências selecionadas"
 And continuo na página "Manaíra Hotel"
 
@@ -89,6 +90,7 @@ And preencho o campo "check-out" com "26/07/2024"
 And preencho o campo "quantidade de quartos" com "1"
 And preencho o campo "quantidade de adultos" com "2" em "quarto 1"
 And preencho o campo "quantidade de crianças" com "2" em "quarto 1"
+And tento realizar a reserva
 Then posso ver uma mensagem "Os quartos que atendem às exigências selecionadas estão indisponíveis para esse período"
 And continuo na página "Manaíra Hotel"
 
@@ -102,8 +104,9 @@ And preencho o campo "check-out" com "26/07/2024"
 And preencho o campo "quantidade de quartos" com "1"
 And preencho o campo "quantidade de adultos" com "2" em "quarto 1"
 And preencho o campo "quantidade de crianças" com "0" em "quarto 1"
+And tento reservar o quarto "Suíte premium, 1 cama King, vista para o mar"
 And preencho o campo "método de pagamento" com "Cartão de Crédito 1"
-And eu tento realizar a reserva
+And tento finalizar a reserva
 Then posso ver uma mensagem "Reserva realizada com sucesso"
 And sou redirecionado para página "Minhas reservas"
 
