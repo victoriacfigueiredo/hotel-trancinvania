@@ -45,3 +45,16 @@ And tento finalizar a reserva
 Then posso ver uma mensagem "Dados ausentes ou incorretos"
 And continuo na página "Manaíra Hotel"
 And não tenho um método de pagamento cadastrado 
+
+Scenario: Nenhum quarto que acomoda as exigências do usuário
+Given que estou logado como "Cliente" com login "victoria" e senha "123456"
+And estou na página "Manaíra Hotel"
+And o hotel "Manaíra Hotel" oferta apenas quartos para até "2" adultos e "2" crianças 
+When eu preencho o campo "check-in" com "22/07/2024"
+And preencho o campo "check-out" com "26/07/2024"
+And preencho o campo "quantidade de quartos" com "1"
+And preencho o campo "quantidade de adultos" com "2" em "quarto 1"
+And preencho o campo "quantidade de crianças" com "3" em "quarto 1"
+And tento realizar a reserva
+Then posso ver uma mensagem "Não há quartos que atendam às exigências selecionadas"
+And continuo na página "Manaíra Hotel"
