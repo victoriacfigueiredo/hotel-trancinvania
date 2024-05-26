@@ -24,3 +24,11 @@ When eu salvo uma a reserva “Hotel  em Porto de Galinhas”
 And eu vou para a página do “Perfil”
 And eu seleciono “Reservas salvas”
 Then eu vejo “Hotel em Porto de Galinhas” na página de “Reservas salvas”
+
+Scenario: Excluir reserva salva
+Given eu estou na página de “Reservas Salvas”
+And a reserva “Hotel Maragogi” está salva
+When eu seleciono “Remover “ abaixo de “Hotel  Maragogi”
+And eu Seleciono “Confirmar”
+Then eu estou na página de “Reservas Salvas”
+And eu não consigo ver a reserva “Hotel  Maragogi”
