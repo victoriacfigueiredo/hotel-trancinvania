@@ -5,6 +5,7 @@ So that outros usuários possam ver a minha opinião sobre a reserva
 
 Scenario: Ver avaliação de uma reserva
 Given eu estou na página do  “Hotel Transamérica” 
+And o “Hotel Transamérica” já possui 10 ou mais avaliações
 When eu seleciono “Hotel Transamérica”
 And eu seleciono “Avaliações”
 Then eu vejo a classificação “Bom” da reserva e a nota “4,5”
