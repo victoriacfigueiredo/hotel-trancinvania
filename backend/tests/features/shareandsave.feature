@@ -23,4 +23,4 @@ And eu estou logado com email “acfml@cin.ufpe.br”  e senha “54321”
 When eu salvo uma a reserva “Hotel  em Porto de Galinhas”
 And eu vou para a página do “Perfil”
 And eu seleciono “Reservas salvas”
-Then eu vejo “Hotel em Porto de Galinhas” na página de “Reservas salvas”
+Then eu vejo “Hotel em Porto de Galinhas” na página “Reservas salvas”
