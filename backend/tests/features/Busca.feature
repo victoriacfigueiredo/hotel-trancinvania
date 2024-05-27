@@ -79,9 +79,3 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
     And eu clico em pesquisar
     Then eu sou redirecionado para a página “Resultados”
     And eu vejo opções de reservas com esses filtros
-    And teste
-
-    Scenario: test scenario
-    Given test
-    When test
-    Then test
