@@ -47,7 +47,7 @@ Scenario: Cadastro Mal-Sucedido de Usuário Cliente por E-mail já cadastrado
   And preencho o campo “Senha” com “@AmoBolo123”
   And tento realizar meu cadastro
   Then Eu vejo uma mensagem de erro “E-mail já cadastrado no sistema”
-  And Aparecem as opções de “Login” e “Esqueci a Senha”
+  And Eu vejo as opções de “Login” e “Esqueci a Senha”
 
 Scenario: Cadastro Mal-Sucedido de Usuário Hoteleiro por E-mail já cadastrado
 Given Eu estou na página inicial
