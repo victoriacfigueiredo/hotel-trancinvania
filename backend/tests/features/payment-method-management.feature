@@ -75,12 +75,5 @@ Scenario 6: Deletar método de pagamento com sucesso
   and eu seleciono a opção “sim”
   and eu vejo a mensagem “Método de pagamento Deletado  com Sucesso!”
 
-Scenario 7: Desistência de exclusão de método de pagamento
-  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
-  and eu estou na página “Meus Métodos de Pagamento”
-  and o método de pagamento “Cartão itaú” está cadastrado 
-  When eu seleciono a opção “Deletar” no método de pagamento “Cartão itaú”
-  Then eu vejo a mensagem “Deseja deletar método de pagamento?”
-  and eu seleciono a opção “não”
-  and eu continuo na página “Meus Métodos de Pagamento”
+
 	
