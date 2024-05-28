@@ -83,4 +83,5 @@ Scenario 7: Desistência de exclusão de método de pagamento
   When eu seleciono a opção “Deletar” no método de pagamento “Cartão itaú”
   Then eu vejo a mensagem “Deseja deletar método de pagamento?”
   and eu seleciono a opção “não”
-  and eu continuo na página “Meus Métodos de Pagamento”
+  and eu continuo na página “Meus Métodos de Pagamento” com o cartão "cartão Itaú" cadastrado
+  
