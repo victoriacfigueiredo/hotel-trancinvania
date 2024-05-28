@@ -25,6 +25,7 @@ Scenario 2: Tentativa de Cadastro de Método de pagamento  já cadastrado
   When eu seleciono a opção “Cadastrar novo método de Pagamento” 
   and eu preencho o campo “nome titular” com “Matheus silva”
   and eu preencho campo “número cartão” com “1234 5678 9123 4567” 	
+  and eu preencho o campo "data de validade" com "07-2030"
   and eu preencho o campo “cvc” com “123”
   and eu seleciono o campo  “Tipo” com “débito” 
   and eu preencho o campo “apelido” com “Cartão Itaú”
