@@ -78,3 +78,20 @@ Scenario: Cadastro Mal-Sucedido de Usuário Cliente por Campo em Branco
   And tento realizar meu cadastro
   Then Eu vejo uma mensagem de erro “Operação não concluída devido a ausência de preenchimento de campos obrigatórios.”
   And Eu continuo na página de “Cadastro”
+
+Scenario: Cadastro Mal-Sucedido de Usuário Hoteleiro por Campo em Branco
+  Given Eu estou na página “Inicial”
+  And o e-mail “mavis.dracula@trancinvania.com” já está cadastrado no sistema
+  When Eu clico em “Anuncie sua propriedade”
+  And preencho o campo “Nome” com “Mavis Drácula”
+  And preencho o campo “E-mail” com “mavis.dracula@trancinvania.com”
+  And preencho o campo “login” com “mavisdracula”
+  And  preencho o campo “Endereço do Hotel” com “Rua do Desassossego, 31”
+  And preencho o campo “CEP” com “56795-000”
+  And preencho o campo “Cidade” com “Solidão”
+  And preencho o campo “Estado” com “PE”
+  And preencho o campo “CNPJ” com “27. 215. 333/0001-15”
+  And preencho o campo “Senha”com “@AmoSexta13”
+  And tento realizar meu cadastro
+  Then Eu vejo uma mensagem de erro “Operação não concluída devido a ausência de preenchimento de campos obrigatórios.”
+  And Eu continuo na página de “Cadastro”
