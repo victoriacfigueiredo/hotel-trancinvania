@@ -64,4 +64,5 @@ Given Eu estou na página inicial
   And preencho o campo “Senha”com “@AmoSexta13”
   Then Eu vejo uma mensagem de erro “E-mail já cadastrado no sistema”
   And Aparecem as opções de “Login” e “Esqueci a Senha”
-
+  And Os campos aparecem todos vazios
+  And Eu permaneço na página de "Cadastro"
