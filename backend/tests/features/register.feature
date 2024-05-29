@@ -95,3 +95,17 @@ Scenario: Cadastro Mal-Sucedido de Usuário Hoteleiro por Campo em Branco
   And tento realizar meu cadastro
   Then Eu vejo uma mensagem de erro “Operação não concluída devido a ausência de preenchimento de campos obrigatórios.”
   And Eu continuo na página de “Cadastro”
+
+ Scenario: Cadastro Mal-Sucedido de Usuário Cliente por Senha menor que 6 caracteres
+  Given Eu estou na página “Inicial”
+  And a senha precisa ser maior que 6 caracteres
+  When Eu clico em “Cadastre-se”
+  And preencho o campo “Nome” com “Bárbara Alencar”
+  And preencho o campo “E-mail” com “barbara.alencar@gmail.com”
+  And preencho o campo “CPF com “”
+  And preencho o campo “Número de Telefone” com “(81) 9934-2351”
+  And preencho o campo “Data de Nascimento” com “12/09/1984”
+  And preencho o campo “Senha” com “@Amo”
+  And tento realizar meu cadastro
+  Then Eu vejo uma mensagem de erro “Erro! Sua senha precisa ser maior que 6 caracteres.”
+  And Eu continuo na página de “Cadastro”
