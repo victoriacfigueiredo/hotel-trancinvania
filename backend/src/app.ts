@@ -2,10 +2,11 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import logger from './logger';
-import setupRoutes from './routes/index';
 import { HttpError } from './utils/errors/http.error';
 import { FailureResult } from './utils/result';
 import Database from './database';
+import router from '../src/routes/index';
+import { createTablePromotion } from './repositories/promotion.repository';
 
 const app: express.Express = express();
 app.use(express.json());
@@ -16,7 +17,9 @@ app.use(
   })
 );
 
-setupRoutes(app);
+createTablePromotion();
+
+app.use(router);
 
 app.use(
   (
