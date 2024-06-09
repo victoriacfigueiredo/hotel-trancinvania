@@ -1,5 +1,6 @@
 import { Express, Router } from 'express';
 import PromotionController from '../controllers/promotion.controller';
+import EmailService from '../services/email.service';
 // import { di } from '../di';
 // import TestController from '../controllers/test.controller';
 // import TestService from '../services/test.service';
@@ -15,7 +16,6 @@ import PromotionController from '../controllers/promotion.controller';
 // };
 
 const router = Router();
-const prefix = '/api';
 
 router.get('/', (req, res) => {
   return res.status(200).json({ message: 'Hello World!' });
