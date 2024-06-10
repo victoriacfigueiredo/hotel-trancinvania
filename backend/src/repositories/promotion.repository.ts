@@ -5,7 +5,6 @@ export async function createTablePromotion() {
     try {
         const db = await openDb();
         await db.exec('CREATE TABLE IF NOT EXISTS promotions (id INTEGER PRIMARY KEY AUTOINCREMENT, discount INTEGER, type TEXT, num_rooms INTEGER)');
-        console.log('Table created or existed');
     } catch (error) {
         console.error('Erro:', error);
     }
@@ -17,7 +16,7 @@ export default class PromotionRepository {
             const db = await openDb();
             const result = await db.run(sql, params);
             if (!result || typeof result.lastID !== 'number') {
-                throw new Error('Failed to create promotion');
+                throw new Error('Falha ao cadastrar promoção');
             }
             return { id: result.lastID };
         } catch (error) {
@@ -40,7 +39,7 @@ export default class PromotionRepository {
             const db = await openDb();
             const row = await db.get<Promotion>(sql, id);
             if (!row) {
-                throw new Error('Promotion not found');
+                throw new Error('Promoção não encontrada');
             }
             return row;
         } catch (error) {

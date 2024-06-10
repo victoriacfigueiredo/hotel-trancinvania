@@ -12,9 +12,9 @@ export interface Promotion {
 }
 
 const promotionCreateDto = z.object({
-  discount: z.number().min(5).max(60),
+  discount: z.number().min(5, {message: "O desconto deve ser maior que 5%"}).max(60, { message: "O desconto deve ser menor que 60%"}),
   type: z.nativeEnum(PromotionType),
-  num_rooms: z.number().min(1),
+  num_rooms: z.number().min(1).optional(),
 });
 
 const promotionUpdateDto = z.object({

@@ -13,10 +13,13 @@ export function validateData(schema: z.ZodObject<any, any>) {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((issue: any) => ({
-            message: `${issue.path.join('.')} is ${issue.message}`,
-        }))
-        res.status(HttpStatusCode.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
+      const errorMessages = error.errors.map((issue: any) => {
+          const isRequiredError = issue.code === "invalid_type" && issue.message === "Required";
+          return {
+            message: isRequiredError ? `${issue.path.join('.')} é obrigatório` : issue.message,
+          };
+        })
+        res.status(HttpStatusCode.BAD_REQUEST).json({ error: 'Dado inválido', details: errorMessages });
       } else {
         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
       }

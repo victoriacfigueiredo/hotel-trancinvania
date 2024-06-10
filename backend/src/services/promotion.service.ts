@@ -7,12 +7,16 @@ export default class PromotionService {
         let sql: string;
         let params: (number | string | null)[];
         if (type === PromotionType.LIMITE_QUARTO) {
+            if(num_rooms === undefined){
+                throw new Error("É necessário informar a quantidade de quartos")
+            }
             sql = 'INSERT INTO promotions (discount, type, num_rooms) values (?, ?, ?)';
             params = [discount, type, num_rooms || null]; 
         } else {
             sql = 'INSERT INTO promotions (discount, type) values (?, ?)';
             params = [discount, type];
         }
+        console.log(params)
         return await PromotionRepository.insertPromotion(sql, params);
 
     }
@@ -28,15 +32,27 @@ export default class PromotionService {
     }
 
     static async updatePromotionById(id: number, discount: number, type: string, num_rooms?: number): Promise<void> {
-        let sql: string;
-        let params: (number | string | null)[];
-        if (type === PromotionType.LIMITE_QUARTO) {
-            sql = 'UPDATE promotions SET discount = ?, type = ?, num_rooms = ? WHERE id = ?';
-            params = [discount, type, num_rooms || null, id];
-        } else {
-            sql = 'UPDATE promotions SET discount = ?, type = ? WHERE id = ?';
-            params = [discount, type, id];
+        let sql = 'UPDATE promotions SET';
+        let params: (number | string | null)[] = [];
+        if (discount !== undefined) {
+            sql += ' discount = ?,';
+            params.push(discount);
         }
+        if (type) {
+            sql += ' type = ?,';
+            params.push(type);
+            sql += ' num_rooms = ?,';
+            if(type === 'ILIMITADA'){
+                params.push(null);
+            }else if(num_rooms !== undefined){
+                params.push(num_rooms);
+            }else{
+                throw new Error("É necessário informar a quantidade de quartos");
+            }
+        }
+        sql = sql.slice(0, -1) + ' WHERE id = ?';
+        params.push(id);
+
         await PromotionRepository.updatePromotionById(id, params, sql);
     }
 
