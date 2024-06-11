@@ -3,66 +3,49 @@ import { PromotionType } from "../enums/promotion-type.enum";
 import PromotionRepository from "../repositories/promotion.repository";
 
 export default class PromotionService {
-    static async insertPromotion(discount: number, type: string, num_rooms?: number): Promise<{ id: number }> {
-        let sql: string;
-        let params: (number | string | null)[];
-        if (type === PromotionType.LIMITE_QUARTO) {
-            if(num_rooms === undefined){
-                throw new Error("É necessário informar a quantidade de quartos")
-            }
-            sql = 'INSERT INTO promotions (discount, type, num_rooms) values (?, ?, ?)';
-            params = [discount, type, num_rooms || null]; 
-        } else {
-            sql = 'INSERT INTO promotions (discount, type) values (?, ?)';
-            params = [discount, type];
+
+    private promotionRepository: PromotionRepository;
+
+    constructor(){
+        this.promotionRepository = new PromotionRepository();
+    }
+
+    async insertPromotion(discount: number, type: string, num_rooms?: number): Promise<{ id: number }> {
+        if (type === PromotionType.LIMITE_QUARTO && num_rooms === undefined) {
+            throw new Error("É necessário informar a quantidade de quartos")
         }
-        console.log(params)
-        return await PromotionRepository.insertPromotion(sql, params);
+        
+        const params = {discount, type, num_rooms} as Promotion;
+        
+        return await this.promotionRepository.insertPromotion(params);
 
     }
 
-    static async getAllPromotions(): Promise<Promotion[]> {
-        const sql = 'SELECT * FROM promotions';
-        return await PromotionRepository.getAllPromotions(sql);
+    async getAllPromotions(): Promise<Promotion[]> {
+        return await this.promotionRepository.getAllPromotions();
     }
 
-    static async getPromotionById(id: number): Promise<Promotion> {
-        const sql = 'SELECT * FROM promotions WHERE id = ?';
-        return await PromotionRepository.getPromotionById(id, sql)
+    async getPromotionById(id: number): Promise<Promotion> {
+        return await this.promotionRepository.getPromotionById(id);
     }
 
-    static async updatePromotionById(id: number, discount: number, type: string, num_rooms?: number): Promise<void> {
-        let sql = 'UPDATE promotions SET';
-        let params: (number | string | null)[] = [];
-        if (discount !== undefined) {
-            sql += ' discount = ?,';
-            params.push(discount);
+    async updatePromotionById(id: number, discount: number, type: string, num_rooms?: number): Promise<void> {
+
+        
+        let params = {discount, type, num_rooms} as Promotion;
+
+        if(type !== 'ILIMITADA' && num_rooms === undefined){
+            throw new Error('É necessário informar a quantidade de quartos');
         }
-        if (type) {
-            sql += ' type = ?,';
-            params.push(type);
-            sql += ' num_rooms = ?,';
-            if(type === 'ILIMITADA'){
-                params.push(null);
-            }else if(num_rooms !== undefined){
-                params.push(num_rooms);
-            }else{
-                throw new Error("É necessário informar a quantidade de quartos");
-            }
-        }
-        sql = sql.slice(0, -1) + ' WHERE id = ?';
-        params.push(id);
 
-        await PromotionRepository.updatePromotionById(id, params, sql);
+        await this.promotionRepository.updatePromotionById(id, params);
     }
 
-    static async deletePromotionById(id: number): Promise<void> {
-        const sql = 'DELETE FROM promotions WHERE id = ?';
-        await PromotionRepository.deletePromotionById(id, sql);
+    async deletePromotionById(id: number): Promise<void> {
+        await this.promotionRepository.deletePromotionById(id);
     }
 
-    static async deleteAllPromotions(): Promise<void> {
-        const sql = 'DELETE FROM promotions';
-        await PromotionRepository.deleteAllPromotions(sql)
+    async deleteAllPromotions(): Promise<void> {
+        await this.promotionRepository.deleteAllPromotions();
     }
 }

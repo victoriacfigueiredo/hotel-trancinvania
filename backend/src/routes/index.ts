@@ -17,10 +17,14 @@ import EmailService from '../services/email.service';
 
 const router = Router();
 
+const promotionController = new PromotionController();
+
 router.get('/', (req, res) => {
   return res.status(200).json({ message: 'Hello World!' });
 });
 
-PromotionController.setupRoutes(router);
+
+
+promotionController.setupRoutes(router);
 
 export default router;
