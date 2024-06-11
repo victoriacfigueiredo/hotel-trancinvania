@@ -6,7 +6,6 @@ import { HttpError } from './utils/errors/http.error';
 import { FailureResult } from './utils/result';
 import Database from './database';
 import router from '../src/routes/index';
-import { createTablePromotion } from './repositories/promotion.repository';
 
 const app: express.Express = express();
 app.use(express.json());
@@ -16,8 +15,6 @@ app.use(
     origin: '*',
   })
 );
-
-createTablePromotion();
 
 app.use(router);
 

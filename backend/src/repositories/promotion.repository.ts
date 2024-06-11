@@ -1,74 +1,79 @@
+import { PrismaClient } from "@prisma/client";
 import { Promotion } from "../controllers/promotion.controller";
-import { openDb } from "../database/configDB";
-
-export async function createTablePromotion() {
-    try {
-        const db = await openDb();
-        await db.exec('CREATE TABLE IF NOT EXISTS promotions (id INTEGER PRIMARY KEY AUTOINCREMENT, discount INTEGER, type TEXT, num_rooms INTEGER)');
-    } catch (error) {
-        console.error('Erro:', error);
-    }
-}
 
 export default class PromotionRepository {
-    static async insertPromotion(sql: string, params: (number | string | null)[]) : Promise<{id: number}>{
+    private prisma: PrismaClient;
+
+    constructor(){
+        this.prisma = new PrismaClient();
+    }
+
+
+    async insertPromotion(params: Promotion) : Promise<{id: number}>{
         try {
-            const db = await openDb();
-            const result = await db.run(sql, params);
-            if (!result || typeof result.lastID !== 'number') {
-                throw new Error('Falha ao cadastrar promoção');
-            }
-            return { id: result.lastID };
+            const result = await this.prisma.promotion.create({data: params})
+            
+            return { id: result.id };
         } catch (error) {
             throw error;
         }
     }
 
-    static async getAllPromotions(sql:string): Promise<Promotion[]> {
+    async getAllPromotions(): Promise<Promotion[]> {
         try {
-            const db = await openDb();
-            const rows = await db.all<Promotion[]>(sql);
-            return rows;
+            const promotions = await this.prisma.promotion.findMany() as Promotion[];
+
+            return promotions;
         } catch (error) {
             throw error;
         }
     }
 
-    static async getPromotionById(id: number, sql: string): Promise<Promotion> {
+    async getPromotionById(id: number): Promise<Promotion> {
         try {
-            const db = await openDb();
-            const row = await db.get<Promotion>(sql, id);
-            if (!row) {
+            const promotion = await this.prisma.promotion.findUnique({
+                where: {
+                    id: id
+                }
+            })
+            if (!promotion) {
                 throw new Error('Promoção não encontrada');
             }
-            return row;
+
+            return promotion as Promotion;
         } catch (error) {
             throw error;
         }
     }
 
-    static async updatePromotionById(id: number, params: (number | string | null)[], sql: string): Promise<void> {
+    async updatePromotionById(id: number, params: Promotion): Promise<void> {
         try {
-            const db = await openDb();
-            await db.run(sql, params);
+            const promotion = await this.prisma.promotion.update({
+                where: {
+                    id: id
+                },
+                data: params
+            });
         } catch (error) {
             throw error;
         }
     }
 
-    static async deletePromotionById(id: number, sql: string): Promise<void> {
+    async deletePromotionById(id: number): Promise<void> {
         try {
-            const db = await openDb();
-            await db.run(sql, id);
+            await this.prisma.promotion.delete({
+                where: {
+                    id: id
+                }
+            });
         } catch (error) {
             throw error;
         }
     }
 
-    static async deleteAllPromotions(sql: string): Promise<void> {
+    async deleteAllPromotions(): Promise<void> {
         try {
-            const db = await openDb();
-            await db.run(sql);
+            await this.prisma.promotion.deleteMany({})
         } catch (error) {
             throw error;
         }

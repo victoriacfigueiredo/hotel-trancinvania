@@ -25,49 +25,55 @@ const promotionUpdateDto = z.object({
 
 export default class PromotionController {
 
-  private static prefix = '/promotions';
+  private prefix = '/promotions';
+
+  private promotionService: PromotionService;
+
+  constructor(){
+     this.promotionService = new PromotionService();
+  }
   
-  static setupRoutes(router: Router) {
-    router.post(this.prefix, validateData(promotionCreateDto), this.insertPromotion);
-    router.get(this.prefix, this.getAllPromotions);
-    router.get(this.prefix + '/:id', this.getPromotionById);
-    router.delete(this.prefix, this.deleteAllPromotions);
-    router.delete(this.prefix + '/:id', this.deletePromotion);
-    router.patch(this.prefix + '/:id', validateData(promotionUpdateDto), this.updatePromotion);
+  public setupRoutes(router: Router) {
+    router.post(this.prefix, validateData(promotionCreateDto), (req, res) => this.insertPromotion(req, res));
+    router.get(this.prefix, (req, res) => this.getAllPromotions(req, res));
+    router.get(this.prefix + '/:id', (req, res) => this.getPromotionById(req, res));
+    router.delete(this.prefix, (req, res) => this.deleteAllPromotions(req, res));
+    router.delete(this.prefix + '/:id', (req, res) => this.deletePromotion(req, res));
+    router.patch(this.prefix + '/:id', validateData(promotionUpdateDto), (req, res) => this.updatePromotion(req, res));
   }
 
-  private static async getAllPromotions(req: Request, res: Response) {
-    const promotions = await PromotionService.getAllPromotions();
+  private async getAllPromotions(req: Request, res: Response) {
+    const promotions = await this.promotionService.getAllPromotions();
     res.status(200).json(promotions);
   }
 
-  private static async getPromotionById(req: Request, res: Response) {
+  private async getPromotionById(req: Request, res: Response) {
     const {id} = req.params
-    const promotion = await PromotionService.getPromotionById(+id)
+    const promotion = await this.promotionService.getPromotionById(+id)
     res.status(200).json(promotion)
   }
 
-  private static async insertPromotion(req: Request, res: Response) {
+  private async insertPromotion(req: Request, res: Response) {
     const { discount, type, num_rooms } = req.body;
-    const {id} = await PromotionService.insertPromotion(discount, type, num_rooms)
+    const {id} = await this.promotionService.insertPromotion(discount, type, num_rooms)
     res.status(200).json({id});
   }
 
-  private static async deleteAllPromotions(req: Request, res: Response) {
-    await PromotionService.deleteAllPromotions()
+  private async deleteAllPromotions(req: Request, res: Response) {
+    await this.promotionService.deleteAllPromotions()
     res.status(200).json('Todas as promoções foram deletadas com sucesso!');
   }
 
-  private static async deletePromotion(req: Request, res: Response) {
+  private async deletePromotion(req: Request, res: Response) {
     const { id } = req.params
-    await PromotionService.deletePromotionById(+id)
+    await this.promotionService.deletePromotionById(+id)
     res.status(200).json(`A promoção ${id} foi deletada com sucesso!`);
   }
 
-  private static async updatePromotion(req: Request, res: Response) {
+  private async updatePromotion(req: Request, res: Response) {
     const { id } = req.params;
     const { discount, type, num_rooms } = req.body;
-    await PromotionService.updatePromotionById(+id, discount, type, num_rooms)
+    await this.promotionService.updatePromotionById(+id, discount, type, num_rooms)
     res.status(200).json(`A promoção ${id} foi atualizada com sucesso!`);
 
   } 
