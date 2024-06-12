@@ -23,4 +23,6 @@ model Promotion {
   discount Int
   type PromotionType
   num_rooms Int?
+
+  @@map("promotion")
 }
