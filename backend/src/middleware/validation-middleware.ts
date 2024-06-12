@@ -16,7 +16,7 @@ export function validateData(schema: z.ZodObject<any, any>) {
       const errorMessages = error.errors.map((issue: any) => {
           const isRequiredError = issue.code === "invalid_type" && issue.message === "Required";
           return {
-            message: isRequiredError ? `${issue.path.join('.')} é obrigatório` : issue.message,
+            message: isRequiredError ? "Preencha todos os campos" : issue.message,
           };
         })
         res.status(HttpStatusCode.BAD_REQUEST).json({ error: 'Dado inválido', details: errorMessages });
