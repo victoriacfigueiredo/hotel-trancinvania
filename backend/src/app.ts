@@ -30,8 +30,8 @@ app.use(
     }
 
     new FailureResult({
-      msg: error.msg ?? error.message,
-      code: error.status,
+      message: error.msg ?? error.message,
+      status: error.status,
     }).handle(res);
   }
 );
