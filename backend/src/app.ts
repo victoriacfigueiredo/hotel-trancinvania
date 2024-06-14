@@ -31,7 +31,6 @@ app.use(
 
     new FailureResult({
       msg: error.msg ?? error.message,
-      msgCode: error.msgCode,
       code: error.status,
     }).handle(res);
   }

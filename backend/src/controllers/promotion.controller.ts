@@ -12,7 +12,7 @@ export interface Promotion {
 }
 
 const promotionCreateDto = z.object({
-  discount: z.number().min(5, {message: "O desconto deve ser maior que 5%"}).max(60, { message: "O desconto deve ser menor que 60%"}),
+  discount: z.number().min(5).max(60),
   type: z.nativeEnum(PromotionType),
   num_rooms: z.number().min(1).optional(),
 });
@@ -56,26 +56,25 @@ export default class PromotionController {
   private async insertPromotion(req: Request, res: Response) {
     const { discount, type, num_rooms } = req.body;
     const {id} = await this.promotionService.insertPromotion(discount, type, num_rooms)
-    res.status(200).json({id});
+    res.status(200).json({ status: 200, message:`A promoção ${id} foi cadastrada com sucesso!`});
   }
 
   private async deleteAllPromotions(req: Request, res: Response) {
     await this.promotionService.deleteAllPromotions()
-    res.status(200).json('Todas as promoções foram deletadas com sucesso!');
+    res.status(200).json({ status: 200, message:'Todas as promoções foram deletadas com sucesso!'});
   }
 
   private async deletePromotion(req: Request, res: Response) {
     const { id } = req.params
-    await this.promotionService.deletePromotionById(+id)
-    res.status(200).json(`A promoção ${id} foi deletada com sucesso!`);
+    await this.promotionService.deletePromotionById(+id);
+    res.status(200).json({ status: 200, message:`A promoção ${id} foi deletada com sucesso!`});
   }
 
   private async updatePromotion(req: Request, res: Response) {
     const { id } = req.params;
     const { discount, type, num_rooms } = req.body;
-    await this.promotionService.updatePromotionById(+id, discount, type, num_rooms)
-    res.status(200).json(`A promoção ${id} foi atualizada com sucesso!`);
-
+    await this.promotionService.updatePromotionById(+id, discount, type, num_rooms);
+    res.status(200).json({ status: 200, message:`A promoção ${id} foi atualizada com sucesso!`});
   } 
 }
 
