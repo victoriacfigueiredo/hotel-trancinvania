@@ -10,3 +10,4 @@ CREATE TABLE "Promotion" (
 
     CONSTRAINT "Promotion_pkey" PRIMARY KEY ("id")
 );
+
