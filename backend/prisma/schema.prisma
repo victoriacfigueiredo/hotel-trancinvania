@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PromotionType {
+    ILIMITADA
+    LIMITE_QUARTO
+}
+
+model Promotion {
+  id Int @id @default(autoincrement())
+  discount Int
+  type PromotionType
+  num_rooms Int?
+  
+  reservations PublishedReservation[]
+  @@map("promotion")
+}
+
+model Reservation {
+  id Int  @id @default(autoincrement())
+  Nome String 
+  savedReservationUsers UserReservation[] 
+  @@map("reservation")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  savedReservation UserReservation[] 
+  @@map("user")
+}
+
+model UserReservation {
+  user User @relation(fields:[user_id],references:[id])
+  reservation Reservation @relation(fields:[reservation_id],references:[id]) 
+  user_id Int 
+  reservation_id Int
+  @@id([user_id, reservation_id])
+}
+
+model PublishedReservation {
+  id           Int        @id @default(autoincrement())
+  promotion    Promotion? @relation(fields: [promotion_id], references: [id])
+  promotion_id Int?
+
+  @@map("publishedReservation")
+}
+
