@@ -49,10 +49,38 @@ model UserReservation {
   @@id([user_id, reservation_id])
 }
 
+model Hotelier {
+   id           Int        @id @default(autoincrement())
+   name         String
+   email        String 
+   password     String
+   hotel        String 
+   adress       String
+   cnpj         String
+
+   reservations PublishedReservation[]
+
+   @@map("hotelier")
+}
+
 model PublishedReservation {
   id           Int        @id @default(autoincrement())
+  name         String 
+  rooms        Int
+  people       Int
+  wifi         Boolean
+  breakfast    Boolean
+  airConditioner Boolean
+  parking      Boolean
+  room_service Boolean
+  price        Float
+  new_price    Float
   promotion    Promotion? @relation(fields: [promotion_id], references: [id])
   promotion_id Int?
+  hotelier     Hotelier? @relation(fields: [hotelier_id], references: [id])
+  hotelier_id Int
 
   @@map("publishedReservation")
 }
+
+
