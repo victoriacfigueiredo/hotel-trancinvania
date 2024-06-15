@@ -1,20 +1,23 @@
 import { Promotion } from "../controllers/promotion.controller";
 import { PromotionType } from "../enums/promotion-type.enum";
 import PromotionRepository from "../repositories/promotion.repository";
+import PublishedReservationRepository from "../repositories/publishedReservation.repository";
 import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
 
 export default class PromotionService {
 
     private promotionRepository: PromotionRepository;
+    private publishedReservationRepository: PublishedReservationRepository;
 
     constructor(){
         this.promotionRepository = new PromotionRepository();
+        this.publishedReservationRepository = new PublishedReservationRepository();
     }
 
-    private preparePromotionParams(discount: number, type: string, num_rooms?: number): Promotion {
+    private preparePromotionParams(discount: number, type: string, num_rooms?: number | null): Promotion {
         if (type === PromotionType.LIMITE_QUARTO && num_rooms === undefined) {
             throw new HttpBadRequestError({
-                msg: 'Fill in all fields'
+                msg: 'num_rooms is required'
             });
         }
         let params = { discount, type, num_rooms } as Promotion;
@@ -25,10 +28,12 @@ export default class PromotionService {
         return params;
     }
 
-    async insertPromotion(discount: number, type: string, num_rooms?: number): Promise<{ id: number }> {
+    async insertPromotion( reservation_id: number | null, discount: number, type: string, num_rooms?: number | null): Promise<number> {
         let params = this.preparePromotionParams(discount, type, num_rooms);
         try{
-            return await this.promotionRepository.insertPromotion(params);
+            const promotion_id = await this.promotionRepository.insertPromotion(params);
+            await this.publishedReservationRepository.updateReservationPromotion(reservation_id, +promotion_id);
+            return promotion_id;
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
@@ -46,14 +51,15 @@ export default class PromotionService {
         }
     }
 
-    async getPromotionById(id: number): Promise<Promotion> {
+    async getPromotionById(reservation_id: number): Promise<Promotion> {
         try{
-            const promotion = await this.promotionRepository.getPromotionById(id);
-            if (!promotion) {
+            const promotion_id = await this.publishedReservationRepository.getReservationPromotionID(reservation_id)
+            if (!promotion_id) {
                 throw new HttpNotFoundError({
                     msg: 'Promotion not found'
                 });
             }
+            const promotion = await this.promotionRepository.getPromotionById(promotion_id);
             return promotion;
         }catch(error: any){
             if (error instanceof HttpError){
@@ -64,15 +70,22 @@ export default class PromotionService {
         }
     }
 
-    async updatePromotionById(id: number, discount: number, type: string, num_rooms?: number): Promise<void> {
-        const params = this.preparePromotionParams(discount, type, num_rooms);
+    async updatePromotionById(reservation_id: number, discount: number, type: string, num_rooms?: number): Promise<void> {
+        const params = this.preparePromotionParams(discount, type, num_rooms) as Promotion;
         try{
-            if (!(await this.promotionRepository.getPromotionById(id))) {
+            const promotion_id = await this.publishedReservationRepository.getReservationPromotionID(reservation_id)
+            if (!promotion_id) {
                 throw new HttpNotFoundError({
                     msg: 'Promotion not found'
                 });
             }
-            await this.promotionRepository.updatePromotionById(id, params);
+            const rows = await this.publishedReservationRepository.getReservationPromotion(promotion_id);
+            if(rows > 1){
+                await this.insertPromotion(reservation_id, params.discount, params.type, params.num_rooms);
+            }else{
+                await this.promotionRepository.updatePromotionById(promotion_id, params);
+            }
+            
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
@@ -82,14 +95,18 @@ export default class PromotionService {
         }
     }
 
-    async deletePromotionById(id: number): Promise<void> {
+    async deletePromotionById(reservation_id: number): Promise<void> {
         try{
-            if (!(await this.promotionRepository.getPromotionById(id))) {
+            const promotion_id = await this.publishedReservationRepository.getReservationPromotionID(reservation_id);
+            if (!promotion_id) {
                 throw new HttpNotFoundError({
                     msg: 'Promotion not found'
                 });
-            } 
-            await this.promotionRepository.deletePromotionById(id); 
+            }
+            await this.publishedReservationRepository.updateReservationPromotion(reservation_id, null);
+            if(await this.publishedReservationRepository.getReservationPromotion(promotion_id) === 0){
+                await this.promotionRepository.deletePromotionById(promotion_id, reservation_id); 
+            }
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;

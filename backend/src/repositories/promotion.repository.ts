@@ -8,9 +8,9 @@ export default class PromotionRepository {
         this.prisma = new PrismaClient();
     }
 
-    async insertPromotion(params: Promotion) : Promise<{id: number}>{
+    async insertPromotion(params: Promotion) : Promise<number>{
         const result = await this.prisma.promotion.create({data: params})
-        return { id: result.id };
+        return result.id;
     }
 
     async getAllPromotions(): Promise<Promotion[]> {
@@ -27,23 +27,21 @@ export default class PromotionRepository {
         return promotion as Promotion;
     }
 
-    async updatePromotionById(id: number, params: Promotion): Promise<Promotion> {
-        const promotion = await this.prisma.promotion.update({
+    async updatePromotionById(id: number, params: Promotion): Promise<void> {
+        await this.prisma.promotion.update({
             where: {
                 id: id
             },
             data: params
         });
-        return promotion as Promotion;
     }
 
-    async deletePromotionById(id: number): Promise<Promotion> {
-        const promotion = await this.prisma.promotion.delete({
+    async deletePromotionById(id: number, reservation_id: number): Promise<void> {
+        await this.prisma.promotion.delete({
             where: {
                 id: id
             }
         });
-        return promotion as Promotion;
     }
 
     async deleteAllPromotions(): Promise<void> {

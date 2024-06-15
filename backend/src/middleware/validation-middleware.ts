@@ -15,7 +15,7 @@ export function validateData(schema: z.ZodObject<any, any>) {
             if (error instanceof ZodError) {
                 const errorMessages = error.errors.map((issue: any) => {
                     const isRequiredError = issue.code === "invalid_type" && issue.message === "Required";
-                    return isRequiredError ? "There are required fields not filled in" : issue.message;
+                    return isRequiredError ? `${issue.path.join('.')} is required` : issue.message;
                 });
 
                 res.status(HttpStatusCode.BAD_REQUEST).json({ status: 400, message: errorMessages});
