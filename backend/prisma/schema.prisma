@@ -23,7 +23,8 @@ model Promotion {
   discount Int
   type PromotionType
   num_rooms Int?
-
+  
+  reservations PublishedReservation[]
   @@map("promotion")
 }
 
@@ -48,4 +49,11 @@ model UserReservation {
   @@id([user_id, reservation_id])
 }
 
+model PublishedReservation {
+  id           Int        @id @default(autoincrement())
+  promotion    Promotion? @relation(fields: [promotion_id], references: [id])
+  promotion_id Int?
+
+  @@map("publishedReservation")
+}
 
