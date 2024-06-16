@@ -1,6 +1,7 @@
 import { Express, Router } from 'express';
 import PromotionController from '../controllers/promotion.controller';
 import EmailService from '../services/email.service';
+import ReservationController from '../controllers/reservation.controller';
 // import { di } from '../di';
 // import TestController from '../controllers/test.controller';
 // import TestService from '../services/test.service';
@@ -18,13 +19,14 @@ import EmailService from '../services/email.service';
 const router = Router();
 
 const promotionController = new PromotionController();
+const reservationController = new ReservationController();
 
 router.get('/', (req, res) => {
   return res.status(200).json({ message: 'Hello World!' });
 });
 
 
-
+reservationController.setupRoutes(router);
 promotionController.setupRoutes(router);
 
 export default router;
