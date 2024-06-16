@@ -57,13 +57,19 @@ export default class ReservationService {
     }
 
     async createReservation(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<{id: number}> {
-        const availableRooms = await this.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
-        if (!availableRooms) {
-            throw new Error('Não há quartos disponíveis para o período selecionado');
+        try{
+            const availableRooms = await this.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
+            if (!availableRooms) {
+                throw new Error('Não há quartos disponíveis para o período selecionado');
+            }
+            const reservationParams = await this.prepareReservationParams(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId);
+            const id = await this.reservationRepository.createReservation(reservationParams);
+            return id;
         }
-        const reservationParams = await this.prepareReservationParams(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId);
-        const id = await this.reservationRepository.createReservation(reservationParams);
-        return id;
+        catch (error){
+            console.error(error); // Log the error
+                throw new Error ('Não há quartos disponíveis para o período selecionado' );
+        }
     }
     
     async cancelReservation(id: number): Promise<void> {
@@ -84,7 +90,7 @@ export default class ReservationService {
     async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number): Promise<void> {
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) {
-            throw new Error('Oferta de reserva não encontrada2');
+            throw new Error('Oferta de reserva não encontrada');
         }
             reservation.num_rooms = num_rooms;  
             reservation.checkin = checkin;
@@ -92,7 +98,7 @@ export default class ReservationService {
             reservation.num_adults = num_adults;
             reservation.num_children = num_children;
 
-        const availableRooms = await this.checkRoomAvailability(reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.num_adults, reservation.num_children, reservation.publishedReservationId);
+        const availableRooms = await this.doublecheckRoomAvailability(reservation.id, reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.num_adults, reservation.num_children, reservation.publishedReservationId);
         if (!availableRooms) {
             throw new Error('Não há quartos disponíveis para o período selecionado');
         }
@@ -109,7 +115,6 @@ export default class ReservationService {
     public async getReservationsByClient(clientId: number): Promise<Reserve[]> {
         return await this.reservationRepository.getReservationsByClient(clientId);
     }
-
     public async checkRoomAvailability(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, publishedReservationId: number): Promise<boolean> {
         const publishedReservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
         if (!publishedReservation) {
@@ -125,6 +130,25 @@ export default class ReservationService {
             reservedRooms += reservation.num_rooms;
         }
         const availableRooms = publishedReservation.rooms - reservedRooms;
+        return availableRooms >= num_rooms;        
+    }
+
+    public async doublecheckRoomAvailability(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, publishedReservationId: number): Promise<boolean> {
+        const publishedReservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
+        if (!publishedReservation) {
+            throw new Error(`Oferta de reserva com ID ${publishedReservationId} não encontrada`);
+        }
+        const totalPeople = (num_adults + (num_children*0.5));
+        if (totalPeople > publishedReservation.people) {
+            return false;
+        }
+        const existingReservations = await this.reservationRepository.getReservationsByPeriodAndId(id, checkin, checkout, publishedReservationId);
+        let reservedRooms = 0;
+        for (const reservation of existingReservations) {
+            reservedRooms += reservation.num_rooms;
+        }
+        const availableRooms = publishedReservation.rooms - reservedRooms;
+        console.log(`Available rooms: ${availableRooms} & num_rooms ${num_rooms} & reserver rooms ${reservedRooms}`);
         return availableRooms >= num_rooms;        
     }
     

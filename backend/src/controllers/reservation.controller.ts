@@ -113,11 +113,17 @@ export default class ReserveController {
     }
 
     private async createReservation(req: Request, res: Response) {
-        const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
-        const publishedReservationId = parseInt(req.params.publishedReservationId);
-        const clientId = parseInt(req.params.clientId);
-        const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
-        res.status(200).json({id});
+        try{
+            const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
+            const publishedReservationId = parseInt(req.params.publishedReservationId);
+            const clientId = parseInt(req.params.clientId);
+            const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
+            res.status(200).json({id});
+        }
+        catch (error) {
+            console.error(error); // Log the error
+            res.status(500).json({ error: 'Ocorreu um erro ao tentar criar a reserva.' });
+        }
     }
     
 
@@ -129,12 +135,12 @@ export default class ReserveController {
 
     private async updateReservation(req: Request, res: Response) {
         try {
-            const {id} = req.params;
+            const id = parseInt(req.params.id);
             const publishedReservationId = parseInt(req.params.publishedReservationId);
             const {num_rooms, checkin, checkout, num_adults, num_children} = req.body;
     
             // verificar se a reserva está disponível para as novas datas 
-            const availableRooms = await this.reservationService.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
+            const availableRooms = await this.reservationService.doublecheckRoomAvailability(id, num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
             if (!availableRooms) {
                 return res.status(400).json({ error: `Não há quartos disponíveis para o período de ${checkin} a ${checkout}` });
             }
