@@ -95,26 +95,50 @@ export default class ReservationService {
         return price;
     }
 
-    async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number): Promise<void> {
+    async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName?: string): Promise<void> {
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) {
             throw new Error('Oferta de reserva não encontrada');
         }
-            reservation.num_rooms = num_rooms;  
-            reservation.checkin = checkin;
-            reservation.checkout = checkout;
-            reservation.num_adults = num_adults;
-            reservation.num_children = num_children;
-
+        reservation.num_rooms = num_rooms;
+        reservation.checkin = checkin;
+        reservation.checkout = checkout;
+        reservation.num_adults = num_adults;
+        reservation.num_children = num_children;
+    
+        if (paymentMethodName) {
+            // Buscar os métodos de pagamento do cliente
+            const paymentMethods = await this.reservationRepository.getPaymentMethod(reservation.clientId);
+            if (!paymentMethods) {
+                throw new Error(`Cadastre um método de pagamento`);
+            }
+    
+            // Encontrar o método de pagamento pelo nome
+            let paymentMethodId = 0;
+            for (const payMethod of paymentMethods) {
+                if (payMethod.name.toLowerCase() === paymentMethodName.toLowerCase()) {
+                    paymentMethodId = payMethod.id;
+                    break;
+                }
+            }
+            if (paymentMethodId === 0) {
+                throw new Error(`Método de pagamento ${paymentMethodName} não encontrado`);
+            }
+    
+            reservation.paymentMethodName = paymentMethodName;
+            reservation.paymentMethodId = paymentMethodId;
+        }
+    
         const availableRooms = await this.doublecheckRoomAvailability(reservation.id, reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.num_adults, reservation.num_children, reservation.publishedReservationId);
         if (!availableRooms) {
             throw new Error('Não há quartos disponíveis para o período selecionado');
         }
         const newPrice = await this.calculatePrice(reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.publishedReservationId);
         reservation.price = newPrice;
-
-        await this.reservationRepository.updateReservation(id, reservation); 
+    
+        await this.reservationRepository.updateReservation(id, reservation);
     }
+    
 
     async getReservationById(id: number): Promise<Reserve> {
         return await this.reservationRepository.getReservationById(id);        
@@ -156,7 +180,6 @@ export default class ReservationService {
             reservedRooms += reservation.num_rooms;
         }
         const availableRooms = publishedReservation.rooms - reservedRooms;
-        console.log(`Available rooms: ${availableRooms} & num_rooms ${num_rooms} & reserver rooms ${reservedRooms}`);
         return availableRooms >= num_rooms;        
     }
     

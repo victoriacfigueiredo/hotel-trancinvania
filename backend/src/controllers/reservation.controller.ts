@@ -90,7 +90,9 @@ const reservationUpdateDto = z.object({
     checkout: z.string(),
     num_adults: z.number().min(1),
     num_children: z.number(),
+    paymentMethodName: z.string(),
 });
+
 
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
@@ -150,21 +152,22 @@ export default class ReserveController {
         try {
             const id = parseInt(req.params.id);
             const publishedReservationId = parseInt(req.params.publishedReservationId);
-            const {num_rooms, checkin, checkout, num_adults, num_children} = req.body;
+            const { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName } = req.body;
     
-            // verificar se a reserva está disponível para as novas datas 
+            // verificar se a reserva está disponível para as novas datas
             const availableRooms = await this.reservationService.doublecheckRoomAvailability(id, num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
             if (!availableRooms) {
                 return res.status(400).json({ error: `Não há quartos disponíveis para o período de ${checkin} a ${checkout}` });
             }
     
-            await this.reservationService.updateReservation(+id, num_rooms, checkin, checkout, num_adults, num_children);
+            await this.reservationService.updateReservation(id, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName);
             res.status(200).json(`A reserva ${id} foi editada com sucesso!`);
         } catch (error) {
             console.error(error); // Log the error
             res.status(500).json({ error: 'Ocorreu um erro ao tentar atualizar a reserva.' });
         }
     }
+    
     
     
 
