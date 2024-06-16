@@ -56,16 +56,18 @@ model UserReservation {
 model Hotelier {
    id           Int        @id @default(autoincrement())
    name         String
-   email        String 
+   email        String   @unique
+   username     String   @unique 
    password     String
    hotel        String 
    adress       String
-   cnpj         String
+   cnpj         String   @unique
 
    reservations PublishedReservation[]
 
    @@map("hotelier")
 }
+
 
 model PublishedReservation {
   id           Int        @id @default(autoincrement())
@@ -89,17 +91,19 @@ model PublishedReservation {
 
 
 model Client {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  phone String
-  password String
-  cpf String 
-  birthDate String
+  id             Int      @id @default(autoincrement())
+  name           String
+  email          String   @unique
+  username       String   @unique
+  phone          String
+  password       String
+  cpf            String   @unique
+  birthDate      String
 
   paymentMethods PaymentMethod[]
   reservations Reserve[]
 }
+
 
 model PaymentMethod{
   id Int @id @default(autoincrement())
@@ -130,6 +134,7 @@ model Reserve{
   Client Client @relation(fields: [clientId], references: [id])
   PaymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
 }
+
 
 
 
