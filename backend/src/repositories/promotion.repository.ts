@@ -36,7 +36,7 @@ export default class PromotionRepository {
         });
     }
 
-    async deletePromotionById(id: number, reservation_id: number): Promise<void> {
+    async deletePromotionById(id: number): Promise<void> {
         await this.prisma.promotion.delete({
             where: {
                 id: id

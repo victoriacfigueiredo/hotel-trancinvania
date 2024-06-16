@@ -12,16 +12,16 @@ And Eu preencho o campo "tipo" com "limite de quarto"
 And Eu preencho o campo "quantidade de quartos" com "2"
 And Tento realizar o cadastro
 Then Eu vejo a mensagem de confirmação de cadastro 
+
 And Eu vejo a promoção no quarto "Flores" na página "reservas publicadas" com o valor atualizado para "R$ 1040,00"
 
 Scenario 1: Cadastro da promoção realizado com  (SERVIÇO)
 
-Given eu estou logada como "Hoteleiro" do hotel "Encantado" com o e-mail "maria@gmail.com" e a senha "let123"
-And eu estou na página "Cadastro de promoção" da reserva do quarto "Flores" com o valor da diária por "R$ 1300,00"
-When uma requisição POST é enviada para "" com o desconto de "20"%, promoção "LIMITE_QUARTO", quantidade de quartos "2"
+Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
+And eu estou na página "Cadastro de promoção" da reserva do quarto "Flores" com o valor da diária por R$"1300.00"
+When uma requisição POST é enviada para "/reservation/1/promotions" com o desconto de "20"%, promoção "LIMITE_QUARTO", quantidade de quartos "2"
 Then o status da resposta deve ser "201"
-And é retornada uma mensagem "Cadastro realizado com sucesso"
-And o quarto "Flores" possui a promoção com desconto de "20"%, promoção "LIMITE_QUARTO", quantidade de quartos "2"
+And é retornada uma mensagem "A promoção foi cadastrada com sucesso!"
 
 ===============================================================================================================================
 Scenario 2: Tentativa de cadastro da promoção com algum campo não preenchido
