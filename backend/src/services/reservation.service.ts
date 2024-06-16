@@ -81,26 +81,16 @@ export default class ReservationService {
         return price;
     }
 
-    async updateReservation(id: number, num_rooms?: number, checkin?: string, checkout?: string, num_adults?: number, num_children?: number): Promise<void> {
+    async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number): Promise<void> {
         const reservation = await this.reservationRepository.getReservationById(id);
         if (!reservation) {
             throw new Error('Oferta de reserva não encontrada2');
         }
-        if(num_rooms){
-            reservation.num_rooms = num_rooms;
-        }
-        if (checkin) {
+            reservation.num_rooms = num_rooms;  
             reservation.checkin = checkin;
-        }
-        if (checkout) {
             reservation.checkout = checkout;
-        }
-        if (num_adults){
             reservation.num_adults = num_adults;
-        }
-        if (num_children){
             reservation.num_children = num_children;
-        }
 
         const availableRooms = await this.checkRoomAvailability(reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.num_adults, reservation.num_children, reservation.publishedReservationId);
         if (!availableRooms) {
