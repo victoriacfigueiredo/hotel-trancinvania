@@ -36,24 +36,6 @@ export interface Reserve {
     paymentMethodId: number;
 }
 
-export interface PublishedReservation{
-    id: number;
-    name: string;
-    rooms: number; 
-    people: number; 
-    wifi: Boolean;
-    breakfast: Boolean;  
-    airConditioner: Boolean; 
-    parking: Boolean;
-    room_service: Boolean;
-    price: number;
-    new_price: number;
-    promotion?: Promotion;
-    promotionId?: number;
-    hotelier?: Hotelier;
-    hotelier_id: number; 
-}
-
 export interface Client{
     id: number;
     name: string; 
@@ -91,6 +73,7 @@ const reservationUpdateDto = z.object({
     num_adults: z.number().min(1),
     num_children: z.number(),
 });
+
 
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
