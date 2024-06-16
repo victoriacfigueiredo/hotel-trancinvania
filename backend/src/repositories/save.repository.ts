@@ -34,7 +34,7 @@ export default class SaveRepository {
             }
 
             // Adiciona a reserva à lista de reservas salvas
-            const result = await this.prisma.userReservation.create({
+            const result = await this.prisma.userSavedReservation.create({
                 data: {
                     user_id: userId,
                     reservation_id: reservationId
@@ -51,7 +51,7 @@ export default class SaveRepository {
 
     async getSavedReservationByUserId(user_id: number): Promise<Reservation[]> {
         try {
-            const userReservations = await this.prisma.userReservation.findMany({
+            const userReservations = await this.prisma.userSavedReservation.findMany({
                 where: {
                    user_id: user_id
                 },
@@ -79,7 +79,7 @@ export default class SaveRepository {
 
     async getUsersbyReservationId(reservation_id: number): Promise<User[]>{
         try{
-            const user = await this.prisma.userReservation.findMany({
+            const user = await this.prisma.userSavedReservation.findMany({
             where :{
                 reservation_id :reservation_id
             },
@@ -107,7 +107,7 @@ export default class SaveRepository {
 
     async deleteSavedReservationById(user_id: number, reservation_id: number): Promise<void> {
         try {
-            await this.prisma.userReservation.deleteMany({
+            await this.prisma.userSavedReservation.deleteMany({
                 where:{
                     user_id : user_id,
                     reservation_id : reservation_id

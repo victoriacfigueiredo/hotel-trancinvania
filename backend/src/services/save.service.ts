@@ -1,4 +1,4 @@
-import { Reservation, User,UserReservation } from '@prisma/client';
+import { Reservation, User,UserSavedReservation } from '@prisma/client';
 import SaveRepository from "../repositories/save.repository";
 
 export default class SaveService {

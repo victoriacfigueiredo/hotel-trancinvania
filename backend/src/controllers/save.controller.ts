@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
-import SaveService from '../services/save.services';
+import SaveService from '../services/save.service';
 
 export interface Save {
     id: number;
