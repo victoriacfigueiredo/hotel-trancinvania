@@ -106,6 +106,8 @@ export default class ReserveController {
         router.put(this.prefix + '/:id', validateData(reservationUpdateDto), (req, res) => this.updateReservation(req, res));
         // cancelar reserva
         router.delete(this.prefix + '/:id', (req, res) => this.cancelReservation(req, res));
+        //cancelar todas as reservas de um cliente
+        router.delete(this.prefix, (req, res) => this.cancelReservationByClient(req, res));
         // pegar os dados de uma reserva
         router.get(this.prefix + '/:id', (req, res) => this.getReservationById(req, res));
         // pegar todas as reservas de um cliente (minhas reservas)
@@ -131,6 +133,17 @@ export default class ReserveController {
         const {id} = req.params;
         await this.reservationService.cancelReservation(+id);
         res.status(200).json(`A reserva ${id} foi cancelada`);
+    }
+
+    private async cancelReservationByClient(req: Request, res: Response){
+        try {
+            const clientId  = parseInt(req.params.clientId);
+            await this.reservationService.cancelReservationByClient(clientId);
+            res.status(200).json({ message: `Todas as reservas do cliente ${clientId} foram canceladas com sucesso` });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+        }
     }
 
     private async updateReservation(req: Request, res: Response) {

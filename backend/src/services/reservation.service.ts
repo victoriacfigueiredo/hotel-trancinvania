@@ -75,6 +75,14 @@ export default class ReservationService {
     async cancelReservation(id: number): Promise<void> {
         await this.reservationRepository.cancelReservation(id);
     }
+    async cancelReservationByClient(clientId: number): Promise<void> {
+        try {
+            await this.reservationRepository.cancelReservationByClient(clientId);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+        }
+    }
 
     async calculatePrice(num_rooms: number, checkin: string, checkout: string, publishedReservationId: number): Promise<number> {
         const numDays = this.calculateNumDays(checkin, checkout);

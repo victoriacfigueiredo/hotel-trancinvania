@@ -20,6 +20,20 @@ export default class ReservationRepository {
         }
     }
 
+    async cancelReservationByClient(clientId: number): Promise<void> {
+        try {
+            await this.prisma.reserve.deleteMany({
+                where: {
+                    clientId: clientId
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+        }
+    }
+    
+
     async getPublishedReservationById(publishedReservationId: number): Promise<PublishedReservation>{
         try {
             const publishedReservation = await this.prisma.publishedReservation.findUnique({
