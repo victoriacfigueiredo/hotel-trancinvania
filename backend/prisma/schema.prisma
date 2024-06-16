@@ -28,7 +28,7 @@ model Promotion {
   discount Int
   type PromotionType
   num_rooms Int?
-  reservation PublishedReservation[]
+  reservations PublishedReservation[]
   @@map("promotion")
 }
 
@@ -130,4 +130,8 @@ model Reserve{
   Client Client @relation(fields: [clientId], references: [id])
   PaymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
 }
+
+
+
+
 
