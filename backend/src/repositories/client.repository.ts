@@ -7,11 +7,18 @@ export default class ClientRepository {
     this.prisma = new PrismaClient();
   }
 
-  async createCustomer(data: any) {
+  async createClient(data: any) {
     return await this.prisma.client.create({
-      data: {
-        ...data,
-        birthDate: new Date(data.birthDate),
+      data});
+  }
+
+  async findClientByEmailOrUsername(email: string, username: string) {
+    return await this.prisma.client.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { username: username },
+        ],
       },
     });
   }

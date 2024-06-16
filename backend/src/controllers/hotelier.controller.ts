@@ -1,15 +1,15 @@
 import { z } from "zod";
 
-const passwordValidation = z.string().min(7, { message: "Password must be more than 6 characters" });
+const passwordValidation = z.string().min(7, { message: "A senha deve ter mais de 6 dígitos" });
 
 export const hotelierSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z.string().email({ message: "Invalid email" }),
-  username: z.string().min(3, { message: "Username must be at least 3 characters" }),
+  name: z.string().min(1, { message: "Nome é obrigatório" }),
+  email: z.string().email({ message: "E-mail inválido" }),
+  username: z.string().min(3, { message: "Usuário deve ter pelo menos 3 caracteres" }),
   password: passwordValidation,
-  hotelName: z.string().min(1, { message: "Hotel name is required" }),
-  hotelAddress: z.string().min(1, { message: "Hotel address is required" }),
-  cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, { message: "Invalid CNPJ" }),
+  hotelName: z.string().min(1, { message: "Nome do Hotel é obrigatório" }),
+  hotelAddress: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }),
+  cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, { message: "CNPJ Inválido" }),
 }).refine(data => {
   const { password, name, hotelName, cnpj } = data;
 
