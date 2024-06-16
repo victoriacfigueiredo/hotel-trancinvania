@@ -95,7 +95,6 @@ const reservationUpdateDto = z.object({
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
     private reservationService: ReservationService;
-
     constructor() {
         this.reservationService = new ReservationService();
     }
@@ -104,7 +103,7 @@ export default class ReserveController {
         // criar novas reservas
         router.post(this.prefix, validateData(reservationCreateDto), (req, res) => this.createReservation(req, res));
         // editar reserva
-        router.patch(this.prefix + '/:id', validateData(reservationUpdateDto), (req, res) => this.updateReservation(req, res));
+        router.put(this.prefix + '/:id', validateData(reservationUpdateDto), (req, res) => this.updateReservation(req, res));
         // cancelar reserva
         router.delete(this.prefix + '/:id', (req, res) => this.cancelReservation(req, res));
         // pegar os dados de uma reserva
@@ -129,17 +128,26 @@ export default class ReserveController {
     }
 
     private async updateReservation(req: Request, res: Response) {
-        const {id} = req.params;
-        const publishedReservationId = parseInt(req.params.publishedReservationId);
-        const {num_rooms, checkin, checkout, num_adults, num_children} = req.body;
-        //verificar se a reserva está disponível para as novas datas 
-        const availableRooms = await this.reservationService.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
-        if (!availableRooms) {
-            return res.status(400).json({ error: `Não há quartos disponíveis para o período de ${checkin} a ${checkout}` });
-        }   
-        await this.reservationService.updateReservation(+id, num_rooms, checkin, checkout, num_adults, num_children);
-        res.status(200).json(`A reserva ${id} foi editada com sucesso!`);
+        try {
+            const {id} = req.params;
+            const publishedReservationId = parseInt(req.params.publishedReservationId);
+            const {num_rooms, checkin, checkout, num_adults, num_children} = req.body;
+    
+            // verificar se a reserva está disponível para as novas datas 
+            const availableRooms = await this.reservationService.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
+            if (!availableRooms) {
+                return res.status(400).json({ error: `Não há quartos disponíveis para o período de ${checkin} a ${checkout}` });
+            }
+    
+            await this.reservationService.updateReservation(+id, num_rooms, checkin, checkout, num_adults, num_children);
+            res.status(200).json(`A reserva ${id} foi editada com sucesso!`);
+        } catch (error) {
+            console.error(error); // Log the error
+            res.status(500).json({ error: 'Ocorreu um erro ao tentar atualizar a reserva.' });
+        }
     }
+    
+    
 
     private async getReservationById(req: Request, res: Response) {
         const { id } = req.params;
