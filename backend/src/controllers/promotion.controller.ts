@@ -60,13 +60,13 @@ export default class PromotionController {
     const { reservation_id } = req.params;
     const { discount, type, num_rooms } = req.body;
     const id = await this.promotionService.insertPromotion(+reservation_id, discount, type, num_rooms);
-    res.status(201).json({ status: 201, message:`A promoção ${id} foi cadastrada com sucesso!`});
+    res.status(201).json({ status: 201, message:`A promoção foi cadastrada com sucesso!`});
   }
 
   private async insertPromotionAll(req: Request, res: Response) {
     const { discount, type, num_rooms } = req.body;
-    const id = await this.promotionService.insertPromotion( null, discount, type, num_rooms);
-    res.status(201).json({ status: 201, message:`A promoção ${id} foi cadastrada em todas as reservas com sucesso!`});
+    const id = await this.promotionService.insertPromotionAll( discount, type, num_rooms);
+    res.status(201).json({ status: 201, message:`A promoção foi cadastrada em todas as reservas com sucesso!`});
   }
 
   private async deleteAllPromotions(req: Request, res: Response) {

@@ -28,11 +28,28 @@ export default class PromotionService {
         return params;
     }
 
-    async insertPromotion( reservation_id: number | null, discount: number, type: string, num_rooms?: number | null): Promise<number> {
+    async insertPromotion( reservation_id: number, discount: number, type: string, num_rooms?: number | null): Promise<number> {
         let params = this.preparePromotionParams(discount, type, num_rooms);
         try{
             const promotion_id = await this.promotionRepository.insertPromotion(params);
             await this.publishedReservationRepository.updateReservationPromotion(reservation_id, +promotion_id);
+            await this.publishedReservationRepository.updateAllreservations();
+            return promotion_id;
+        }catch(error: any){
+            if (error instanceof HttpError){
+                throw error;
+            }else{
+                throw new HttpInternalServerError({msg: `Error inserting promotion: ${error.message}`});
+            }
+        }
+    }
+
+    async insertPromotionAll( discount: number, type: string, num_rooms?: number | null): Promise<number> {
+        let params = this.preparePromotionParams(discount, type, num_rooms);
+        try{
+            const promotion_id = await this.promotionRepository.insertPromotion(params);
+            await this.publishedReservationRepository.updateAllReservationPromotion(+promotion_id);
+            await this.publishedReservationRepository.updateAllreservations();
             return promotion_id;
         }catch(error: any){
             if (error instanceof HttpError){
@@ -85,7 +102,7 @@ export default class PromotionService {
             }else{
                 await this.promotionRepository.updatePromotionById(promotion_id, params);
             }
-            
+            await this.publishedReservationRepository.updateAllreservations(); //update price
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
@@ -105,8 +122,9 @@ export default class PromotionService {
             }
             await this.publishedReservationRepository.updateReservationPromotion(reservation_id, null);
             if(await this.publishedReservationRepository.getReservationPromotion(promotion_id) === 0){
-                await this.promotionRepository.deletePromotionById(promotion_id, reservation_id); 
+                await this.promotionRepository.deletePromotionById(promotion_id); 
             }
+            await this.publishedReservationRepository.updateAllreservations();
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
@@ -119,6 +137,7 @@ export default class PromotionService {
     async deleteAllPromotions(): Promise<void> {
         try{
             await this.promotionRepository.deleteAllPromotions();
+            await this.publishedReservationRepository.updateAllreservations();
         }catch(error: any){
             throw new HttpInternalServerError({msg: `Error deleting all promotions: ${error.message}`});
         }

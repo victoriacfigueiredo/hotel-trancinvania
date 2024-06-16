@@ -8,27 +8,30 @@ export default class PublishedReservationRepository {
         this.prisma = new PrismaClient();
     }
 
-    async updateReservationPromotion(reservation_id: number | null, promotion_id: number | null): Promise<void>{
-        if(reservation_id){
-            const reservation = this.prisma.publishedReservation.findUnique( { where: { id: reservation_id }});
-            if(!reservation){
-                throw new HttpNotFoundError({ msg: 'Reservation not found'} );
-            }
-            await this.prisma.publishedReservation.update({ 
-                where: {
-                    id: reservation_id,
-                },
-                data: {
-                    promotion_id: promotion_id,
-                },
-            });
-        }else{
-            await this.prisma.publishedReservation.updateMany({
-                data: {
-                    promotion_id: promotion_id,
-                },
-            });
+
+    async updateReservationPromotion(reservation_id: number, promotion_id: number | null): Promise<void>{
+        const reservation = await this.prisma.publishedReservation.findUnique( { where: { id: reservation_id }});
+        if(!reservation){
+            throw new HttpNotFoundError({ msg: 'Reservation not found'} );
         }
+        await this.prisma.publishedReservation.update({ 
+            where: {
+                id: reservation_id,
+            },
+            data: {
+                promotion_id: promotion_id,
+            },
+        });
+    }
+
+    async updateAllReservationPromotion(promotion_id: number): Promise<void>{  
+        await this.prisma.publishedReservation.updateMany({
+            
+            data: {
+                promotion_id: promotion_id,
+                
+            },
+        });
     }
 
     async getReservationPromotion(promotion_id: number): Promise<number>{
@@ -54,6 +57,27 @@ export default class PublishedReservationRepository {
             return reservation.promotion_id;
         }else{
             return null;
+        }
+    }
+
+    async updateAllreservations(): Promise<void> {
+        const reservations = await this.prisma.publishedReservation.findMany();
+        for(const reservation of reservations){
+            if(reservation.promotion_id === null){
+                await this.prisma.publishedReservation.update({where: {id: reservation.id}, data: {new_price: reservation.price}})
+            }else{
+                const promotion = await this.prisma.promotion.findUnique({where: {id: reservation.promotion_id}}) 
+                if(promotion){
+                    let price = reservation.price * (1 - (promotion.discount/100));
+                
+                    await this.prisma.publishedReservation.update({
+                        where: {id: reservation.id},
+                        data: {
+                            new_price: price,
+                        },
+                    });
+                }
+            }
         }
     }
 }
