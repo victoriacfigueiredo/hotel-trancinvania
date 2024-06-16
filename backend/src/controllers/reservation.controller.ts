@@ -3,8 +3,26 @@ import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
 import ReservationService from '../services/reservation.service';
 import { CardType } from '../enums/paymentMethod-type.enum';
+import { PromotionType } from '../enums/promotion-type.enum';
 
-export interface Reservation {
+export interface Hotelier{
+    id: number;
+    name: string; 
+    email: string;
+    password: string;
+    hotel: string; 
+    adress: string;
+    cnpj: string;
+}
+
+export interface Promotion{
+    id: number; 
+    discount: number; 
+    type: PromotionType;
+    num_rooms?: number;
+}
+
+export interface Reserve {
     id: number;
     num_rooms: number;
     checkin: string; // "YYYY-MM-DD"
@@ -21,16 +39,19 @@ export interface Reservation {
 export interface PublishedReservation{
     id: number;
     name: string;
-    num_rooms: number; 
-    price: number; 
-    num_people: number; 
+    rooms: number; 
+    people: number; 
     wifi: Boolean;
-    breakfast: Boolean; 
-    parking: Boolean; 
-    airConditioning: Boolean; 
-    roomService: Boolean;
+    breakfast: Boolean;  
+    airConditioner: Boolean; 
+    parking: Boolean;
+    room_service: Boolean;
+    price: number;
+    new_price: number;
+    promotion?: Promotion;
     promotionId?: number;
-    hotelierId: number; 
+    hotelier?: Hotelier;
+    hotelier_id: number; 
 }
 
 export interface Client{
@@ -71,8 +92,8 @@ const reservationUpdateDto = z.object({
     num_children: z.number(),
 });
 
-export default class ReservationController {
-    private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reservation';
+export default class ReserveController {
+    private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
     private reservationService: ReservationService;
 
     constructor() {

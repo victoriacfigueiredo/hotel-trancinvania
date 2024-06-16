@@ -28,10 +28,65 @@ model Promotion {
   discount Int
   type PromotionType
   num_rooms Int?
-
+  reservation PublishedReservation[]
   @@map("promotion")
-  publishedReservations PublishedReservation[]
 }
+
+model Reservation {
+  id Int  @id @default(autoincrement())
+  Nome String 
+  savedReservationUsers UserReservation[] 
+  @@map("reservation")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  savedReservation UserReservation[] 
+  @@map("user")
+}
+
+model UserReservation {
+  user User @relation(fields:[user_id],references:[id])
+  reservation Reservation @relation(fields:[reservation_id],references:[id]) 
+  user_id Int 
+  reservation_id Int
+  @@id([user_id, reservation_id])
+}
+
+model Hotelier {
+   id           Int        @id @default(autoincrement())
+   name         String
+   email        String 
+   password     String
+   hotel        String 
+   adress       String
+   cnpj         String
+
+   reservations PublishedReservation[]
+
+   @@map("hotelier")
+}
+
+model PublishedReservation {
+  id           Int        @id @default(autoincrement())
+  name         String 
+  rooms        Int
+  people       Int
+  wifi         Boolean
+  breakfast    Boolean
+  airConditioner Boolean
+  parking      Boolean
+  room_service Boolean
+  price        Float
+  new_price    Float
+  promotion    Promotion? @relation(fields: [promotion_id], references: [id])
+  promotion_id Int?
+  hotelier     Hotelier? @relation(fields: [hotelier_id], references: [id])
+  hotelier_id Int
+  reservations Reserve[]
+  @@map("publishedReservation")
+}
+
 
 model Client {
   id Int @id @default(autoincrement())
@@ -43,7 +98,7 @@ model Client {
   birthDate String
 
   paymentMethods PaymentMethod[]
-  reservations Reservation[]
+  reservations Reserve[]
 }
 
 model PaymentMethod{
@@ -56,41 +111,10 @@ model PaymentMethod{
   clientId Int 
 
   Client Client @relation(fields: [clientId], references: [id])
-  reservations Reservation[]
+  reservations Reserve[]
 }
 
-model Hotelier{
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  hotel_name String
-  adress String
-  cnpj String 
-
-  publishedReservations PublishedReservation[]
-}
-
-model PublishedReservation{
-  id Int @id @default(autoincrement())
-  name String
-  num_rooms Int 
-  price Float
-  num_people Int 
-  wifi Boolean
-  breakfast Boolean 
-  parking Boolean
-  airConditioning Boolean
-  roomService Boolean
-  promotionId Int? 
-  hotelierId Int
-
-  Promotion      Promotion? @relation(fields: [promotionId], references: [id])
-  Hotelier       Hotelier @relation (fields: [hotelierId], references: [id])
-
-  reservations    Reservation[]
-}
-
-model Reservation{
+model Reserve{
   id Int @id @default(autoincrement())
   num_rooms Int 
   checkin String

@@ -1,4 +1,4 @@
-import { Reservation} from "../controllers/reservation.controller";
+import {Reserve} from "../controllers/reservation.controller";
 import ReservationRepository from "../repositories/reservation.repository";
 
 export default class ReservationService {
@@ -9,7 +9,7 @@ export default class ReservationService {
         this.reservationRepository = new ReservationRepository();
     }
 
-    private async prepareReservationParams(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<Reservation> {
+    private async prepareReservationParams(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<Reserve> {
         if (!num_rooms || !checkin || !checkout || !num_adults || !paymentMethodName) {
             throw new Error('Ops! Parece que algum campo não foi preenchido');
         }
@@ -45,7 +45,7 @@ export default class ReservationService {
         const numDays = this.calculateNumDays(checkin, checkout);
         const price = numDays * num_rooms * publishedReservation.price;
 
-        let params = { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, price, publishedReservationId, clientId, paymentMethodId } as Reservation;
+        let params = { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, price, publishedReservationId, clientId, paymentMethodId } as Reserve;
         return params;
     }
 
@@ -112,11 +112,11 @@ export default class ReservationService {
         await this.reservationRepository.updateReservation(id, reservation); 
     }
 
-    async getReservationById(id: number): Promise<Reservation> {
+    async getReservationById(id: number): Promise<Reserve> {
         return await this.reservationRepository.getReservationById(id);        
     }
 
-    public async getReservationsByClient(clientId: number): Promise<Reservation[]> {
+    public async getReservationsByClient(clientId: number): Promise<Reserve[]> {
         return await this.reservationRepository.getReservationsByClient(clientId);
     }
 
@@ -126,7 +126,7 @@ export default class ReservationService {
             throw new Error(`Oferta de reserva com ID ${publishedReservationId} não encontrada`);
         }
         const totalPeople = (num_adults + (num_children*0.5));
-        if (totalPeople > publishedReservation.num_people) {
+        if (totalPeople > publishedReservation.people) {
             return false;
         }
         const existingReservations = await this.reservationRepository.getReservationsByPeriod(checkin, checkout, publishedReservationId);
@@ -134,7 +134,7 @@ export default class ReservationService {
         for (const reservation of existingReservations) {
             reservedRooms += reservation.num_rooms;
         }
-        const availableRooms = publishedReservation.num_rooms - reservedRooms;
+        const availableRooms = publishedReservation.rooms - reservedRooms;
         return availableRooms >= num_rooms;        
     }
     

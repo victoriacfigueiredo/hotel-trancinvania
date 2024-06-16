@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Reservation, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
+import { Reserve, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
 
 export default class ReservationRepository {
     private prisma: PrismaClient;
@@ -10,7 +10,7 @@ export default class ReservationRepository {
 
     async cancelReservation(id: number): Promise<void> {
         try {
-            await this.prisma.reservation.delete({
+            await this.prisma.reserve.delete({
                 where: {
                     id: id
                 }
@@ -68,9 +68,9 @@ export default class ReservationRepository {
             throw error;
         }
     }
-    async getReservationById(id: number): Promise<Reservation>{
+    async getReservationById(id: number): Promise<Reserve>{
         try {
-            const reservation = await this.prisma.reservation.findUnique({
+            const reservation = await this.prisma.reserve.findUnique({
                 where: {
                     id: id
                 }
@@ -79,14 +79,14 @@ export default class ReservationRepository {
                 throw new Error('Reserva não encontrada');
             }
 
-            return reservation as Reservation;
+            return reservation as Reserve;
         } catch (error) {
             throw error;
         }
     }
-    async getReservationsByClient(clientId: number): Promise<Reservation[]> {
+    async getReservationsByClient(clientId: number): Promise<Reserve[]> {
         try {
-            const reservations = await this.prisma.reservation.findMany({
+            const reservations = await this.prisma.reserve.findMany({
                 where: {
                     clientId: clientId
                 }
@@ -96,23 +96,23 @@ export default class ReservationRepository {
                 throw new Error('Nenhuma reserva encontrada para o cliente especificado');
             }
 
-            return reservations as Reservation[];
+            return reservations as Reserve[];
         } catch (error) {
             throw error;
         }
     }
-    async createReservation(params: Reservation) : Promise<{id: number}>{
+    async createReservation(params: Reserve) : Promise<{id: number}>{
         try {
-            const result = await this.prisma.reservation.create({data: params})
+            const result = await this.prisma.reserve.create({data: params})
             
             return { id: result.id };
         } catch (error) {
             throw error;
         }
     }
-    async getReservationsByPeriod(checkin: string, checkout: string, publishedReservationId: number): Promise<Reservation[]> {
+    async getReservationsByPeriod(checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
         try {
-            const reservations = await this.prisma.reservation.findMany({
+            const reservations = await this.prisma.reserve.findMany({
                 where: {
                     publishedReservationId: publishedReservationId,
                     checkin: {
@@ -128,12 +128,12 @@ export default class ReservationRepository {
                 throw new Error('Nenhuma reserva encontrada para o período especificado');
             }
 
-            return reservations as Reservation[];
+            return reservations as Reserve[];
         } catch (error) {
             throw error;
         }
     }
-    async updateReservation(id: number, params: Partial<Reservation>): Promise<void> {
+    async updateReservation(id: number, params: Partial<Reserve>): Promise<void> {
         try {
             await this.prisma.reservation.update({
                 where: {
