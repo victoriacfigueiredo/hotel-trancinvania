@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
 import ReservationService from '../services/reservation.service';
 import { CardType } from '../enums/paymentMethod-type.enum';
-import { PromotionType } from '../enums/promotion-type.enum';
+import {Promotion} from '../controllers/promotion.controller';
 
 export interface Hotelier{
     id: number;
@@ -13,13 +13,6 @@ export interface Hotelier{
     hotel: string; 
     adress: string;
     cnpj: string;
-}
-
-export interface Promotion{
-    id: number; 
-    discount: number; 
-    type: PromotionType;
-    num_rooms?: number;
 }
 
 export interface Reserve {
@@ -116,61 +109,41 @@ export default class ReserveController {
         router.get(this.prefix, (req, res) => this.getReservationsByClient(req, res));
     }
 
-    private async createReservation(req: Request, res: Response) {
-        try{
-            const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
-            const publishedReservationId = parseInt(req.params.publishedReservationId);
-            const clientId = parseInt(req.params.clientId);
-            const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
-            res.status(200).json({id});
-        }
-        catch (error) {
-            console.error(error); // Log the error
-            res.status(500).json({ error: 'Ocorreu um erro ao tentar criar a reserva.' });
-        }
+    private async createReservation(req: Request, res: Response) {        
+        const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
+        const publishedReservationId = parseInt(req.params.publishedReservationId);
+        const clientId = parseInt(req.params.clientId);
+        const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
+        res.status(201).json({status: 201, message: 'Reserva realizada com sucesso!' });      
     }
     
 
     private async cancelReservation(req: Request, res: Response) {
         const {id} = req.params;
         await this.reservationService.cancelReservation(+id);
-        res.status(200).json(`A reserva ${id} foi cancelada`);
+        res.status(200).json({status: 200, message: 'Reserva cancelada com sucesso.'});
     }
 
     private async cancelReservationByClient(req: Request, res: Response){
-        try {
-            const clientId  = parseInt(req.params.clientId);
-            await this.reservationService.cancelReservationByClient(clientId);
-            res.status(200).json({ message: `Todas as reservas do cliente ${clientId} foram canceladas com sucesso` });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
-        }
+        const clientId  = parseInt(req.params.clientId);
+        await this.reservationService.cancelReservationByClient(clientId);
+        res.status(200).json({status: 200, message: 'Todas as reservas foram canceladas com sucesso.'});
     }
 
     private async updateReservation(req: Request, res: Response) {
-        try {
-            const id = parseInt(req.params.id);
-            const publishedReservationId = parseInt(req.params.publishedReservationId);
-            const { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName } = req.body;
+        const id = parseInt(req.params.id);
+        const publishedReservationId = parseInt(req.params.publishedReservationId);
+        const { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName } = req.body;
     
-            // verificar se a reserva está disponível para as novas datas
-            const availableRooms = await this.reservationService.doublecheckRoomAvailability(id, num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
-            if (!availableRooms) {
-                return res.status(400).json({ error: `Não há quartos disponíveis para o período de ${checkin} a ${checkout}` });
-            }
-    
-            await this.reservationService.updateReservation(id, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName);
-            res.status(200).json(`A reserva ${id} foi editada com sucesso!`);
-        } catch (error) {
-            console.error(error); // Log the error
-            res.status(500).json({ error: 'Ocorreu um erro ao tentar atualizar a reserva.' });
+        // verificar se a reserva está disponível para as novas datas
+        const availableRooms = await this.reservationService.doublecheckRoomAvailability(id, num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
+        if (!availableRooms) {
+            res.status(404).json({status: 404, message: 'Não há quartos disponíveis para o período selecionado.'})
         }
+        await this.reservationService.updateReservation(id, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName);
+        res.status(200).json({status: 200, message: 'Reserva atualizada com sucesso!'});
     }
     
-    
-    
-
     private async getReservationById(req: Request, res: Response) {
         const { id } = req.params;
         const reservation = await this.reservationService.getReservationById(+id);
