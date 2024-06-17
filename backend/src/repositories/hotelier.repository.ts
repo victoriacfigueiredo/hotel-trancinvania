@@ -13,6 +13,18 @@ export default class HotelierRepository {
     });
   }
 
+  async findHotelierByUsername(username: string) {
+    return await this.prisma.hotelier.findFirst({
+      where: { username: username },
+    });
+  }
+
+  async findHotelierByEmail(email: string) {
+    return await this.prisma.hotelier.findFirst({
+      where: { email: email },
+    });
+  }
+
   async findHotelierByEmailOrUsername(email: string, username: string) {
     return await this.prisma.hotelier.findFirst({
       where: {
@@ -47,4 +59,12 @@ async deleteHotelier(id: number) {
         where: { id: id },
     });
 }
+
+async updateHotelierPassword(id: number, hashedPassword: string) {
+  return await this.prisma.hotelier.update({
+    where: { id },
+    data: { password: hashedPassword },
+  });
+}
+
 }

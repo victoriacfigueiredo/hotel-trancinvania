@@ -13,6 +13,18 @@ export default class ClientRepository {
         });
     }
 
+    async findClientByUsername(username: string) {
+        return await this.prisma.client.findFirst({
+            where: { username: username },
+        });
+    }
+
+    async findClientByEmail(email: string) {
+        return await this.prisma.client.findFirst({
+            where: { email: email },
+        });
+    }
+
     async findClientByEmailOrUsername(email: string, username: string) {
         return await this.prisma.client.findFirst({
             where: {
@@ -42,5 +54,12 @@ export default class ClientRepository {
         return await this.prisma.client.delete({
             where: { id: id },
         });
+    }
+
+    async updateClientPassword(id: number, hashedPassword: string) {
+      return await this.prisma.client.update({
+        where: { id },
+        data: { password: hashedPassword },
+      });
     }
 }

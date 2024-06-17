@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import HotelierRepository from "../repositories/hotelier.repository";
+import EmailService from './email.service';
+import jwt from 'jsonwebtoken';
 
 export default class HotelierService {
   private hotelierRepository: HotelierRepository;
@@ -59,5 +61,25 @@ async deleteHotelier(id: number) {
 
 async getAllHoteliers() {
   return await this.hotelierRepository.ListAll();
+}
+
+async generatePasswordResetToken(email: string) {
+  const hotelier = await this.hotelierRepository.findHotelierByEmail(email);
+  if (!hotelier) {
+    throw new Error('Hoteleiro não encontrado');
+  }
+
+  const token = jwt.sign({ id: hotelier.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+  await EmailService.sendEmail(email, 'Recupere sua Senha', `Código de recuperação de senha: ${token}`);
+}
+
+async resetPassword(token: string, newPassword: string) {
+  try {
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.hotelierRepository.updateHotelierPassword(decoded.id, hashedPassword);
+  } catch (err) {
+    throw new Error('Invalid or expired token');
+  }
 }
 }

@@ -16,6 +16,9 @@ export default class EmailService {
                 user: USER_EMAIL,
                 pass: PASSWORD_EMAIL,
             },
+            tls: {
+                rejectUnauthorized: false
+              }
         });
         
         const mailOptions = {

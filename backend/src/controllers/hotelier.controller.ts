@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
 import HotelierService from '../services/hotelier.service';
+import passport from '../middleware/passport';
 
 const passwordValidation = z.string().min(7, { message: "A senha deve ter mais de 6 dígitos" });
 const passwordValidationOptional = z.string().min(7, { message: "A senha deve ter mais de 6 dígitos" }).optional();
@@ -56,14 +57,15 @@ export default class HotelierController {
 
   constructor() {
     this.hotelierService = new HotelierService();
+    
   }
 
   public setupRoutes(router: Router) {
-    router.post('/hotelier/register', validateData(hotelierSchema), (req, res) => this.registerHotelier(req, res));
-    router.get('/hotelier/read/:id', (req, res) => this.getHotelier(req, res));
-        router.get('/hotelier/list', (req, res) => this.getAllHoteliers(req, res));
-        router.patch('/hotelier/update/:id', validateData(hotelierSchemaOptional), (req, res) => this.updateHotelier(req, res));
-        router.delete('/hotelier/delete/:id', (req, res) => this.deleteHotelier(req, res));
+    router.post('/hotelier/create', validateData(hotelierSchema), (req, res) => this.registerHotelier(req, res));
+    router.get('/hotelier/read/:id', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.getHotelier(req, res));
+    router.get('/hotelier/list', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.getAllHoteliers(req, res));
+    router.patch('/hotelier/update/:id', passport.authenticate('hotelier-jwt', { session: false }), validateData(hotelierSchemaOptional), (req, res) => this.updateHotelier(req, res));
+    router.delete('/hotelier/delete/:id', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.deleteHotelier(req, res));
   }
 
   private async registerHotelier(req: Request, res: Response) {

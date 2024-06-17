@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import ClientRepository from '../repositories/client.repository';
+import jwt from 'jsonwebtoken';
+import EmailService from './email.service';
 
 export default class ClientService {
   private clientRepository: ClientRepository;
@@ -59,5 +61,26 @@ async deleteClient(id: number) {
 
 async getAllClients() {
   return await this.clientRepository.ListAll();
+}
+
+async generatePasswordResetToken(email: string) {
+  const client = await this.clientRepository.findClientByEmail(email);
+  if (!client) {
+    throw new Error('Cliente não encontrado');
+  }
+
+  const token = jwt.sign({ id: client.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+  await EmailService.sendEmail(email, 'Recupere sua Senha', `Reset your password by clicking here: ${token}`);
+}
+
+async resetPassword(token: string, newPassword: string) {
+  try {
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.clientRepository.updateClientPassword(decoded.id, hashedPassword);
+  } catch (err) {
+    throw new Error('Invalid or expired token');
+  }
 }
 }

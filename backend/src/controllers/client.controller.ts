@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { Request, Response, Router } from 'express';
 import { validateData } from '../middleware/validation-middleware';
 import ClientService from '../services/client.service';
+import passport from '../middleware/passport';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 const passwordValidation = z.string().min(7, { message: 'A senha deve ter mais de 6 dígitos' });
@@ -91,10 +92,10 @@ export default class ClientController {
         router.post('/client/create', validateData(customerSchema), (req, res) =>
             this.registerClient(req, res),
         );
-        router.get('/client/read/:id', (req, res) => this.getClient(req, res));
-        router.get('/client/list', (req, res) => this.getAllClients(req, res));
-        router.patch('/client/update/:id', validateData(customerSchemaOptional), (req, res) => this.updateClient(req, res));
-        router.delete('/client/delete/:id', (req, res) => this.deleteClient(req, res));
+        router.get('/client/read/:id', passport.authenticate('client-jwt', { session: false }), (req, res) => this.getClient(req, res));
+        router.get('/client/list', passport.authenticate('client-jwt', { session: false }), (req, res) => this.getAllClients(req, res));
+        router.patch('/client/update/:id', passport.authenticate('client-jwt', { session: false }), validateData(customerSchemaOptional), (req, res) => this.updateClient(req, res));
+        router.delete('/client/delete/:id', passport.authenticate('client-jwt', { session: false }), (req, res) => this.deleteClient(req, res));
     }
 
     private async registerClient(req: Request, res: Response) {
