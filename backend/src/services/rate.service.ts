@@ -1,4 +1,4 @@
-import{PrismaClient, User, Reservation, RateReservation} from "@prisma/client";
+import{PrismaClient, Client, Reserve, RateReservation, PublishedReservation} from "@prisma/client";
 import RateRepository from "../repositories/rate.repository";
 
 export default class RateService{
@@ -17,26 +17,26 @@ export default class RateService{
         }
         return params;
     }
-    async rateReservation(reservation_id: number, user_id: number, rating: number, comments?: string): Promise<void> {
+    async rateReservation(reservation_id: number, client_id: number, rating: number, comments?: string): Promise<void> {
         let params = this.prepareRateParams(rating, comments);
-        return await this.rateRepository.rateReservation(reservation_id, user_id, params);
+        return await this.rateRepository.rateReservation(reservation_id, client_id, params);
     }
 
-    async getAllRatesbyReservation(reservation_id : number): Promise<RateReservation[]>{
-        return await this.rateRepository.getAllRatesbyReservation(reservation_id);
+    async getAllRatesbyPublishedReservation(reservation_id : number): Promise<RateReservation[]>{
+        return await this.rateRepository.getAllRatesbyPublishedReservation(reservation_id);
     }
 
-    async getAllRatesbyUser(user_id : number): Promise<RateReservation[]>{
-        return await this.rateRepository.getAllRatesbyUser(user_id);
+    async getAllRatesbyClient(client_id : number): Promise<RateReservation[]>{
+        return await this.rateRepository.getAllRatesbyClient(client_id);
     }
 
-    async deleteRateReservation(user_id: number, reservation_id: number): Promise<void>{
-        await this.rateRepository.deleteRateReservation(user_id, reservation_id);
+    async deleteRateReservation(client_id: number, reservation_id: number): Promise<void>{
+        await this.rateRepository.deleteRateReservation(client_id, reservation_id);
     }
 
-    async editRateReservation(user_id: number, reservation_id: number, rating:number,comments?: string): Promise<void>{
+    async editRateReservation(client_id: number, reservation_id: number, rating:number,comments?: string): Promise<void>{
         let params = this.prepareRateParams(rating, comments);
-        return await this.rateRepository.editRateReservation(user_id, reservation_id, params);
+        return await this.rateRepository.editRateReservation(client_id, reservation_id, params);
     }
 }
 

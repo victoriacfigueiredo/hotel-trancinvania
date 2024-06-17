@@ -1,4 +1,4 @@
-import{PrismaClient, User, Reservation, RateReservation} from "@prisma/client";
+import{PrismaClient, Client, Reserve, RateReservation, PublishedReservation} from "@prisma/client";
 import { format, parse, isAfter } from 'date-fns';
 
 export default class RateRepository{
@@ -8,9 +8,9 @@ export default class RateRepository{
         this.prisma = new PrismaClient();
     }
 
-    async rateReservation(reservation_id: number, user_id:number, params: Partial<RateReservation>): Promise<void>{
+    async rateReservation(reservation_id: number, client_id:number, params: Partial<RateReservation>): Promise<void>{
         try {
-            const reservation = await this.prisma.reservation.findUnique({
+            const reservation = await this.prisma.reserve.findUnique({
                 where:{
                     id : reservation_id
                 }    
@@ -19,8 +19,9 @@ export default class RateRepository{
             if (!reservation) {
                 throw new Error('Reserva não encontrada');
             }
+         
             // Teste para ver se já é possível fazer a reserva
-            const checkoutDate = parse(reservation.checkout, 'dd-MM-yyyy', new Date());
+            const checkoutDate = parse(reservation.checkout , 'dd-MM-yyyy', new Date());
             const now = new Date();
 
             if (!isAfter(checkoutDate, now)) {
@@ -34,7 +35,7 @@ export default class RateRepository{
             await this.prisma.rateReservation.create({
                 data: {
                     reservation_id,
-                    user_id,
+                    client_id,
                     rating: params.rating,
                     comments: params.comments
                 }
@@ -45,16 +46,17 @@ export default class RateRepository{
         }
     }
 
-    async getAllRatesbyReservation(reservation_id : number): Promise<RateReservation[]>{
+    async getAllRatesbyPublishedReservation(publishedReservation_id : number): Promise<RateReservation[]>{
         try{
             const rates = await this.prisma.rateReservation.findMany({
-                where:{
-                    reservation_id:reservation_id,
-                    
+                where: {
+                    reserve: {
+                        publishedReservationId: publishedReservation_id,
+                    },
                 },
                 include:{
-                    reservation: true,
-                    user: true
+                    reserve: true,
+                    client: true
                 }
             })
 
@@ -68,16 +70,16 @@ export default class RateRepository{
         }
     }
 
-    async getAllRatesbyUser(user_id : number): Promise<RateReservation[]>{
+    async getAllRatesbyClient(client_id : number): Promise<RateReservation[]>{
         try{
             const rates = await this.prisma.rateReservation.findMany({
                 where:{
-                    user_id:user_id,
+                    client_id:client_id,
                     
                 },
                 include:{
-                    reservation: true,
-                    user: true
+                    reserve: true,
+                    client: true
                 }
             })
 
@@ -91,11 +93,11 @@ export default class RateRepository{
         }
 
     }
-    async deleteRateReservation(user_id: number, reservation_id: number): Promise<void> { 
+    async deleteRateReservation(client_id: number, reservation_id: number): Promise<void> { 
         try {
             await this.prisma.rateReservation.deleteMany({
                 where:{
-                    user_id : user_id,
+                    client_id: client_id,
                     reservation_id : reservation_id
                 }
             })
@@ -105,13 +107,13 @@ export default class RateRepository{
         }
 
     }
-    async editRateReservation(user_id: number,reservation_id:number, params: Partial<RateReservation>): Promise<void>{
+    async editRateReservation(client_id: number,reservation_id:number, params: Partial<RateReservation>): Promise<void>{
         try {
             const rate = await this.prisma.rateReservation.update({
                 where: {
-                    user_id_reservation_id: {
+                    client_id_reservation_id: {
                         reservation_id: reservation_id,
-                        user_id: user_id
+                        client_id: client_id
                     }
                 },
                 data: params

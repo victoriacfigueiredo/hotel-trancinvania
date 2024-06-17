@@ -135,7 +135,7 @@ export default class ReservationRepository {
     }
     async updateReservation(id: number, params: Partial<Reserve>): Promise<void> {
         try {
-            await this.prisma.reservation.update({
+            await this.prisma.reserve.update({
                 where: {
                     id: id
                 },
