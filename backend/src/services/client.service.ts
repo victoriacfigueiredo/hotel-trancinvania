@@ -36,7 +36,8 @@ async updateClient(id: number, data: any) {
   }
 
   if (data && dataClient && data.password && dataClient.password) {
-      if (data.password === dataClient.name || data.password === dataClient.cpf || data.password === dataClient.birthDate) {
+    const cpfDigits = dataClient.cpf.replace(/[^\d]/g, '');
+      if (data.password.includes(dataClient.name) || data.password.includes(cpfDigits) || data.password.includes(dataClient.birthDate)) {
           throw new Error('A senha não pode conter seu nome, CPF ou data de nascimento');
       }
       data.password = await bcrypt.hash(data.password, 10);

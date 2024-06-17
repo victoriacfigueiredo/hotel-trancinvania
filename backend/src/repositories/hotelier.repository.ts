@@ -13,8 +13,8 @@ export default class HotelierRepository {
     });
   }
 
-  async findClientByEmailOrUsername(email: string, username: string) {
-    return await this.prisma.client.findFirst({
+  async findHotelierByEmailOrUsername(email: string, username: string) {
+    return await this.prisma.hotelier.findFirst({
       where: {
         OR: [
           { email: email },
@@ -23,4 +23,28 @@ export default class HotelierRepository {
       },
     });
   }
+
+
+async findHotelierById(id: number) {
+    return await this.prisma.hotelier.findUnique({
+        where: { id: id },
+    });
+}
+
+async ListAll() {
+    return await this.prisma.hotelier.findMany();
+}
+
+async updateHotelier(id: number, data: any) {
+    return await this.prisma.hotelier.update({
+        where: { id: id },
+        data,
+    });
+}
+
+async deleteHotelier(id: number) {
+    return await this.prisma.hotelier.delete({
+        where: { id: id },
+    });
+}
 }
