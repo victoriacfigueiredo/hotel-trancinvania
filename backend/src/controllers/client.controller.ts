@@ -52,23 +52,30 @@ export const customerSchema = z
             const { password, name, cpf, birthDate } = data;
 
             // Verificação para garantir que a senha não contenha o nome do usuário, CPF ou data de nascimento
-            const cpfDigits = cpf.replace(/[^\d]/g, '');
-            console.log('data ', birthDate)
+            //console.log('data ', birthDate);
             // const nascimento = new Date(birthDate);
             // const nascimentoStr = `${nascimento.getDate()}${
             //     nascimento.getMonth() + 1
             // }${nascimento.getFullYear()}`;
 
-            if (password.includes(name)) {
+            if (name) {
+              if (password.includes(name)) {
+                return false;
+            }            
+            }
+            
+            if (cpf) {
+                const cpfDigits = cpf.replace(/[^\d]/g, '');
+                if (password.includes(cpfDigits)) {
+                    return false;
+                }
+            }
+            
+            if (birthDate) {
+              if (password.includes(birthDate)) {
                 return false;
             }
 
-            if (password.includes(cpfDigits)) {
-                return false;
-            }
-
-            if (password.includes(birthDate)) {
-                return false;
             }
 
             return true;
@@ -112,7 +119,6 @@ export default class ClientController {
                     return res.status(400).json({ message: e.message });
                 }
             }
-            console.error(e);
             res.status(500).json({ message: 'Internal server error' });
         }
     }
