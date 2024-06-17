@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, PublishedReservation } from "@prisma/client";
 import { HttpNotFoundError } from "../utils/errors/http.error";
+import { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
 
 export default class PublishedReservationRepository {
     private prisma: PrismaClient;
@@ -87,5 +88,28 @@ export default class PublishedReservationRepository {
                 }
             }
         }
+    }
+
+    async getAllPublishedReservations(){
+        const publishedReservations = await this.prisma.publishedReservation.findMany() as PublishedReservation[];
+        return publishedReservations;
+    }
+
+    async getPublishedReservationsByFilters(params: IGetReservationsByFilters){
+        const {num_rooms, num_adults, num_children} = params;
+        const reservations = await this.prisma.publishedReservation.findMany({
+            where: {
+                people: {
+                    gte: (num_adults + (num_children*0.5))
+                },
+                rooms: num_rooms,
+            }
+        });
+
+        if (!reservations) {
+            throw new Error('Nenhuma reserva encontrada para o período especificado');
+        }
+
+        return reservations as PublishedReservation[];
     }
 }
