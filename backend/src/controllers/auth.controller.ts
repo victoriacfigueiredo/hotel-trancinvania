@@ -3,6 +3,14 @@ import jwt from 'jsonwebtoken';
 import passport from '../middleware/passport';
 import ClientService from '../services/client.service';
 import HotelierService from '../services/hotelier.service';
+import { z } from 'zod';
+import { validateData } from '../middleware/validation-middleware';
+
+const passwordValidation = z.string().min(7, { message: "A senha deve ter mais de 6 dígitos" });
+const resetPasswordSchema = z.object({
+  password: passwordValidation,
+  token: z.string(),
+});
 
 class AuthController {
   public router: Router;
@@ -19,10 +27,10 @@ class AuthController {
   private setupRoutes() {
     this.router.post('/client/login', this.clientLogin.bind(this));
     this.router.post('/client/recover-password', this.clientRecoverPassword.bind(this));
-    this.router.post('/client/reset-password', this.clientResetPassword).bind(this);
+    this.router.post('/client/reset-password', validateData(resetPasswordSchema), this.clientResetPassword).bind(this);
     this.router.post('/hotelier/login', this.hotelierLogin.bind(this));
     this.router.post('/hotelier/recover-password', this.hotelierRecoverPassword.bind(this));
-    this.router.post('/hotelier/reset-password', this.hotelierResetPassword.bind(this));
+    this.router.post('/hotelier/reset-password',validateData(resetPasswordSchema), this.hotelierResetPassword.bind(this));
   }
 
   private async clientLogin(req: Request, res: Response, next: any) {

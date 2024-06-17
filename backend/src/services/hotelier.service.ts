@@ -76,6 +76,14 @@ async generatePasswordResetToken(email: string) {
 async resetPassword(token: string, newPassword: string) {
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const dataHotelier = await this.hotelierRepository.findHotelierById(decoded.id);
+    if (!dataHotelier) {
+      throw new Error('Hoteleiro não encontrado');
+    }
+    const cnpjDigits = dataHotelier.cnpj.replace(/[^\d]/g, '');
+    if (newPassword.includes(dataHotelier.name) || newPassword.includes(cnpjDigits) || newPassword.includes(dataHotelier.hotel)) {
+          throw new Error('A senha não pode conter seu nome, CNPJ ou o nome do seu Hotel');
+      }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.hotelierRepository.updateHotelierPassword(decoded.id, hashedPassword);
   } catch (err) {

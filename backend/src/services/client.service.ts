@@ -77,6 +77,14 @@ async generatePasswordResetToken(email: string) {
 async resetPassword(token: string, newPassword: string) {
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const dataClient = await this.clientRepository.findClientById(decoded.id);
+    if (!dataClient) {
+      throw new Error('Cliente não encontrado');
+    }
+    const cpfDigits = dataClient.cpf.replace(/[^\d]/g, '');
+    if (newPassword.includes(dataClient.name) || newPassword.includes(cpfDigits) || newPassword.includes(dataClient.birthDate)) {
+          throw new Error('A senha não pode conter seu nome, CPF ou data de nascimento');
+      }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.clientRepository.updateClientPassword(decoded.id, hashedPassword);
   } catch (err) {
