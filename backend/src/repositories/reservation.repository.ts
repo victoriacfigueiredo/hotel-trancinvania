@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Reserve, Client, PaymentMethod} from "../controllers/reservation.controller";
-import { PublishedReservation } from "../controllers/publishedReservation.controller";
+import { Reserve, Client, PaymentMethod, PublishedReservation} from "../controllers/reservation.controller";
 
 export default class ReservationRepository {
     private prisma: PrismaClient;
