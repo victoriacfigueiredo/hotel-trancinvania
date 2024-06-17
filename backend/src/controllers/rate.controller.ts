@@ -32,8 +32,7 @@ export default class RateController {
     }
 
     private async rateReservation(req: Request, res: Response) {
-        const {reservation_id, client_id } = req.params;
-        const { rating, comments } = req.body;
+        const {reservation_id, client_id, rating, comments } = req.body;
         const result = await this.rateService.rateReservation(Number(reservation_id), Number(client_id), rating, comments);
         res.status(200).json(result);
     }

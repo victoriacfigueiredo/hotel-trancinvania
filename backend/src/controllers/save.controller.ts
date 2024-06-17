@@ -8,8 +8,8 @@ export interface Save {
 }
 
 const saveReservationDto = z.object({
-    savedlistId: z.number(),
-    reservationId: z.number(),
+    client_id: z.number(),
+    reservation_id: z.number(),
 });
 
 export default class SaveController {
@@ -28,7 +28,7 @@ export default class SaveController {
     }
 
     private async saveReservation(req: Request, res: Response) {
-        const { client_id, reservation_id } = req.params;
+        const { client_id, reservation_id } = req.body;
         const result = await this.saveService.saveReservation(Number(client_id), Number(reservation_id));
         res.status(201).json(result);
     }
