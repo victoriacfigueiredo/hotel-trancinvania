@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import ClientRepository from '../repositories/client.repository';
 import jwt from 'jsonwebtoken';
 import EmailService from './email.service';
+import { generateRecoveryEmailHtml } from '../utils/generateRecoveryEmailHtml'
 
 export default class ClientService {
   private clientRepository: ClientRepository;
@@ -70,8 +71,8 @@ async generatePasswordResetToken(email: string) {
   }
 
   const token = jwt.sign({ id: client.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-
-  await EmailService.sendEmail(email, 'Recupere sua Senha', `Reset your password by clicking here: ${token}`);
+  const html =  generateRecoveryEmailHtml(token);
+  await EmailService.sendEmail(email, 'Recupere sua Senha', undefined, html);
 }
 
 async resetPassword(token: string, newPassword: string) {

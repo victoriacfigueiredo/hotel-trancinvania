@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import HotelierRepository from "../repositories/hotelier.repository";
 import EmailService from './email.service';
 import jwt from 'jsonwebtoken';
+import { generateRecoveryEmailHtml } from '../utils/generateRecoveryEmailHtml'
 
 export default class HotelierService {
   private hotelierRepository: HotelierRepository;
@@ -70,7 +71,8 @@ async generatePasswordResetToken(email: string) {
   }
 
   const token = jwt.sign({ id: hotelier.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-  await EmailService.sendEmail(email, 'Recupere sua Senha', `Código de recuperação de senha: ${token}`);
+  const html =  generateRecoveryEmailHtml(token);
+  await EmailService.sendEmail(email, 'Recupere sua Senha', undefined, html);
 }
 
 async resetPassword(token: string, newPassword: string) {
