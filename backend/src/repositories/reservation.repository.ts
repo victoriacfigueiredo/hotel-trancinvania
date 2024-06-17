@@ -20,6 +20,20 @@ export default class ReservationRepository {
         }
     }
 
+    async cancelReservationByClient(clientId: number): Promise<void> {
+        try {
+            await this.prisma.reserve.deleteMany({
+                where: {
+                    clientId: clientId
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+        }
+    }
+    
+
     async getPublishedReservationById(publishedReservationId: number): Promise<PublishedReservation>{
         try {
             const publishedReservation = await this.prisma.publishedReservation.findUnique({
@@ -133,9 +147,35 @@ export default class ReservationRepository {
             throw error;
         }
     }
+    async getReservationsByPeriodAndId(id: number, checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
+        try {
+            const reservations = await this.prisma.reserve.findMany({
+                where: {
+                    publishedReservationId: publishedReservationId,
+                    checkin: {
+                        lte: checkout // Check-in antes ou no dia do check-out desejado
+                    },
+                    checkout: {
+                        gte: checkin // Check-out depois ou no dia do check-in desejado
+                    },
+                    id: {
+                        not: id
+                    }
+                }
+            });
+
+            if (!reservations) {
+                throw new Error('Nenhuma reserva encontrada para o período especificado');
+            }
+
+            return reservations as Reserve[];
+        } catch (error) {
+            throw error;
+        }
+    }
     async updateReservation(id: number, params: Partial<Reserve>): Promise<void> {
         try {
-            await this.prisma.reservation.update({
+            await this.prisma.reserve.update({
                 where: {
                     id: id
                 },
