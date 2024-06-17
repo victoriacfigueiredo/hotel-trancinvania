@@ -196,6 +196,7 @@ export default class ReservationService {
         return availableRooms >= num_rooms;        
     }
 
+
     public async doublecheckRoomAvailability(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, publishedReservationId: number): Promise<boolean> {
         const publishedReservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
         if (!publishedReservation) {
@@ -213,5 +214,4 @@ export default class ReservationService {
         const availableRooms = publishedReservation.rooms - reservedRooms;
         return availableRooms >= num_rooms;        
     }
-    
 }
