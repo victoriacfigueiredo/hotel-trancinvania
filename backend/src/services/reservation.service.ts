@@ -137,5 +137,4 @@ export default class ReservationService {
         const availableRooms = publishedReservation.rooms - reservedRooms;
         return availableRooms >= num_rooms;        
     }
-    
 }

@@ -92,6 +92,7 @@ const reservationUpdateDto = z.object({
     num_children: z.number(),
 });
 
+
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
     private reservationService: ReservationService;
