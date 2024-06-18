@@ -2,7 +2,7 @@ import nodemailer from "nodemailer"
 
 
 export default class EmailService {
-    public static async sendEmail(to: string, subject: string, text: string): Promise<void> {
+    public static async sendEmail(to: string, subject: string, html: string): Promise<void> {
         
         const USER_EMAIL = process.env.USER_EMAIL;
         const PASSWORD_EMAIL = process.env.PASSWORD_EMAIL;
@@ -22,7 +22,7 @@ export default class EmailService {
             from: `"Hotel Trancivânia 👻" <${USER_EMAIL}>`,
             to: to,
             subject: subject,
-            text: text,
+            html: html,
         }
 
         try{

@@ -82,8 +82,7 @@ defineFeature(feature, (test) => {
         });
 
     const givenReservationExist = (given: DefineStepFunction) =>
-        given (/^está na página "(.*)" da reserva do quarto "(.*)" com o valor da diária por "R\$ (.*)"$/, async(page, room, price) => {
-            expect(page).toBe('Cadastro de promoção');
+        given (/^o quarto "(.*)" está nas reservas publicadas com o valor de "R\$ (.*)" a diária$/, async(room, price) => {
             const reservation = await createPublishedReservation(room, parseFloat(price));
             publishedReservation.push(reservation);
             prismaMock.publishedReservation.findUnique.mockResolvedValue(publishedReservation[0]);
@@ -140,11 +139,6 @@ defineFeature(feature, (test) => {
             response = await request.post(url).send({discount: parseInt(discount, 10), type});
         });
 
-    const givenPage = (given: DefineStepFunction) =>
-        given (/^está na página "(.*)"$/, async(page) => {
-            expect(page).toBe('Reservas publicadas');
-        })
-
     const givenPublishedReservation = (given: DefineStepFunction) =>
         given(/^o quarto "(.*)" está nas reservas publicadas com o valor de "R\$ (.*)" a diária$/, async (room, price) => {
             const reservation = await createPublishedReservation(room, parseFloat(price));
@@ -169,7 +163,6 @@ defineFeature(feature, (test) => {
 
     test('Deletar todas as promoções com nenhuma promoção cadastrada', ({ given, when, then, and }) => {
         givenHotelierExist(given);
-        givenPage(and);
         givenNoPromotion(and);
         whenPromotionDelete(when);
         thenStatusIsReturned(then);
@@ -194,7 +187,6 @@ defineFeature(feature, (test) => {
 
     test('Deletar todas as promoções', ({ given, when, then, and }) => {
         givenHotelierExist(given);
-        givenPage(and)
         givenPublishedPromotion(and);
         givenPublishedPromotion(and);
         givenNoPromotionReservation(and);
@@ -206,7 +198,6 @@ defineFeature(feature, (test) => {
 
     test('Cadastrar uma promoção em todas as reservas publicadas', ({ given, when, then, and }) => {
         givenHotelierExist(given);
-        givenPage(and);
         givenPublishedReservation(and);
         givenPublishedReservation(and);
         givenPublishedReservation(and);
@@ -217,12 +208,9 @@ defineFeature(feature, (test) => {
 
     test('Edição na promoção de uma reserva', ({ given, when, then, and }) => {
         givenHotelierExist(given);
-        givenPage(and);
         givenPublishedPromotion(and);
         whenPromotionPatch(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
-
-
 })

@@ -5,7 +5,6 @@ So that Eu possa gerenciar eficientemente os descontos nas reservas
 
 Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Reservas publicadas"
     And não há nenhum quarto com promoção cadastrada
     When uma requisição DELETE é enviada para "/reservation/promotions"
     And o status da resposta deve ser "404"
@@ -13,21 +12,20 @@ Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
 
 Scenario: Cadastro da promoção realizado com sucesso
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Cadastro de promoção" da reserva do quarto "Flores" com o valor da diária por "R$ 1300.00"
+    And o quarto "Flores" está nas reservas publicadas com o valor de "R$ 1300.00" a diária
     When uma requisição POST é enviada para "/reservation/{reservation_id}/promotions" com o desconto de "20%", promoção "LIMITE_QUARTO" e quantidade de quartos "2"
     Then o status da resposta deve ser "201"
     And é retornada a mensagem "A promoção foi cadastrada com sucesso!"
 
 Scenario: Tentativa de cadastro da promoção com algum campo não preenchido
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Cadastro de promoção" da reserva do quarto "Flores" com o valor da diária por "R$ 1300.00"
+    And o quarto "Flores" está nas reservas publicadas com o valor de "R$ 1300.00" a diária
     When uma requisição POST é enviada para "reservation/${reservation_id}/promotions" com desconto de "20%" e promoção "LIMITE_QUARTO"
     Then o status da resposta deve ser "400"
     And é retornada a mensagem "num_rooms is required"
 
 Scenario: Deletar todas as promoções
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Reservas publicadas"
     And o quarto "Flores" tem uma promoção de "30%" cadastrada com o valor promocional de "R$ 910.00" a diária
     And o quarto "Campos" tem uma promoção de "20%" cadastrada com o valor promocional de "R$ 1120.00" a diária
     And o quarto "Jardins" não possui nenhuma promoção cadastrada e seu valor original é "R$ 1500.00" a diária
@@ -37,7 +35,6 @@ Scenario: Deletar todas as promoções
 
 Scenario: Cadastrar uma promoção em todas as reservas publicadas
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Reservas publicadas"
     And o quarto "Flores" está nas reservas publicadas com o valor de "R$ 1300.00" a diária
     And o quarto "Jardins" está nas reservas publicadas com o valor de "R$ 1500.00" a diária
     And o quarto "Campos" está nas reservas publicadas com o valor de "R$ 1400.00" a diária 
@@ -47,7 +44,6 @@ Scenario: Cadastrar uma promoção em todas as reservas publicadas
 
 Scenario: Edição na promoção de uma reserva
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And está na página "Reservas publicadas"
     And o quarto "Flores" tem uma promoção de "20%" cadastrada com o valor promocional de "R$ 1040.00" a diária
     When uma requisição PATCH é enviada para "/reservation/{reservation_id}/promotions" com desconto de "60%" e promoção "ILIMITADA"
     Then o status da resposta deve ser "200"
