@@ -3,6 +3,7 @@ import ClientRepository from '../repositories/client.repository';
 import jwt from 'jsonwebtoken';
 import EmailService from './email.service';
 import { generateRecoveryEmailHtml } from '../utils/generateRecoveryEmailHtml';
+import { HttpConflictError, HttpBadRequestError, HttpNotFoundError } from '../utils/errors/http.error'
 
 export default class ClientService {
     private clientRepository: ClientRepository;
@@ -12,19 +13,19 @@ export default class ClientService {
     }
 
     async createClient(data: any) {
-        // Checar se o email ou usuário já existe
+        // Check if email or username already exists
         const existingClient = await this.clientRepository.findClientByEmailOrUsername(
             data.email,
             data.username,
         );
         if (existingClient) {
-            throw new Error('E-mail ou nome de usuário já existe.');
+            throw new HttpConflictError({msg: 'E-mail ou nome de usuário já existe.'});
         }
 
-        // Criptografar a senha
+        // Hash the password
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
-        // Criar o cliente
+        // Create the client
         const newClient = await this.clientRepository.createClient({
             ...data,
             password: hashedPassword,
@@ -42,26 +43,25 @@ export default class ClientService {
             data.username,
         );
         const dataClient = await this.clientRepository.findClientById(id);
-        //const dataClient = this.getClientById(id);
         if (existingClient && existingClient.id !== id) {
-            throw new Error('Email ou CPF já existente');
+            throw new HttpConflictError({msg: 'E-mail ou nome de usuário já existe.'});
         }
 
-        if (data && dataClient && data.password && dataClient.password) {
+        if (dataClient && data && data.password) {
             const cpfDigits = dataClient.cpf.replace(/[^\d]/g, '');
             if (
                 data.password.includes(dataClient.name) ||
                 data.password.includes(cpfDigits) ||
                 data.password.includes(dataClient.birthDate)
             ) {
-                throw new Error('A senha não pode conter seu nome, CPF ou data de nascimento');
+                throw new HttpBadRequestError({msg: 'A senha não pode conter seu nome, CPF ou data de nascimento'});
             }
             data.password = await bcrypt.hash(data.password, 10);
         }
 
         const updatedClient = await this.clientRepository.updateClient(id, data);
         if (!updatedClient) {
-            throw new Error('Cliente não encontrado');
+            throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
         }
         return updatedClient;
     }
@@ -80,7 +80,7 @@ export default class ClientService {
     async generatePasswordResetToken(email: string) {
         const client = await this.clientRepository.findClientByEmail(email);
         if (!client) {
-            throw new Error('Cliente não encontrado');
+            throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
         }
 
         const token = jwt.sign({ id: client.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
@@ -93,7 +93,7 @@ export default class ClientService {
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
             const dataClient = await this.clientRepository.findClientById(decoded.id);
             if (!dataClient) {
-                throw new Error('Cliente não encontrado');
+                throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
             }
             const cpfDigits = dataClient.cpf.replace(/[^\d]/g, '');
             if (

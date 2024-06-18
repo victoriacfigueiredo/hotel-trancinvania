@@ -109,7 +109,9 @@ export default class ClientController {
         try {
             const validatedData = req.body;
             const newCustomer = await this.clientService.createClient(validatedData);
-            res.status(201).json(newCustomer);
+            res.status(201).json({
+                user: newCustomer,
+            });
         } catch (e: unknown) {
             if (e instanceof z.ZodError) {
                 return res.status(400).json({ errors: e.errors });
@@ -122,6 +124,7 @@ export default class ClientController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+    
 
     private async getClient(req: Request, res: Response) {
       try {
