@@ -21,12 +21,6 @@ export default class RateRepository{
             }
          
             // Teste para ver se já é possível fazer a reserva
-            const checkoutDate = parse(reservation.checkout , 'dd-MM-yyyy', new Date());
-            const now = new Date();
-
-            if (!isAfter(checkoutDate, now)) {
-                throw new Error('Reserva não disponível para avaliação');
-            }
             if (params.rating === undefined) {
                 throw new Error('Rating is required');
             }

@@ -9,8 +9,8 @@ export interface Rate {
 }
 
 const rateReservationDto = z.object({
-    client_id: z.number(),
     reservation_id: z.number(),
+    client_id: z.number(),
     rating: z.number(),
     comments: z.string().nullable().optional(),
 });
@@ -58,7 +58,7 @@ export default class RateController {
     private async editRateReservation(req: Request, res: Response) {
         const {client_id, reservation_id } = req.params;
         const { rating, comments } = req.body;
-        await this.rateService.editRateReservation(Number(reservation_id), Number(client_id), rating, comments);
+        await this.rateService.editRateReservation(Number(client_id), Number(reservation_id), rating, comments);
         res.status(200).json(`A avaliação foi atualizada com sucesso!`);
     }
 }
