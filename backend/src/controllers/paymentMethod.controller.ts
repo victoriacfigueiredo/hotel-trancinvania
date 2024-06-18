@@ -32,19 +32,17 @@ const payMethodCreate = z.object({
 
 export default class PaymentMethodController {
 
+  private payMethodService: PaymentMethodService;
+  
+  constructor(){
+    this.payMethodService = new PaymentMethodService();
+  }
+
   private prefix = '/client/paymentMethods/:paymentMethod_id';
   private prefixAll = '/client/paymentMethods';
-
-
-  private payMethodService: PaymentMethodService;
-
-  constructor(){
-     this.payMethodService = new PaymentMethodService();
-  }
   
   public setupRoutes(router: Router) {
     router.post(this.prefixAll, validateData(payMethodCreate), (req, res) => this.insertPayMethod(req, res));
-    //router.post(this.prefixAll, validateData(payMethodCreate), (req, res) => this.insertPromotionAll(req, res));
     router.get(this.prefixAll, (req, res) => this.getAllPayMethod(req, res));
     router.get(this.prefix, (req, res) => this.getPayMethodById(req, res));
     router.delete(this.prefixAll, (req, res) => this.deleteAllPayMethod(req, res));
@@ -71,14 +69,8 @@ export default class PaymentMethodController {
     const {payMethod_id} = req.params;
     const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
     const id = await this.payMethodService.insertPaymentMethod(name, numCard, cvv, expiryDate, type, clientId, cpf);
-    res.status(201).json({ status: 201, message:`Cartão cadastrado com sucesso!`});
+    res.status(201).json({ status: 201, message:`Cartao Cadastrado com Sucesso`});
   }
-
-  // private async insertPromotionAll(req: Request, res: Response) {
-  //   const { discount, type, num_rooms } = req.body;
-  //   const id = await this.promotionService.insertPromotionAll( discount, type, num_rooms);
-  //   res.status(201).json({ status: 201, message:`A promoção foi cadastrada em todas as reservas com sucesso!`});
-  // }
 
   private async deleteAllPayMethod(req: Request, res: Response) {
     await this.payMethodService.deleteAllPayMethods()
@@ -87,7 +79,7 @@ export default class PaymentMethodController {
       const payMethod = await this.payMethodService.getPayMethodById(+paymentMethod_id);
       res.status(200).json(payMethod);
     } catch (error: any) {
-      res.status(200).json({ status: 200, message:'Todas os Métodos de Pagamento foram deletados com sucesso!'});
+      res.status(200).json({ status: 200, message:'Todas os Metodos de Pagamento foram deletados com sucesso!'});
     }
   }
 
@@ -95,7 +87,7 @@ export default class PaymentMethodController {
     try {
       const { paymentMethod_id } = req.params;
       const payMethod = await this.payMethodService.deletePayMethodById(+paymentMethod_id);
-      res.status(200).json({message: 'Método de pagamento Deletado com Sucesso'});
+      res.status(200).json({message: 'Metodo de pagamento Deletado com Sucesso'});
     } catch (error: any) {
       res.status(500).json({ message: `Error deleting payment method:  ${error.message} ID:` + req.params.paymentMethod_id});
     }
@@ -106,7 +98,7 @@ export default class PaymentMethodController {
       const { paymentMethod_id } = req.params;
       const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
       const payMethod = await this.payMethodService.updatePayMethod(+paymentMethod_id, name, numCard, cvv, expiryDate, type, clientId, cpf);
-      res.status(200).json({message: 'Método de Pagamento Alterado com Sucesso'});
+      res.status(200).json({message: 'Metodo de Pagamento Alterado com Sucesso'});
     } catch (error: any) {
       res.status(500).json({ message: `Error updating payment method:  ${error.message} ID:` + req.params.paymentMethod_id});
     }
