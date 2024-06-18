@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Reserve, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
+import { Reserve, Client, PaymentMethod, PublishedReservation} from "../controllers/reservation.controller";
 
 export default class ReservationRepository {
     private prisma: PrismaClient;
@@ -19,6 +19,20 @@ export default class ReservationRepository {
             throw error;
         }
     }
+
+    async cancelReservationByClient(clientId: number): Promise<void> {
+        try {
+            await this.prisma.reserve.deleteMany({
+                where: {
+                    clientId: clientId
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+        }
+    }
+    
 
     async getPublishedReservationById(publishedReservationId: number): Promise<PublishedReservation>{
         try {
@@ -120,6 +134,32 @@ export default class ReservationRepository {
                     },
                     checkout: {
                         gte: checkin // Check-out depois ou no dia do check-in desejado
+                    }
+                }
+            });
+
+            if (!reservations) {
+                throw new Error('Nenhuma reserva encontrada para o período especificado');
+            }
+
+            return reservations as Reserve[];
+        } catch (error) {
+            throw error;
+        }
+    }
+    async getReservationsByPeriodAndId(id: number, checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
+        try {
+            const reservations = await this.prisma.reserve.findMany({
+                where: {
+                    publishedReservationId: publishedReservationId,
+                    checkin: {
+                        lte: checkout // Check-in antes ou no dia do check-out desejado
+                    },
+                    checkout: {
+                        gte: checkin // Check-out depois ou no dia do check-in desejado
+                    },
+                    id: {
+                        not: id
                     }
                 }
             });
