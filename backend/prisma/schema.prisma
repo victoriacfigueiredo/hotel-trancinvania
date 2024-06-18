@@ -103,13 +103,15 @@ model Client {
 
 model PaymentMethod{
   id Int @id @default(autoincrement())
-  name String
-  number String 
+  name String?
+  numCard String 
   cvv Int 
   expiryDate String
   type CardType
   clientId Int 
+  cpf String
 
+  @@unique([clientId, numCard]) // Define chave composta �nica
   Client Client @relation(fields: [clientId], references: [id])
   reservations Reserve[]
 }

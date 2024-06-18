@@ -67,11 +67,12 @@ export interface Client{
 export interface PaymentMethod{
     id: number;
     name: string;
-    number: string;
+    numCard: string;
     cvv: number;
     expiryDate: string; 
     type: CardType;
     clientId: number;
+    cpf: string;
 }
 
 
