@@ -110,7 +110,7 @@ model PaymentMethod{
   type CardType
   clientId Int 
 
-  Client Client @relation(fields: [clientId], references: [id])
+  Client Client? @relation(fields: [clientId], references: [id])
   reservations Reserve[]
 }
 
@@ -126,9 +126,9 @@ model Reserve{
   publishedReservationId Int
   clientId Int 
   paymentMethodId Int 
-  PublishedReservation PublishedReservation @relation(fields: [publishedReservationId], references: [id])
-  Client Client @relation(fields: [clientId], references: [id])
-  PaymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  PublishedReservation PublishedReservation? @relation(fields: [publishedReservationId], references: [id])
+  Client Client? @relation(fields: [clientId], references: [id])
+  PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
 }
 
 

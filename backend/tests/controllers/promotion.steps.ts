@@ -1,8 +1,9 @@
 import { loadFeature, defineFeature, DefineStepFunction } from "jest-cucumber";
 import supertest from "supertest";
 import app from "../../src/app";
-import { Promotion, PromotionType, PublishedReservation } from "@prisma/client";
-import { prismaMock } from "../../setupTests";
+import { Hotelier, PrismaClient, Promotion, PromotionType, PublishedReservation } from "@prisma/client";
+import {prismaMock} from "../../setupTests";
+import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/promotions.feature');
 const request = supertest(app);
@@ -23,6 +24,10 @@ defineFeature(feature, (test) => {
     let response: supertest.Response;
     let promotions: Promotion[] = [];
     let publishedReservation: PublishedReservation[] = []
+    let hoteliers: Hotelier[] = []
+
+    const setupDBTest = new SetupDatabaseTest();
+    setupDBTest.resetDatabase();
 
     const createPublishedReservation = async (name: string, price: number) => {
         return {
@@ -69,15 +74,18 @@ defineFeature(feature, (test) => {
         }
     }
 
-    afterEach(() => {
+    afterEach(async () => {
         promotions = [];
         publishedReservation = [];
+        hoteliers = [];
+        await setupDBTest.resetDatabase();
     });
 
     const givenHotelierExist = (given: DefineStepFunction) => 
         given(/^existe um usuário "(.*)" do hotel "(.*)" logado com o e-mail "(.*)" e a senha "(.*)"$/, async(user, hotel, email, password) => {
             expect(user).toBe('Hoteleiro');
             const hotelier = await createHotelier(hotel, email, password);
+            hoteliers.push(hotelier);
             prismaMock.hotelier.findUnique.mockResolvedValue(hotelier);
         });
 
@@ -91,6 +99,7 @@ defineFeature(feature, (test) => {
     const whenLimitRoomPromotionPost = (when: DefineStepFunction) => // rever
         when (/^uma requisição POST é enviada para "(.*)" com o desconto de "(.*)%", promoção "(.*)" e quantidade de quartos "(.*)"$/, async(url, discount, type, num_rooms) => {
             const new_url = `/reservation/${publishedReservation[0].id}/promotions`;
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
             response = await request.post(new_url).send({ discount: parseInt(discount, 10), type, num_rooms: parseInt(num_rooms, 10)});
         });
 
@@ -107,6 +116,7 @@ defineFeature(feature, (test) => {
     const whenLimitRoomPromotionPostWithoutRoom = (when: DefineStepFunction) => // rever
         when (/^uma requisição POST é enviada para "(.*)" com desconto de "(.*)%" e promoção "(.*)"$/, async(url, discount, type) => {
             const new_url = `/reservation/${publishedReservation[0].id}/promotions`;
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
             response = await request.post(new_url).send({discount: parseInt(discount, 10), type});
         });
     
@@ -114,13 +124,13 @@ defineFeature(feature, (test) => {
         given(/^o quarto "(.*)" tem uma promoção de "(.*)%" cadastrada com o valor promocional de "R\$ (.*)" a diária$/, async (room, discount, price) => {
             const promotion = await createPromotion(parseInt(discount, 10));
             promotions.push(promotion);
-            const reservation = await createPublishedReservationWithPromotion(room, price, promotion.id);
+            const reservation = await createPublishedReservationWithPromotion(room, parseFloat(price), promotion.id);
             publishedReservation.push(reservation);
         })
     
     const givenNoPromotionReservation = (given: DefineStepFunction) =>
-        given(/^o quarto "(.*)" não possui nenhuma promoção cadastrada e seu valor original é "(.*)" a diária$/, async (room, price) => {
-            const reservation = await createPublishedReservation(room, parseFloat(price))
+        given(/^o quarto "(.*)" não possui nenhuma promoção cadastrada e seu valor original é "R\$ (.*)" a diária$/, async (room, price) => {
+            const reservation = await createPublishedReservation(room, parseFloat(price));
             publishedReservation.push(reservation);
         })
     
@@ -128,14 +138,23 @@ defineFeature(feature, (test) => {
         when(/^uma requisição DELETE é enviada para "(.*)"$/, async(url) => {
             prismaMock.promotion.findMany.mockResolvedValue(promotions);
             prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
             response = await request.delete(url);
         })
 
+    const whenPromotionDeleteAll = (when: DefineStepFunction) =>
+        when(/^uma requisição DELETE é enviada para "(.*)"$/, async(url) => {
+            prismaMock.promotion.findMany.mockResolvedValue(promotions);
+            prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation, promotions);
+            response = await request.delete(url);
+        })
 
     const whenUnlimitedPromotionPostAllReservations = (when: DefineStepFunction) => // rever
         when (/^uma requisição POST é enviada para "(.*)" com o desconto de "(.*)%" e promoção "(.*)"$/, async(url, discount, type) => {
             prismaMock.promotion.findMany.mockResolvedValue(promotions);
             prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
             response = await request.post(url).send({discount: parseInt(discount, 10), type});
         });
 
@@ -150,11 +169,13 @@ defineFeature(feature, (test) => {
             const new_url = `/reservation/${publishedReservation[0].id}/promotions`
             prismaMock.promotion.findUnique.mockResolvedValue(promotions[0]);
             prismaMock.publishedReservation.findUnique.mockResolvedValue(publishedReservation[0]);
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation, promotions);
             response = await request.patch(new_url).send({discount: parseInt(discount, 10), type});
         });
 
     const givenNoPromotion = (given: DefineStepFunction) =>
         given(/^não há nenhum quarto com promoção cadastrada$/, async () => {
+            prismaMock.promotion.findUnique.mockResolvedValue(null);
             const reservation1 = await createPublishedReservation("Flores", 1400.00);
             publishedReservation.push(reservation1);
             const reservation2 = await createPublishedReservation("Jardins", 1500.00);
@@ -190,10 +211,9 @@ defineFeature(feature, (test) => {
         givenPublishedPromotion(and);
         givenPublishedPromotion(and);
         givenNoPromotionReservation(and);
-        whenPromotionDelete(when);
+        whenPromotionDeleteAll(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
-        
     });
 
     test('Cadastrar uma promoção em todas as reservas publicadas', ({ given, when, then, and }) => {
