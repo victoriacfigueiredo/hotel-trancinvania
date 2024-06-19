@@ -2,14 +2,10 @@ Feature: Gestão de Método de Pagamento
 
 
 Scenario: Cadastrar Metodo de Pagamento com Sucesso
-    Given nenhum método de pagamento está cadastrado
-    When cadastro um novo método de pagamento com os seguintes dados:
-    | nome | num | CVV | validade | tipo | CPF |
-    | Visa | 4111111111111111 | 123 | 07/2030 | CREDITO | 12345678909 |
+    Given nenhum metodo de pagamento esta cadastrado
+    When cadastro um novo metodo de pagamento com nome "Visa", numCard "4111111111111111", cvv "123", validade "07/2023", tipo "CREDITO", cpf "12345678990"
     Then vejo a mensagem "Cartao Cadastrado com Sucesso"
     And vejo "Visa" na lista de métodos de pagamento
-
-
 
   Scenario: Alterar Metodo de Pagamento com Sucesso
     Given o método de pagamento "Visa" está cadastrado com o tipo "CREDITO"
