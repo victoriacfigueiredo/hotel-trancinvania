@@ -8,6 +8,7 @@ import {Promotion} from '../controllers/promotion.controller';
 export interface Hotelier{
     id: number;
     name: string; 
+    username: string;
     email: string;
     password: string;
     hotel: string; 
@@ -50,6 +51,7 @@ export interface PublishedReservation{
 export interface Client{
     id: number;
     name: string; 
+    username: string;
     email: string; 
     phone: string; 
     password: string;

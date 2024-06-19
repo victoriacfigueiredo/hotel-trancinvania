@@ -51,4 +51,14 @@ export default class SetupDatabaseTest{
             await this.prisma.reserve.create({data: reservation});
         }
     }
+
+    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Reserve, hotelier: Hotelier, promotion: Prisma.PromotionCreateInput, client: Client, paymentMethod: Prisma.PaymentMethodCreateInput){
+        let {id, ...reserv} = reservation;
+        await this.prisma.client.create({data: client});
+        await this.prisma.paymentMethod.create({data: paymentMethod})
+        await this.prisma.hotelier.create({data: hotelier});
+        await this.prisma.promotion.create({data: promotion});
+        await this.prisma.publishedReservation.create({data: publishedReservation});
+        await this.prisma.reserve.create({data: reserv});
+    }
 }
