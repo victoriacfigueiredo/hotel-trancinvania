@@ -24,12 +24,12 @@ export default class ReservationService {
         // Buscar o cliente
         const client = await this.reservationRepository.getClientById(clientId);
         if (!client) {
-            throw new HttpBadRequestError({msg: 'Faça login ou cadastre-se!'});
+            throw new HttpNotFoundError({msg: 'Faça login ou cadastre-se!'});
         }
         // Buscar os métodos de pagamento
         const paymentMethods = await this.reservationRepository.getPaymentMethod(clientId);
         if (!paymentMethods) {
-            throw new HttpBadRequestError({msg: 'Cadastre um método de pagamento.'});
+            throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
         }
         
         // Encontrar o método de pagamento pelo nome
@@ -41,7 +41,7 @@ export default class ReservationService {
             }
         }
         if (paymentMethodId === 0) {
-            throw new HttpNotFoundError({msg: 'Método de pagamento não encontrado.'});
+            throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
         }
 
         // Calculando o preço da reserva
@@ -86,7 +86,7 @@ export default class ReservationService {
         try{
             const availableRooms = await this.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
             if (!availableRooms) {
-                throw new HttpNotFoundError({msg: 'Não há quartos disponíveis para o período selecionado'});
+                throw new HttpNotFoundError({msg: 'Não há quartos disponíveis para o período selecionado.'});
             }
             const reservationParams = await this.prepareReservationParams(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId);
             const id = await this.reservationRepository.createReservation(reservationParams);
@@ -139,6 +139,9 @@ export default class ReservationService {
     }
 
     async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName?: string): Promise<void> {
+        if (!num_rooms || !checkin || !checkout || !num_adults || !paymentMethodName) {
+            throw new HttpBadRequestError({msg: 'Preencha todos os campos'});
+        }
         try{
             const reservation = await this.reservationRepository.getReservationById(id);
             if (!reservation) {
@@ -213,7 +216,7 @@ export default class ReservationService {
         }
         const totalPeople = (num_adults + (num_children*0.5));
         if (totalPeople > publishedReservation.people) {
-            return false;
+            throw new HttpBadRequestError({msg: 'Capacidade de hóspedes no quarto excedida.'});
         }
         const existingReservations = await this.reservationRepository.getReservationsByPeriod(checkin, checkout, publishedReservationId);
         let reservedRooms = 0;

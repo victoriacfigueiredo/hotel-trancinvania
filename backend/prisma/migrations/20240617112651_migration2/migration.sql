@@ -1,27 +1,35 @@
 -- CreateEnum
+CREATE TYPE "PromotionType" AS ENUM ('ILIMITADA', 'LIMITE_QUARTO');
+
+-- CreateEnum
 CREATE TYPE "CardType" AS ENUM ('CREDITO', 'DEBITO');
 
 -- CreateTable
-CREATE TABLE "reservation" (
+CREATE TABLE "promotion" (
     "id" SERIAL NOT NULL,
-    "Nome" TEXT NOT NULL,
+    "discount" INTEGER NOT NULL,
+    "type" "PromotionType" NOT NULL,
+    "num_rooms" INTEGER,
 
-    CONSTRAINT "reservation_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "promotion_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "user" (
-    "id" SERIAL NOT NULL,
-
-    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "UserReservation" (
-    "user_id" INTEGER NOT NULL,
+CREATE TABLE "clientSavedReservation" (
+    "client_id" INTEGER NOT NULL,
     "reservation_id" INTEGER NOT NULL,
 
-    CONSTRAINT "UserReservation_pkey" PRIMARY KEY ("user_id","reservation_id")
+    CONSTRAINT "clientSavedReservation_pkey" PRIMARY KEY ("client_id","reservation_id")
+);
+
+-- CreateTable
+CREATE TABLE "rateReservation" (
+    "client_id" INTEGER NOT NULL,
+    "reservation_id" INTEGER NOT NULL,
+    "rating" DOUBLE PRECISION NOT NULL,
+    "comments" TEXT,
+
+    CONSTRAINT "rateReservation_pkey" PRIMARY KEY ("client_id","reservation_id")
 );
 
 -- CreateTable
@@ -57,7 +65,7 @@ CREATE TABLE "publishedReservation" (
 );
 
 -- CreateTable
-CREATE TABLE "Client" (
+CREATE TABLE "client" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -66,7 +74,7 @@ CREATE TABLE "Client" (
     "cpf" TEXT NOT NULL,
     "birthDate" TEXT NOT NULL,
 
-    CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "client_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -83,7 +91,7 @@ CREATE TABLE "PaymentMethod" (
 );
 
 -- CreateTable
-CREATE TABLE "Reserve" (
+CREATE TABLE "reserve" (
     "id" SERIAL NOT NULL,
     "num_rooms" INTEGER NOT NULL,
     "checkin" TEXT NOT NULL,
@@ -96,17 +104,26 @@ CREATE TABLE "Reserve" (
     "clientId" INTEGER NOT NULL,
     "paymentMethodId" INTEGER NOT NULL,
 
-    CONSTRAINT "Reserve_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "reserve_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Client_email_key" ON "Client"("email");
+CREATE UNIQUE INDEX "rateReservation_reservation_id_key" ON "rateReservation"("reservation_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "client_email_key" ON "client"("email");
 
 -- AddForeignKey
-ALTER TABLE "UserReservation" ADD CONSTRAINT "UserReservation_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "clientSavedReservation" ADD CONSTRAINT "clientSavedReservation_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserReservation" ADD CONSTRAINT "UserReservation_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "reservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "clientSavedReservation" ADD CONSTRAINT "clientSavedReservation_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "publishedReservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "rateReservation" ADD CONSTRAINT "rateReservation_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "rateReservation" ADD CONSTRAINT "rateReservation_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "reserve"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "publishedReservation" ADD CONSTRAINT "publishedReservation_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotion"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -115,13 +132,13 @@ ALTER TABLE "publishedReservation" ADD CONSTRAINT "publishedReservation_promotio
 ALTER TABLE "publishedReservation" ADD CONSTRAINT "publishedReservation_hotelier_id_fkey" FOREIGN KEY ("hotelier_id") REFERENCES "hotelier"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PaymentMethod" ADD CONSTRAINT "PaymentMethod_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PaymentMethod" ADD CONSTRAINT "PaymentMethod_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reserve" ADD CONSTRAINT "Reserve_publishedReservationId_fkey" FOREIGN KEY ("publishedReservationId") REFERENCES "publishedReservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reserve" ADD CONSTRAINT "reserve_publishedReservationId_fkey" FOREIGN KEY ("publishedReservationId") REFERENCES "publishedReservation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reserve" ADD CONSTRAINT "Reserve_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reserve" ADD CONSTRAINT "reserve_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reserve" ADD CONSTRAINT "Reserve_paymentMethodId_fkey" FOREIGN KEY ("paymentMethodId") REFERENCES "PaymentMethod"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reserve" ADD CONSTRAINT "reserve_paymentMethodId_fkey" FOREIGN KEY ("paymentMethodId") REFERENCES "PaymentMethod"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

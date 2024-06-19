@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { Reserve, Client, PaymentMethod, PublishedReservation} from "../controllers/reservation.controller";
+import { Reserve, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
+import { HttpNotFoundError } from "../utils/errors/http.error";
 
 export default class ReservationRepository {
     private prisma: PrismaClient;
@@ -28,8 +29,7 @@ export default class ReservationRepository {
                 }
             });
         } catch (error) {
-            console.error(error);
-            throw new Error('Ocorreu um erro ao tentar cancelar todas as reservas do cliente.');
+            throw error;
         }
     }
     
@@ -42,7 +42,7 @@ export default class ReservationRepository {
                 }
             })
             if (!publishedReservation) {
-                throw new Error('Oferta de reserva não encontrada');
+                throw new HttpNotFoundError({msg: 'Oferta de reserva não encontrada'});
             }
 
             return publishedReservation as PublishedReservation;
@@ -58,7 +58,7 @@ export default class ReservationRepository {
                 }
             })
             if (!client) {
-                throw new Error('Usuário não encontrado');
+                throw new HttpNotFoundError({msg: 'Faça login ou cadastre-se!'});
             }
 
             return client as Client;
@@ -74,7 +74,7 @@ export default class ReservationRepository {
                 }
             })
             if (!paymentMethod) {
-                throw new Error('Método de pagamento não encontrado');
+                throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
             }
 
             return paymentMethod as PaymentMethod[];
@@ -90,7 +90,7 @@ export default class ReservationRepository {
                 }
             })
             if (!reservation) {
-                throw new Error('Reserva não encontrada');
+                throw new HttpNotFoundError({msg: 'Reserva não encontrada.'});
             }
 
             return reservation as Reserve;
@@ -107,7 +107,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new Error('Nenhuma reserva encontrada para o cliente especificado');
+                throw new HttpNotFoundError({msg: 'Você ainda não possui reservas.'});
             }
 
             return reservations as Reserve[];
@@ -139,7 +139,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new Error('Nenhuma reserva encontrada para o período especificado');
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o período especificado.'});
             }
 
             return reservations as Reserve[];
@@ -165,7 +165,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new Error('Nenhuma reserva encontrada para o período especificado');
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o período especificado.'});
             }
 
             return reservations as Reserve[];
