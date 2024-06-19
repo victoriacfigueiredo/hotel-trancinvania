@@ -13,7 +13,7 @@ const createHotelier = async (hotel: string, email: string, password: string) =>
         id: 1,
         name: 'Maria Letícia',
         email: email,
-        username: 'let',
+        username: 'mlng',
         password: password,
         hotel: hotel,
         adress: 'Rua vale',
