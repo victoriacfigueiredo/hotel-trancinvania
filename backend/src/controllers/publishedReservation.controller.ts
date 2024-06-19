@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
 import { Promotion } from "./promotion.controller";
-import { Hotelier } from "./reservation.controller";
 import PublishedReservationService from "../services/publishedReservation.service";
 import ReservationService from "../services/reservation.service";
 import { z } from "zod";
 import { validateData } from "../middleware/validation-middleware";
+import prisma from "../database";
+import { Hotelier } from "./reservation.controller";
 
 
 export interface PublishedReservation{
@@ -27,10 +28,9 @@ export interface PublishedReservation{
 
 export interface IGetReservationsByFilters{
     num_rooms: number;
-    checkin: string;
-    checkout: string;
     num_adults: number;
     num_children: number;
+    city: string;
 }
 
 const publishedReservationGetDto = z.object({
@@ -45,6 +45,7 @@ export default class PublishedReservationController{
     private prefix = '/reservations';
     private publishedReservationService: PublishedReservationService;
     private reservationService: ReservationService;
+    // private hotelierService: Hotelier
 
     constructor(){
         this.publishedReservationService = new PublishedReservationService();
@@ -64,8 +65,27 @@ export default class PublishedReservationController{
     }
     
     private async getPublishedReservationsByFilters(req: Request, res: Response) {
-        const {num_rooms, num_adults, num_children, checkin, checkout} = req.body;
-        const reservations = await this.publishedReservationService.getAllPublishedReservations();
+        const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
+        const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
+
+        let reservationsInCity = [] as PublishedReservation[];
+
+        for(let i = 0; i < reservations.length; i++){
+            let hotelier = await prisma.hotelier.findUnique({
+                where: {
+                    id: reservations[i].hotelier_id
+                }
+            });
+
+            if(!hotelier){
+                throw new Error("Hoteleiro não encontrado");
+            }
+
+            if(hotelier.adress == city){
+                reservationsInCity.push(reservations[i]);
+            }
+        }   
+
 
         let availableReservations = [] as PublishedReservation[];
 
