@@ -2,6 +2,12 @@ import { Express, Router } from 'express';
 import PromotionController from '../controllers/promotion.controller';
 import EmailService from '../services/email.service';
 import ReservationController from '../controllers/reservation.controller';
+
+import SaveController from '../controllers/save.controller';
+import RateController from '../controllers/rate.controller';
+
+import PublishedReservationController from '../controllers/publishedReservation.controller';
+
 import PaymentMethodController from '../controllers/paymentMethod.controller';
 // import { di } from '../di';
 // import TestController from '../controllers/test.controller';
@@ -21,6 +27,10 @@ const router = Router();
 
 const promotionController = new PromotionController();
 const reservationController = new ReservationController();
+
+const saveController = new SaveController();
+const rateController = new RateController();
+const publishedReservationController = new PublishedReservationController();
 const paymentMethodController = new PaymentMethodController()
 
 router.get('/', (req, res) => {
@@ -30,6 +40,9 @@ router.get('/', (req, res) => {
 
 reservationController.setupRoutes(router);
 promotionController.setupRoutes(router);
+saveController.setupRoutes(router);
+rateController.setupRoutes(router);
+publishedReservationController.setupRoutes(router);
 paymentMethodController.setupRoutes(router)
 
 export default router;

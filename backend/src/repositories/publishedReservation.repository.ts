@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, PublishedReservation } from "@prisma/client";
 import { HttpNotFoundError } from "../utils/errors/http.error";
+import { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
 
 export default class PublishedReservationRepository {
     private prisma: PrismaClient;
@@ -35,11 +36,7 @@ export default class PublishedReservationRepository {
     }
 
     async getReservationPromotion(promotion_id: number): Promise<number>{
-        const reservation = await this.prisma.publishedReservation.findMany({
-            where: {
-                promotion_id: promotion_id,
-            },
-        });
+        const reservation = await this.prisma.publishedReservation.findMany({ where: {promotion_id: promotion_id}});
         if(reservation){
             return reservation.length;
         }else{
@@ -47,6 +44,17 @@ export default class PublishedReservationRepository {
         }
     }
 
+    async promotionInReservation() : Promise <number | null> {
+        const reservations = await this.prisma.publishedReservation.findMany();
+        const allNullPromotionIds = reservations.every(reservation => reservation.promotion_id === null);
+    
+        if (allNullPromotionIds) {
+            return null;
+        }else{
+            return 1;
+        }
+
+    }
     async getReservationPromotionID(reservation_id: number): Promise<number | null>{
         const reservation = await this.prisma.publishedReservation.findUnique({
             where: {
@@ -62,6 +70,7 @@ export default class PublishedReservationRepository {
 
     async updateAllreservations(): Promise<void> {
         const reservations = await this.prisma.publishedReservation.findMany();
+
         for(const reservation of reservations){
             if(reservation.promotion_id === null){
                 await this.prisma.publishedReservation.update({where: {id: reservation.id}, data: {new_price: reservation.price}})
@@ -79,5 +88,28 @@ export default class PublishedReservationRepository {
                 }
             }
         }
+    }
+
+    async getAllPublishedReservations(){
+        const publishedReservations = await this.prisma.publishedReservation.findMany() as PublishedReservation[];
+        return publishedReservations;
+    }
+
+    async getPublishedReservationsByFilters(params: IGetReservationsByFilters){
+        const {num_rooms, num_adults, num_children} = params;
+        const reservations = await this.prisma.publishedReservation.findMany({
+            where: {
+                people: {
+                    gte: (num_adults + (num_children*0.5))
+                },
+                rooms: num_rooms,
+            }
+        });
+
+        if (!reservations) {
+            throw new Error('Nenhuma reserva encontrada para o período especificado');
+        }
+
+        return reservations as PublishedReservation[];
     }
 }

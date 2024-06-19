@@ -23,117 +23,114 @@ enum CardType {
     DEBITO
 }
 
+model Hotelier {
+   id           Int        @id @default(autoincrement())
+   name         String
+   email        String     @unique 
+   username     String     @unique  
+   password     String
+   hotel        String 
+   adress       String
+   cnpj         String     @unique 
+   reservations PublishedReservation[]
+   @@map("hotelier")
+}
+
+model Client {
+  id                      Int @id @default(autoincrement())
+  name                    String
+  email                   String @unique
+  username                String @unique 
+  phone                   String
+  password                String
+  cpf                     String @unique 
+  birthDate               String
+  rateReservations        RateReservation[]
+  clientSavedReservations ClientSavedReservation[]  
+  paymentMethods          PaymentMethod[]
+  reservations            Reserve[]
+  @@map("client")
+}
+
+model PublishedReservation {
+  id                      Int        @id @default(autoincrement())
+  name                    String 
+  rooms                   Int
+  people                  Int
+  wifi                    Boolean
+  breakfast               Boolean
+  airConditioner          Boolean
+  parking                 Boolean
+  room_service            Boolean
+  price                   Float
+  new_price               Float
+  promotion               Promotion? @relation(fields: [promotion_id], references: [id])
+  promotion_id            Int?
+  hotelier                Hotelier? @relation(fields: [hotelier_id], references: [id])
+  hotelier_id             Int
+  reservations            Reserve[]
+  clientSavedReservations ClientSavedReservation[] 
+  @@map("publishedReservation")
+}
+
+model Reserve {
+  id                     Int @id @default(autoincrement())
+  num_rooms              Int 
+  checkin                String
+  checkout               String
+  num_adults             Int 
+  num_children           Int 
+  paymentMethodName      String 
+  price                  Float
+  publishedReservationId Int
+  clientId               Int 
+  paymentMethodId        Int 
+  rate                   RateReservation?
+  PublishedReservation   PublishedReservation? @relation(fields: [publishedReservationId], references: [id])
+  Client                 Client? @relation(fields: [clientId], references: [id])
+  PaymentMethod          PaymentMethod? @relation(fields: [paymentMethodId], references: [id]) 
+  @@map("reserve")
+}
+
 model Promotion {
-  id Int @id @default(autoincrement())
-  discount Int
-  type PromotionType
-  num_rooms Int?
+  id           Int @id @default(autoincrement())
+  discount     Int
+  type         PromotionType
+  num_rooms    Int?
   reservations PublishedReservation[]
   @@map("promotion")
 }
 
-model Reservation {
-  id Int  @id @default(autoincrement())
-  Nome String 
-  savedReservationUsers UserReservation[] 
-  @@map("reservation")
-}
-
-model User {
-  id Int @id @default(autoincrement())
-  savedReservation UserReservation[] 
-  @@map("user")
-}
-
-model UserReservation {
-  user User @relation(fields:[user_id],references:[id])
-  reservation Reservation @relation(fields:[reservation_id],references:[id]) 
-  user_id Int 
+model ClientSavedReservation {
+  client         Client @relation(fields: [client_id], references: [id])
+  reservation    PublishedReservation @relation(fields: [reservation_id], references: [id]) 
+  client_id      Int 
   reservation_id Int
-  @@id([user_id, reservation_id])
+  @@id([client_id, reservation_id])
+  @@map("clientSavedReservation")
 }
 
-model Hotelier {
-   id           Int        @id @default(autoincrement())
-   name         String
-   email        String 
-   password     String
-   hotel        String 
-   adress       String
-   cnpj         String
-
-   reservations PublishedReservation[]
-
-   @@map("hotelier")
+model RateReservation {
+  client         Client @relation(fields: [client_id], references: [id])
+  reserve        Reserve @relation(fields: [reservation_id], references: [id]) 
+  client_id      Int 
+  reservation_id Int @unique
+  rating         Float 
+  comments       String?
+  @@id([client_id, reservation_id])
+  @@map("rateReservation")
 }
 
-model PublishedReservation {
-  id           Int        @id @default(autoincrement())
-  name         String 
-  rooms        Int
-  people       Int
-  wifi         Boolean
-  breakfast    Boolean
-  airConditioner Boolean
-  parking      Boolean
-  room_service Boolean
-  price        Float
-  new_price    Float
-  promotion    Promotion? @relation(fields: [promotion_id], references: [id])
-  promotion_id Int?
-  hotelier     Hotelier? @relation(fields: [hotelier_id], references: [id])
-  hotelier_id Int
+model PaymentMethod {
+  id           Int @id @default(autoincrement())
+  name         String
+  numCard       String 
+  cvv          Int 
+  expiryDate   String
+  type         CardType
+  clientId     Int 
+  cpf          String @unique 
+  Client       Client? @relation(fields: [clientId], references: [id])
   reservations Reserve[]
-  @@map("publishedReservation")
+  @@unique ([clientId, numCard])
 }
-
-
-model Client {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  phone String
-  password String
-  cpf String 
-  birthDate String
-
-  paymentMethods PaymentMethod[]
-  reservations Reserve[]
-}
-
-model PaymentMethod{
-  id Int @id @default(autoincrement())
-  name String?
-  numCard String 
-  cvv Int 
-  expiryDate String
-  type CardType
-  clientId Int 
-  cpf String
-
-  @@unique([clientId, numCard]) // Define chave composta �nica
-  Client Client @relation(fields: [clientId], references: [id])
-  reservations Reserve[]
-}
-
-model Reserve{
-  id Int @id @default(autoincrement())
-  num_rooms Int 
-  checkin String
-  checkout String
-  num_adults Int 
-  num_children Int 
-  paymentMethodName String 
-  price Float
-  publishedReservationId Int
-  clientId Int 
-  paymentMethodId Int 
-  PublishedReservation PublishedReservation @relation(fields: [publishedReservationId], references: [id])
-  Client Client @relation(fields: [clientId], references: [id])
-  PaymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-}
-
-
-
-
-

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Reserve, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
+import { HttpNotFoundError } from "../utils/errors/http.error";
 
 export default class ReservationRepository {
     private prisma: PrismaClient;
@@ -20,6 +21,19 @@ export default class ReservationRepository {
         }
     }
 
+    async cancelReservationByClient(clientId: number): Promise<void> {
+        try {
+            await this.prisma.reserve.deleteMany({
+                where: {
+                    clientId: clientId
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+    
+
     async getPublishedReservationById(publishedReservationId: number): Promise<PublishedReservation>{
         try {
             const publishedReservation = await this.prisma.publishedReservation.findUnique({
@@ -28,7 +42,7 @@ export default class ReservationRepository {
                 }
             })
             if (!publishedReservation) {
-                throw new Error('Oferta de reserva não encontrada');
+                throw new HttpNotFoundError({msg: 'Oferta de reserva não encontrada'});
             }
 
             return publishedReservation as PublishedReservation;
@@ -44,7 +58,7 @@ export default class ReservationRepository {
                 }
             })
             if (!client) {
-                throw new Error('Usuário não encontrado');
+                throw new HttpNotFoundError({msg: 'Faça login ou cadastre-se!'});
             }
 
             return client as Client;
@@ -60,7 +74,7 @@ export default class ReservationRepository {
                 }
             })
             if (!paymentMethod) {
-                throw new Error('Método de pagamento não encontrado');
+                throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
             }
 
             return paymentMethod as PaymentMethod[];
@@ -76,7 +90,7 @@ export default class ReservationRepository {
                 }
             })
             if (!reservation) {
-                throw new Error('Reserva não encontrada');
+                throw new HttpNotFoundError({msg: 'Reserva não encontrada.'});
             }
 
             return reservation as Reserve;
@@ -93,7 +107,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new Error('Nenhuma reserva encontrada para o cliente especificado');
+                throw new HttpNotFoundError({msg: 'Você ainda não possui reservas.'});
             }
 
             return reservations as Reserve[];
@@ -125,7 +139,33 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new Error('Nenhuma reserva encontrada para o período especificado');
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o período especificado.'});
+            }
+
+            return reservations as Reserve[];
+        } catch (error) {
+            throw error;
+        }
+    }
+    async getReservationsByPeriodAndId(id: number, checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
+        try {
+            const reservations = await this.prisma.reserve.findMany({
+                where: {
+                    publishedReservationId: publishedReservationId,
+                    checkin: {
+                        lte: checkout // Check-in antes ou no dia do check-out desejado
+                    },
+                    checkout: {
+                        gte: checkin // Check-out depois ou no dia do check-in desejado
+                    },
+                    id: {
+                        not: id
+                    }
+                }
+            });
+
+            if (!reservations) {
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o período especificado.'});
             }
 
             return reservations as Reserve[];
@@ -135,7 +175,7 @@ export default class ReservationRepository {
     }
     async updateReservation(id: number, params: Partial<Reserve>): Promise<void> {
         try {
-            await this.prisma.reservation.update({
+            await this.prisma.reserve.update({
                 where: {
                     id: id
                 },
