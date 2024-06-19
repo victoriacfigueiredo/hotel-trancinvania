@@ -1,9 +1,10 @@
 import { loadFeature, defineFeature, DefineStepFunction } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import {Reserve, PublishedReservation, PaymentMethod, CardType} from '@prisma/client';
+import {Reserve, PublishedReservation, PaymentMethod, CardType, Client} from '@prisma/client';
 import prisma from '../../src/database';
 import { prismaMock } from "../../setupTests";
+import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/reserve.feature');
 
@@ -14,11 +15,23 @@ const createClient = async (email: string, password: string) => {
         id: 1,
         name: 'Victoria Cesar',
         email: email, 
+        username: 'viccesar', 
         phone: '81998713499',
         password: password,
         cpf: '70558989438',
         birthDate: '2003-04-24',
     }
+}
+
+const createHotelier = {    
+    id: 1,
+    name: 'Maria Letícia',
+    email: 'mleticiagaspar17@gmail.com',
+    username: 'let',
+    password: 'let123',
+    hotel: 'polengrito',
+    adress: 'Rua vale',
+    cnpj: '123.456.789-01',   
 }
 
 const createPublishedReservation = async (name: string, rooms: number, people: number, price: number) => {
@@ -43,17 +56,25 @@ const createPaymentMethod = async(name: string, clientId: number) => {
     return{
         id: 1,
         name: name,
-        number: "1234567891010112",
+        numCard: "1234567891010112",
         cvv: 300,
         expiryDate: "09/28",
         type: CardType.CREDITO,
         clientId: clientId,
+        cpf: '70558989438'
     }
 }
 
 defineFeature(feature, (test) => {
     let response: supertest.Response;
     let reservations: Reserve[] = [];
+    let clients: Client[] = []; 
+    let payments: PaymentMethod[] = [];
+    let publishedReservations: PublishedReservation[] = [];
+
+    const setupDBTest = new SetupDatabaseTest();
+    setupDBTest.resetDatabase();
+
     const createReservation = async (num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string) => {
         return {
             id: reservations.length + 1,
@@ -63,22 +84,26 @@ defineFeature(feature, (test) => {
             num_adults: num_adults,
             num_children: num_children,
             paymentMethodName: paymentMethodName,
-            price: 1000,
+            price: 2000,
             publishedReservationId: 1,
             clientId: 1,
             paymentMethodId: 1
         }
     }
    
-    afterEach(() => {
-        reservations = [];
+    afterEach(async () => {
+        clients = [],
+        payments = [],
+        publishedReservations = [],
+        reservations = [],
+        await setupDBTest.resetDatabase();
     });
-
 
     const givenClientExist = (given: DefineStepFunction) =>
         given(/^existe um usuário "(.*)" com o e-mail "(.*)" e a senha "(.*)"$/, async(user, email, password) => {
             expect(user).toBe('Cliente');
             const cliente = await createClient(email, password);
+            clients.push(cliente);
             prismaMock.client.findUnique.mockResolvedValue(cliente);
         });
 
@@ -86,6 +111,7 @@ defineFeature(feature, (test) => {
         given(/^um método de pagamento com id "(.*)" e com nome "(.*)" está registrado nos métodos de pagamentos do usuário de id "(.*)"$/, async(id, name, clientId) => {
             expect(id).toBe("1");
             const paymentMethod = await createPaymentMethod(name, parseInt(clientId, 10));
+            payments.push(paymentMethod);
             prismaMock.paymentMethod.findUnique.mockResolvedValue(paymentMethod);
         });
 
@@ -103,6 +129,7 @@ defineFeature(feature, (test) => {
         given(/^existe a oferta com nome "(.*)" com id "(.*)", com quartos "(.*)", pessoas "(.*)" e preço "(.*)"$/, async(name, id, rooms, people, price) => {
             expect(id).toBe("1");
             const publishedReservation = await createPublishedReservation(name, parseInt(rooms, 10), parseInt(people, 10), parseFloat(price));
+            publishedReservations.push(publishedReservation);
             prismaMock.publishedReservation.findUnique.mockResolvedValue(publishedReservation);
         });
 
@@ -116,6 +143,20 @@ defineFeature(feature, (test) => {
 
     const whenReservationPost = (when: DefineStepFunction) => 
         when (/^uma requisição POST é enviada para "(.*)" com quartos "(.*)", checkin "(.*)", checkout "(.*)", adultos "(.*)", crianças "(.*)" e pagamento "(.*)"$/, async(url, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName) => {
+            await setupDBTest.setupDatabaseforReservationTests(clients[0], createHotelier, publishedReservations[0], payments[0]);
+            response = await request.post(url).send({
+                num_rooms: parseInt(num_rooms,10), 
+                checkin, 
+                checkout, 
+                num_adults: parseInt(num_adults,10), 
+                num_children: parseInt(num_children,10), 
+                paymentMethodName
+            });
+        });
+
+    const whenReservationPostWithoutPayment = (when: DefineStepFunction) => 
+        when (/^uma requisição POST é enviada para "(.*)" com quartos "(.*)", checkin "(.*)", checkout "(.*)", adultos "(.*)", crianças "(.*)" e pagamento "(.*)"$/, async(url, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName) => {
+            await setupDBTest.setupDatabaseforReservationTests(clients[0], createHotelier, publishedReservations[0]);
             response = await request.post(url).send({
                 num_rooms: parseInt(num_rooms,10), 
                 checkin, 
@@ -128,9 +169,7 @@ defineFeature(feature, (test) => {
 
     const whenReservationPut = (when: DefineStepFunction) => 
         when(/^uma requisição PUT é enviada para "(.*)" com quartos "(.*)", checkin "(.*)", checkout "(.*)", adultos "(.*)", crianças "(.*)" e pagamento "(.*)"$/, async(url, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName) => {
-
             prismaMock.reserve.findUnique.mockResolvedValue(reservations[0]);
-    
             const requestData = {
                 num_rooms: parseInt(num_rooms, 10), 
                 checkin, 
@@ -139,14 +178,14 @@ defineFeature(feature, (test) => {
                 num_children: parseInt(num_children, 10), 
                 paymentMethodName
             };
-    
-    
+            await setupDBTest.setupDatabaseforReservationTests(clients[0], createHotelier, publishedReservations[0], payments[0], reservations[0]);
             response = await request.put(url).send(requestData);
         });
 
     const whenReservationDelete = (when: DefineStepFunction) => 
         when(/^uma requisição DELETE é enviada para "(.*)"$/, async(url) => {
             prismaMock.reserve.findUnique.mockResolvedValue(reservations[0]);
+            await setupDBTest.setupDatabaseforReservationTests(clients[0], createHotelier, publishedReservations[0], payments[0], reservations[0]);
             response = await request.delete(url);
         });
     
@@ -159,8 +198,6 @@ defineFeature(feature, (test) => {
         then(/^é retornada a mensagem "(.*)"$/, async(message) => {
             expect(response.body.message).toEqual(message);
         });
-
-    
 
     test('Reserva realizada com sucesso', ({ given, when, then, and }) =>{
         givenClientExist(given);
@@ -186,7 +223,7 @@ defineFeature(feature, (test) => {
         givenClientExist(given);
         givenPage(and);
         givenPublishedReservationExist(and);
-        whenReservationPost(when);
+        whenReservationPostWithoutPayment(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
@@ -195,7 +232,7 @@ defineFeature(feature, (test) => {
         givenClientExist(given);
         givenPage(and);
         givenPublishedReservationExist(and);
-        whenReservationPost(when);
+        whenReservationPostWithoutPayment(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
@@ -255,6 +292,7 @@ defineFeature(feature, (test) => {
 
     test('Reserva cancelada com sucesso', ({ given, when, then, and }) => {
         givenClientExist(given);
+        givenPaymentMethodExist(and);
         givenMyPage(and);
         givenPublishedReservationExist(and);
         givenReservationExist(and);
@@ -263,4 +301,4 @@ defineFeature(feature, (test) => {
         thenReturnedMessage(then);  
     });
    
-})
+ })

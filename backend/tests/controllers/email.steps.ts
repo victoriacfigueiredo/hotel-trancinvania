@@ -14,6 +14,7 @@ const client = async (email: string, password: string) => {
         id: 1,
         name: 'Maria',
         email: email,
+        username: 'lele',
         phone: '1234-5678',
         password: password,
         cpf: '123.456.789-10',
@@ -25,6 +26,7 @@ const createHotelier = {
         id: 1,
         name: 'Maria Letícia',
         email: "mlng@cin.ufpe.br",
+        username: 'let',
         password: 'let123',
         hotel: 'Encantado',
         adress: 'Rua vale',
@@ -66,11 +68,12 @@ const createReservation = async (publishedReservationId: number) => {
 const createPaymentMethod: PaymentMethod = {
         id: 1,
         name: 'nubank',
-        number: '1234 5678 9101 1121',
+        numCard: '1234 5678 9101 1121',
         cvv: 123,
         expiryDate: '30-01',
         type: CardType.CREDITO,
         clientId: 1,
+        cpf: '123.093.927-28',
 }
 
 defineFeature(feature, (test) => {
