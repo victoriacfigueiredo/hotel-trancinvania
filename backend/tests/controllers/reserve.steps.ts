@@ -85,7 +85,6 @@ defineFeature(feature, (test) => {
     const givenPaymentMethodExist = (given: DefineStepFunction) => 
         given(/^um método de pagamento com id "(.*)" e com nome "(.*)" está registrado nos métodos de pagamentos do usuário de id "(.*)"$/, async(id, name, clientId) => {
             expect(id).toBe("1");
-            console.log("Received values:", { id, name, clientId });
             const paymentMethod = await createPaymentMethod(name, parseInt(clientId, 10));
             prismaMock.paymentMethod.findUnique.mockResolvedValue(paymentMethod);
         });
@@ -129,8 +128,6 @@ defineFeature(feature, (test) => {
 
     const whenReservationPut = (when: DefineStepFunction) => 
         when(/^uma requisição PUT é enviada para "(.*)" com quartos "(.*)", checkin "(.*)", checkout "(.*)", adultos "(.*)", crianças "(.*)" e pagamento "(.*)"$/, async(url, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName) => {
-            console.log("Current reservation[0]:", reservations[0]);
-            console.log("Current reservation[0]:", reservations[0]); // Log de reservations[0]
 
             prismaMock.reserve.findUnique.mockResolvedValue(reservations[0]);
     
@@ -143,7 +140,6 @@ defineFeature(feature, (test) => {
                 paymentMethodName
             };
     
-            console.log("Request data being sent:", requestData); // Log dos dados enviados
     
             response = await request.put(url).send(requestData);
         });
