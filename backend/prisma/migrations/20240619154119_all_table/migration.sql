@@ -105,7 +105,7 @@ CREATE TABLE "PaymentMethod" (
     "expiryDate" TEXT NOT NULL,
     "type" "CardType" NOT NULL,
     "clientId" INTEGER NOT NULL,
-    "cpf" INTEGER NOT NULL,
+    "cpf" TEXT NOT NULL,
 
     CONSTRAINT "PaymentMethod_pkey" PRIMARY KEY ("id")
 );
