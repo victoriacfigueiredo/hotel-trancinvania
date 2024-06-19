@@ -129,7 +129,7 @@ model PaymentMethod {
   expiryDate   String
   type         CardType
   clientId     Int 
-  cpf          Int @unique 
+  cpf          String @unique 
   Client       Client? @relation(fields: [clientId], references: [id])
   reservations Reserve[]
   @@unique ([clientId, numCard])
