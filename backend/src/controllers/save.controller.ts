@@ -1,15 +1,15 @@
 import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
-import SaveService from '../services/save.services';
+import SaveService from '../services/save.service';
 
 export interface Save {
     id: number;
 }
 
 const saveReservationDto = z.object({
-    savedlistId: z.number(),
-    reservationId: z.number(),
+    client_id: z.number(),
+    reservation_id: z.number(),
 });
 
 export default class SaveController {
@@ -22,33 +22,33 @@ export default class SaveController {
 
     public setupRoutes(router: Router) {
         router.post(this.prefix, validateData(saveReservationDto), (req, res) => this.saveReservation(req, res));
-        router.get(this.prefix + 'reservation/:id', (req, res) => this.getSavedReservationByUserId(req, res));
-        router.get(this.prefix + 'user/:id', (req, res) => this.getUsersbyReservationId(req, res));
-        router.delete(this.prefix + '/:userid/:reservationid', (req, res) => this.deleteSavedReservationById(req, res));
+        router.get(this.prefix + '/publishedReservation/:id', (req, res) => this.getSavedReservationByClientId(req, res));
+        router.get(this.prefix + '/client/:id', (req, res) => this.getClientsbyReservationId(req, res));
+        router.delete(this.prefix + '/:client_id/:reservation_id', (req, res) => this.deleteSavedReservationById(req, res));
     }
 
     private async saveReservation(req: Request, res: Response) {
-        const { userId, reservationId } = req.body;
-        const result = await this.saveService.saveReservation(userId, reservationId);
+        const { client_id, reservation_id } = req.body;
+        const result = await this.saveService.saveReservation(Number(client_id), Number(reservation_id));
         res.status(201).json(result);
     }
 
 
-    private async getSavedReservationByUserId(req: Request, res: Response) {
+    private async getSavedReservationByClientId(req: Request, res: Response) {
         const { id } = req.params;
-        const savedList = await this.saveService.getSavedReservationByUserId(Number(id));
+        const savedList = await this.saveService.getSavedReservationByClientId(Number(id));
         res.status(200).json(savedList);
     }
 
-    private async getUsersbyReservationId(req: Request, res: Response) {
+    private async getClientsbyReservationId(req: Request, res: Response) {
         const { id } = req.params;
-        const savedList = await this.saveService.getUsersbyReservationId(Number(id));
+        const savedList = await this.saveService.getClientsbyReservationId(Number(id));
         res.status(200).json(savedList);
     }
 
     private async deleteSavedReservationById(req: Request, res: Response) {
-        const { userid, reservationid} = req.params;
-        await this.saveService.deleteSavedReservationById(Number(userid), Number(reservationid));
+        const { client_id, reservation_id} = req.params;
+        await this.saveService.deleteSavedReservationById(Number(client_id), Number(reservation_id));
         res.status(204).send();
     }
   }
