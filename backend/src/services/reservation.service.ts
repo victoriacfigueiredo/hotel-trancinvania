@@ -1,6 +1,8 @@
 import {Reserve} from "../controllers/reservation.controller";
+import { createDeleteContent, createHtmlContent, createUpdateContent } from "../email/format";
 import ReservationRepository from "../repositories/reservation.repository";
 import {HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError} from '../utils/errors/http.error';
+import EmailService from "./email.service";
 
 export default class ReservationService {
 
@@ -57,6 +59,29 @@ export default class ReservationService {
         return Math.ceil(timeDifference / (1000 * 3600 * 24));
     }
 
+    async sendEmailtoClientCreate(title: string, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, clientId: number, publishedReservationId: number): Promise<void>{
+        const client = await this.reservationRepository.getClientById(clientId);
+        const reservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
+        const htmlContent = await createHtmlContent(client.name, reservation.name, checkin, checkout, num_rooms, num_adults, num_children)
+        EmailService.sendEmail(`${client.email}`, title, htmlContent);
+    }
+
+    async sendEmailtoClientUpdate(title: string, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, reservationId: number): Promise<void>{
+        const reservation = await this.reservationRepository.getReservationById(reservationId);
+        const client = await this.reservationRepository.getClientById(reservation.clientId);
+        const publishedReservation = await this.reservationRepository.getPublishedReservationById(reservation.publishedReservationId);
+        const htmlContent = await createUpdateContent(client.name, publishedReservation.name, checkin, checkout, num_rooms, num_adults, num_children)
+        EmailService.sendEmail(`${client.email}`, title, htmlContent);
+    }
+
+    async sendEmailtoClientDelete(title: string, reservationId: number) : Promise<void>{
+        const reservation = await this.reservationRepository.getReservationById(reservationId);
+        const client = await this.reservationRepository.getClientById(reservation.clientId);
+        const publishedReservation = await this.reservationRepository.getPublishedReservationById(reservation.publishedReservationId);
+        const htmlContent = await createDeleteContent(client.name, publishedReservation.name, reservation.checkin, reservation.checkout, reservation.price);
+        EmailService.sendEmail(`${client.email}`, title, htmlContent);
+    }
+
     async createReservation(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<{id: number}> {
         try{
             const availableRooms = await this.checkRoomAvailability(num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
@@ -65,6 +90,7 @@ export default class ReservationService {
             }
             const reservationParams = await this.prepareReservationParams(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId);
             const id = await this.reservationRepository.createReservation(reservationParams);
+            this.sendEmailtoClientCreate("Confirmação da reserva", num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId, clientId);
             return id;
         }
         catch (error:any){
@@ -78,6 +104,7 @@ export default class ReservationService {
     
     async cancelReservation(id: number): Promise<void> {
         try{
+            await this.sendEmailtoClientDelete("Cancelamento da reserva", id);
             await this.reservationRepository.cancelReservation(id);
         }catch(error: any){
             if (error instanceof HttpError){
@@ -157,6 +184,7 @@ export default class ReservationService {
             reservation.price = newPrice;
         
             await this.reservationRepository.updateReservation(id, reservation);
+            this.sendEmailtoClientUpdate("Atualização na reserva", num_rooms, checkin, checkout, num_adults, num_children, id);
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
