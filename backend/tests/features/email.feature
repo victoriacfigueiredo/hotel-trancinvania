@@ -12,8 +12,8 @@ Scenario: Finalização da reserva com sucesso
 
 Scenario: Edição da reserva  
     Given existe um usuário "Cliente" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
-    And o quarto de id "2" está na listagem das reservas feitas por ele
-    When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/2" com os dados da reserva
+    And o quarto de id "1" está na listagem das reservas feitas por ele
+    When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/1" com os dados da reserva
     Then o status da resposta deve ser "200"
     And é retornada a mensagem "Reserva atualizada com sucesso!"
 
