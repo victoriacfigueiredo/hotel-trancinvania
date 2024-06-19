@@ -3,151 +3,107 @@ As a usuário cliente
 I want to realizar uma reserva em um hotel
 So that eu possa garantir minha estadia no hotel desejado
 
-Scenario 1: Tentativa de realização de reserva sem estar logado
-Given que não estou logado
-And estou na página "Quarto Zumbi Digital"
-When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And preencho o campo "quantidade de quartos" com "1" 
-And preencho o campo "quantidade de adultos" com "2" 
-And preencho o campo "quantidade de crianças" com "0" 
-And tento realizar a reserva
-Then posso ver uma mensagem "Você precisa estar logado para fazer uma reserva"
-And sou redirecionado para a página "Login"
+Scenario: Reserva realizada com sucesso
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1" 
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com quartos "2", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "201"
+And é retornada a mensagem "Reserva realizada com sucesso!"
 
-Scenario 2: Tentativa de realização de reserva sem o preenchimento de todos os dados obrigatórios
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Quarto Zumbi Digital"
-When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And tento realizar a reserva
-Then posso ver uma mensagem "É necessário preencher todos os campos"
-And continuo na página "Quarto Zumbi Digital"
+Scenario: Realização de reserva mal sucedida (Campos obrigatórios não preenchidos)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1" 
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com quartos "2", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "1" e pagamento ""
+Then o status da resposta deve ser "400"
+And é retornada a mensagem "Preencha todos os campos"
 
-Scenario 3: Tentativa de realização de reserva sem método de pagamento cadastrado 
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And não possuo nenhum método de pagamento cadastrado 
-And estou na página "Quarto Zumbi Digital" 
-When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And preencho o campo "quantidade de quartos" com "2"
-And preencho o campo "quantidade de adultos" com "1"
-And preencho o campo "quantidade de crianças" com "0"
-And tento preencher o campo "método de pagamento"
-Then posso ver uma mensagem "É necessário cadastrar um método de pagamento"
-And sou redirecionado para a página "Métodos de Pagamento"
+Scenario: Realização de reserva mal sucedida (Cliente não existe - não está logado)
+Given existe um usuário "Cliente" com o e-mail "ligia@gmail.com" e a senha "lili123"
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/0/publishedReservation/1/reserve" com quartos "2", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "404"
+And é retornada a mensagem "Faça login ou cadastre-se!"
 
-Scenario 4: Quantidade de hóspedes selecionados excede capacidade do quarto 
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Quarto Zumbi Digital"
-And o quarto "Quarto Zumbi Digital" acomoda até "2" hóspedes
-When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And preencho o campo "quantidade de quartos" com "1"
-And preencho o campo "quantidade de adultos" com "2" 
-And preencho o campo "quantidade de crianças" com "3" 
-And preencho o campo "método de pagamento" com "cartão de crédito 1"
-And tento realizar a reserva
-Then posso ver uma mensagem "O limite de hóspedes por quarto foi excedido"
-And continuo na página "Quarto Zumbi Digital"
+Scenario: Realização de reserva mal sucedida (Pagamento não existe)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com quartos "2", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0" e pagamento "cartaodavic"
+Then o status da resposta deve ser "404"
+And é retornada a mensagem "Cadastre um método de pagamento."
 
-Scenario 5: Não há quartos disponíveis para o período selecionado
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Quarto Zumbi Digital"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "20" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And preencho o campo "quantidade de quartos" com "1"
-And preencho o campo "quantidade de adultos" com "1" 
-And preencho o campo "quantidade de crianças" com "2" 
-And tento realizar a reserva
-Then posso ver uma mensagem "Não há quartos suficientes disponíveis nesse período para realizar a reserva"
-And continuo na página "Quarto Zumbi Digital"
+Scenario: Realização de reserva mal sucedida (Capacidade do quarto excedida)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1" 
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com quartos "2", checkin "2024-06-20", checkout "2024-06-22", adultos "4", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "400"
+And é retornada a mensagem "Capacidade de hóspedes no quarto excedida."
 
-Scenario 6: Reserva realizada com sucesso utilizando método de pagamento cadastrado
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And possuo apenas o método de pagamento "cartão de crédito 1" cadastrado
-And estou na página "Quarto Zumbi Digital"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "10" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"
-When eu preencho o campo "check-in" com "2024-07-22"
-And preencho o campo "check-out" com "2024-07-26"
-And preencho o campo "quantidade de quartos" com "2"
-And preencho o campo "quantidade de adultos" com "2" 
-And preencho o campo "quantidade de crianças" com "0"
-And preencho o campo "método de pagamento" com "Cartão de Crédito 1"
-And eu tento realizar a reserva
-Then posso ver uma mensagem "Reserva realizada com sucesso"
-And sou redirecionado para página "Minhas reservas"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "12" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"
+Scenario: Realização de reserva mal sucedida (Todos os quartos ocupados no período selecionado)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1" 
+And está na página "Quarto Zumbi Digital"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com quartos "21", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "404"
+And é retornada a mensagem "Não há quartos disponíveis para o período selecionado."
 
-Scenario 7: Reserva atualizar com sucesso
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Minhas Reservas"
-And possuo apenas uma reserva no quarto "Quarto Zumbi Digital"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "10" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"
-When eu altero o campo "check-in" para "2024-07-22"
-And altero o campo "check-out" para "2024-07-26"
-And altero o campo "quantidade de quartos" para "2"
-And altero o campo "quantidade de adultos" para "2" 
-And altero o campo "quantidade de crianças" para "0"
-And altero o campo "método de pagamento" para "Cartão de Crédito 2"
-And tento atualizar a reserva
-Then posso ver uma mensagem "Reserva atualizada com sucesso" 
-And permaneço na página "Minhas reservas"
+Scenario: Reserva atualizada com sucesso
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1"
+And está na página "Minhas reservas"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+And existe a reserva com id "1", com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0", pagamento "cartaodemainha", preço "2000", id da reserva "1", id do cliente "1" e id do pagamento "1"
+When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/1" com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "1", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "200"
+And é retornada a mensagem "Reserva atualizada com sucesso!"
 
-Scenario 8: Falha ao atualizar a reserva por falta de preenchimento de dados 
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Minhas Reservas"
-And possuo apenas uma reserva no quarto "Quarto Zumbi Digital"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "10" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"
-When eu altero o campo "check-in" para "2024-07-22"
-And altero o campo "check-out" para "2024-07-26"
-And altero o campo "quantidade de quartos" para "2"
-And altero o campo "quantidade de adultos" para "2" 
-And altero o campo "quantidade de crianças" para "0"
-And tento atualizar a reserva
-Then posso ver uma mensagem "Preencha todos os campos" 
-And permaneço na página "Minhas reservas"
+Scenario: Atualização de reserva mal-sucedida (Campos obrigatórios não preenchidos)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1"
+And está na página "Minhas reservas"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+And existe a reserva com id "1", com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0", pagamento "cartaodemainha", preço "2000", id da reserva "1", id do cliente "1" e id do pagamento "1"
+When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/1" com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "1", crianças "0" e pagamento ""
+Then o status da resposta deve ser "400"
+And é retornada a mensagem "Preencha todos os campos"
 
-Scenario 9: Falha ao atualizar a reserva por indisponibilidade de quartos
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Minhas Reservas"
-And possuo apenas uma reserva no quarto "Quarto Zumbi Digital" no período de "2024-06-10" a "2024-06-15"
-And o quarto "Quarto Zumbi Digital" possui "quantidade" igual a "20"
-And existem "19" quartos reservados do tipo "Quarto Zumbi Digital" no período de "2024-07-22" a "2024-07-26"
-When eu altero o campo "check-in" para "2024-07-22"
-And altero o campo "check-out" para "2024-07-26"
-And altero o campo "quantidade de quartos" para "2"
-And altero o campo "quantidade de adultos" para "2" 
-And altero o campo "quantidade de crianças" para "0"
-And altero o campo "método de pagamento" para "Cartão de Crédito 2"
-And tento atualizar a reserva
-Then posso ver uma mensagem "Não há quartos disponíveis para o período selecionado" 
-And permaneço na página "Minhas reservas"
+Scenario: Atualização de reserva mal-sucedida (Indisponibilidade de quartos)
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And um método de pagamento com id "1" e com nome "cartaodemainha" está registrado nos métodos de pagamentos do usuário de id "1"
+And está na página "Minhas reservas"
+And existe a reserva com id "1", com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0", pagamento "cartaodemainha", preço "2000", id da reserva "1", id do cliente "1" e id do pagamento "1"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/1" com quartos "21", checkin "2024-06-20", checkout "2024-06-22", adultos "1", crianças "0" e pagamento "cartaodemainha"
+Then o status da resposta deve ser "404"
+And é retornada a mensagem "Não há quartos disponíveis para o período selecionado."
 
-Scenario 10: Reserva cancelada com sucesso 
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Minhas Reservas"
-And possuo uma reserva no quarto "Quarto Zumbi Digital"
-And possuo uma reserva no quarto "Quarto Polengrito"
-When eu tento cancelar a reserva para o quarto "Quarto Zumbi Digital"
-Then posso ver uma mensagem "Reserva cancelada com sucesso"
-And permaneço na página "Minhas reservas"
-And possuo apenas uma reserva no quarto "Quarto Polengrito"
+Scenario: Reserva cancelada com sucesso 
+Given existe um usuário "Cliente" com o e-mail "vic@gmail.com" e a senha "vic123"
+And está na página "Minhas reservas"
+And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
+And existe a reserva com id "1", com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0", pagamento "cartaodemainha", preço "2000", id da reserva "1", id do cliente "1" e id do pagamento "1"
+When uma requisição DELETE é enviada para "/client/1/publishedReservation/1/reserve/1" 
+Then o status da resposta deve ser "200"
+And é retornada a mensagem "Reserva cancelada com sucesso."
 
-Scenario 10: Reservas canceladas com sucesso 
-Given que estou logado como "Cliente" com email "vic@gmail.com" e senha "123456"
-And estou na página "Minhas Reservas"
-And possuo uma reserva no quarto "Quarto Zumbi Digital"
-And possuo uma reserva no quarto "Quarto Polengrito"
-When eu tento cancelar todas as minhas reservas
-Then posso ver uma mensagem "Todas as reservas foram canceladas com sucesso"
-And permaneço na página "Minhas reservas"
-And não possuo nenhuma reserva 
+
+
+
+
+
+
+
+
+
+
 
 
 
