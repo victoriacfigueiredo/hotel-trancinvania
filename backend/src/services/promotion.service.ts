@@ -22,8 +22,10 @@ export default class PromotionService {
         }
         let params = { discount, type, num_rooms } as Promotion;
     
-        if (type === PromotionType.ILIMITADA) {
-            params.num_rooms = null;
+        if (type === PromotionType.ILIMITADA && num_rooms !== undefined) {
+            throw new HttpBadRequestError({
+                msg: 'num_rooms should not be reported'
+            });
         }
         return params;
     }
@@ -136,10 +138,19 @@ export default class PromotionService {
 
     async deleteAllPromotions(): Promise<void> {
         try{
+            if(!await this.publishedReservationRepository.promotionInReservation()){
+                throw new HttpNotFoundError({
+                    msg: 'Promotion not found'
+                });
+            }
             await this.promotionRepository.deleteAllPromotions();
             await this.publishedReservationRepository.updateAllreservations();
         }catch(error: any){
-            throw new HttpInternalServerError({msg: `Error deleting all promotions: ${error.message}`});
+            if (error instanceof HttpError){
+                throw error;
+            }else{
+                throw new HttpInternalServerError({msg: `Error deleting all promotions: ${error.message}`});
+            }
         }
     }
 }
