@@ -10,6 +10,8 @@ export default class SetupDatabaseTest{
     }
 
     async resetDatabase(){
+        await this.prisma.rateReservation.deleteMany();
+        await this.prisma.clientSavedReservation.deleteMany();
         await this.prisma.promotion.deleteMany();
         await this.prisma.reserve.deleteMany();
         await this.prisma.publishedReservation.deleteMany();
