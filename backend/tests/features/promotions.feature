@@ -27,7 +27,7 @@ Scenario: Deletar a promoção da reserva
 Scenario: Edição na promoção de uma reserva
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
     And o quarto "Flores" tem uma promoção de "20%" cadastrada com o valor promocional de "R$ 1040.00" a diária
-    When uma requisição PATCH é enviada para "/reservation/{reservation_id}/promotions" com desconto de "60%" e promoção "ILIMITADA"
+    When uma requisição PUT é enviada para "/reservation/{reservation_id}/promotions" com desconto de "60%" e promoção "ILIMITADA"
     Then o status da resposta deve ser "200"
     And é retornada a mensagem "A promoção foi atualizada com sucesso!"
 

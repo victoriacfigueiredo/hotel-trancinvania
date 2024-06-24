@@ -165,13 +165,13 @@ defineFeature(feature, (test) => {
             publishedReservation.push(reservation);
         })
 
-    const whenPromotionPatch = (when: DefineStepFunction) => 
-        when (/^uma requisição PATCH é enviada para "(.*)" com desconto de "(.*)%" e promoção "(.*)"$/, async(url, discount, type) => {
+    const whenPromotionPut = (when: DefineStepFunction) => 
+        when (/^uma requisição PUT é enviada para "(.*)" com desconto de "(.*)%" e promoção "(.*)"$/, async(url, discount, type) => {
             const new_url = `/reservation/${publishedReservation[0].id}/promotions`
             prismaMock.promotion.findUnique.mockResolvedValue(promotions[0]);
             prismaMock.publishedReservation.findUnique.mockResolvedValue(publishedReservation[0]);
             await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation, promotions);
-            response = await request.patch(new_url).send({discount: parseInt(discount, 10), type});
+            response = await request.put(new_url).send({discount: parseInt(discount, 10), type});
         });
 
     const givenNoPromotion = (given: DefineStepFunction) =>
@@ -210,7 +210,7 @@ defineFeature(feature, (test) => {
     test('Edição na promoção de uma reserva', ({ given, when, then, and }) => {
         givenHotelierExist(given);
         givenPublishedPromotion(and);
-        whenPromotionPatch(when);
+        whenPromotionPut(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
