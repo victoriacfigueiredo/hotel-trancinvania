@@ -182,14 +182,6 @@ defineFeature(feature, (test) => {
             const reservation2 = await createPublishedReservation("Jardins", 1500.00);
             publishedReservation.push(reservation2);
         })
-
-    test('Deletar todas as promoções com nenhuma promoção cadastrada', ({ given, when, then, and }) => {
-        givenHotelierExist(given);
-        givenNoPromotion(and);
-        whenPromotionDelete(when);
-        thenStatusIsReturned(then);
-        thenReturnedMessage(and);
-    });
     
     test('Cadastro da promoção realizado com sucesso', ({ given, when, then, and }) => {
         givenHotelierExist(given);
@@ -203,6 +195,22 @@ defineFeature(feature, (test) => {
         givenHotelierExist(given);
         givenReservationExist(and);
         whenLimitRoomPromotionPostWithoutRoom(when);
+        thenStatusIsReturned(then);
+        thenReturnedMessage(and);
+    });
+
+    test('Deletar a promoção da reserva', ({ given, when, then, and }) => {
+        givenHotelierExist(given);
+        givenPublishedPromotion(and);
+        whenPromotionDeleteAll(when);
+        thenStatusIsReturned(then);
+        thenReturnedMessage(and);
+    });
+
+    test('Edição na promoção de uma reserva', ({ given, when, then, and }) => {
+        givenHotelierExist(given);
+        givenPublishedPromotion(and);
+        whenPromotionPatch(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
@@ -227,11 +235,13 @@ defineFeature(feature, (test) => {
         thenReturnedMessage(and);
     });
 
-    test('Edição na promoção de uma reserva', ({ given, when, then, and }) => {
+    test('Deletar todas as promoções com nenhuma promoção cadastrada', ({ given, when, then, and }) => {
         givenHotelierExist(given);
-        givenPublishedPromotion(and);
-        whenPromotionPatch(when);
+        givenNoPromotion(and);
+        whenPromotionDelete(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
+
+
 })
