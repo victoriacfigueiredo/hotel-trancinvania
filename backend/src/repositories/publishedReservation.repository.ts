@@ -10,7 +10,7 @@ export default class PublishedReservationRepository {
     }
 
 
-    async updateReservationPromotion(reservation_id: number, promotion_id: number | null): Promise<void>{
+    async updatePromotionIdReservation(reservation_id: number, promotion_id: number | null): Promise<void>{
         const reservation = await this.prisma.publishedReservation.findUnique( { where: { id: reservation_id }});
         if(!reservation){
             throw new HttpNotFoundError({ msg: 'Reservation not found'} );
@@ -25,7 +25,7 @@ export default class PublishedReservationRepository {
         });
     }
 
-    async updateAllReservationPromotion(promotion_id: number): Promise<void>{  
+    async updatePromotionIdAllReservations(promotion_id: number): Promise<void>{  
         await this.prisma.publishedReservation.updateMany({
             
             data: {
@@ -35,7 +35,7 @@ export default class PublishedReservationRepository {
         });
     }
 
-    async getReservationPromotion(promotion_id: number): Promise<number>{
+    async getQuantityOfPromotions(promotion_id: number): Promise<number>{
         const reservation = await this.prisma.publishedReservation.findMany({ where: {promotion_id: promotion_id}});
         if(reservation){
             return reservation.length;
@@ -47,7 +47,7 @@ export default class PublishedReservationRepository {
     async promotionInReservation() : Promise <number | null> {
         const reservations = await this.prisma.publishedReservation.findMany();
         const allNullPromotionIds = reservations.every(reservation => reservation.promotion_id === null);
-    
+        
         if (allNullPromotionIds) {
             return null;
         }else{
@@ -55,7 +55,7 @@ export default class PublishedReservationRepository {
         }
 
     }
-    async getReservationPromotionID(reservation_id: number): Promise<number | null>{
+    async getPromotionIdByReservationId(reservation_id: number): Promise<number | null>{
         const reservation = await this.prisma.publishedReservation.findUnique({
             where: {
                 id: reservation_id,
@@ -68,7 +68,7 @@ export default class PublishedReservationRepository {
         }
     }
 
-    async updateAllreservations(): Promise<void> {
+    async updatePriceAllReservations(): Promise<void> {
         const reservations = await this.prisma.publishedReservation.findMany();
 
         for(const reservation of reservations){
