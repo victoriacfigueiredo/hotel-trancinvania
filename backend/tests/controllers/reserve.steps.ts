@@ -4,7 +4,7 @@ import app from '../../src/app';
 import {Reserve, PublishedReservation, PaymentMethod, CardType, Client} from '@prisma/client';
 import prisma from '../../src/database';
 import { prismaMock } from "../../setupTests";
-import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/reserve.feature');
 

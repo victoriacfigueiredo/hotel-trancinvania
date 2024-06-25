@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Hotelier, PublishedReservation, Client, Reserve, PaymentMethod } from "../controllers/reservation.controller";
-import prisma from "../database";
+import prisma from ".";
 
 export default class SetupDatabaseTest{
 

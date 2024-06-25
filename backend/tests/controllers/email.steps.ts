@@ -3,7 +3,7 @@ import supertest from "supertest";
 import app from "../../src/app";
 import { CardType, Client, PaymentMethod, Promotion, PromotionType, PublishedReservation, Reserve } from "@prisma/client";
 import { prismaMock } from "../../setupTests";
-import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/email.feature');
 const request = supertest(app);
