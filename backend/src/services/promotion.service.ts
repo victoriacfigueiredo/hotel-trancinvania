@@ -2,7 +2,7 @@ import { Promotion } from "../controllers/promotion.controller";
 import { PromotionType } from "../enums/promotion-type.enum";
 import PromotionRepository from "../repositories/promotion.repository";
 import PublishedReservationRepository from "../repositories/publishedReservation.repository";
-import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
+import { HttpBadRequestError, HttpConflictError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
 
 export default class PromotionService {
 
@@ -32,6 +32,12 @@ export default class PromotionService {
     async insertPromotion( reservation_id: number, discount: number, type: string, num_rooms?: number | null): Promise<number> {
         let params = this.preparePromotionParams(discount, type, num_rooms);
         try{
+            const promotion = await this.publishedReservationRepository.getPromotionIdByReservationId(reservation_id);
+            if (promotion) {
+                throw new HttpConflictError({
+                    msg: 'Promotion already exists'
+                });
+            }
             const promotion_id = await this.promotionRepository.insertPromotion(params);
             await this.publishedReservationRepository.updatePromotionIdReservation(reservation_id, +promotion_id);
             await this.publishedReservationRepository.updatePriceAllReservations();
