@@ -11,3 +11,16 @@ services:
       POSTGRES_DB: "htrancinvania"
     volumes:
       - ./docker/dbdata:/var/lib/postgresql/data
+
+  postgres-test:
+    image: postgres:14
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
+    volumes:
+      - ./docker/db-test:/var/lib/postgresql/data
+
+      
