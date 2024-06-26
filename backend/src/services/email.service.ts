@@ -19,7 +19,7 @@ export default class EmailService {
         });
         
         const mailOptions = {
-            from: `"Hotel Trancivânia 👻" <${USER_EMAIL}>`,
+            from: `"Hotel Trancinvânia 👻" <${USER_EMAIL}>`,
             to: to,
             subject: subject,
             html: html,
