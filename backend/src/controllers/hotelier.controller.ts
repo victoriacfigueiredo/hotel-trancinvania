@@ -14,7 +14,11 @@ const hotelierSchemaOptional = z
         username: z.string().min(3, { message: 'Usuário deve ter pelo menos 3 caracteres' }).optional(),
         password: passwordValidationOptional,
         hotel: z.string().min(1, { message: "Nome do Hotel é obrigatório" }).optional(),
-        adress: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }).optional(),
+        cep: z.string().min(8, { message: "CEP é obrigatório e deve ter 8 dígitos" }).max(8, { message: "CEP deve ter 8 dígitos" }).optional(),
+        address: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }).optional(),
+        city: z.string().min(1, { message: "Cidade é obrigatória" }).optional(),
+        n_address: z.string().min(1, { message: "Número do Endereço é obrigatório" }).optional(),
+        UF: z.string().min(2, { message: "UF é obrigatório e deve ter 2 caracteres" }).max(2, { message: "UF deve ter 2 caracteres" }).optional(),
         cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, { message: "CNPJ Inválido" }).optional()
     });
 
@@ -24,7 +28,11 @@ export const hotelierSchema = z.object({
   username: z.string().min(3, { message: "Usuário deve ter pelo menos 3 caracteres" }),
   password: passwordValidation,
   hotel: z.string().min(1, { message: "Nome do Hotel é obrigatório" }),
-  adress: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }),
+  cep: z.string().min(8, { message: "CEP é obrigatório e deve ter 8 dígitos" }).max(8, { message: "CEP deve ter 8 dígitos" }),
+  address: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }),
+  city: z.string().min(1, { message: "Cidade é obrigatória" }),
+  n_address: z.string().min(1, { message: "Número do Endereço é obrigatório" }),
+  UF: z.string().min(2, { message: "UF é obrigatório e deve ter 2 caracteres" }).max(2, { message: "UF deve ter 2 caracteres" }),
   cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, { message: "CNPJ Inválido" }),
 }).refine(data => {
   const { password, name, hotel, cnpj } = data;
