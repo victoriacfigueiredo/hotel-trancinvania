@@ -10,7 +10,19 @@ services:
       POSTGRES_PASSWORD: "12345678"
       POSTGRES_DB: "htrancinvania"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+
+  postgres-test:
+    image: postgres:14
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres-data:
+  postgres-test-data:
