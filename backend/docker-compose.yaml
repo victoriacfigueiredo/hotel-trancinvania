@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: "12345678"
       POSTGRES_DB: "htrancinvania"
     volumes:
-      - ./docker/dbdata:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
   postgres-test:
     image: postgres:14
@@ -21,6 +21,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "postgres"
     volumes:
-      - ./docker/db-test:/var/lib/postgresql/data
+      - postgres-test-data:/var/lib/postgresql/data
 
-      
+volumes:
+  postgres-data:
+  postgres-test-data:
