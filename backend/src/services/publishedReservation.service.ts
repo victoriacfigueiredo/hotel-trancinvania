@@ -10,6 +10,10 @@ export default class PublishedReservationService {
         this.publishedReservationRepository = new PublishedReservationRepository();
     }
 
+    public async getPublishedReservationById(id: number){
+        return await this.publishedReservationRepository.getPublishedReservationById(id);
+    }
+
     public async getAllPublishedReservations(){
         return await this.publishedReservationRepository.getAllPublishedReservations();
     }

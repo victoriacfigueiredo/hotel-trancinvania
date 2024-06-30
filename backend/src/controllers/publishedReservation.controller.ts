@@ -6,6 +6,7 @@ import { z } from "zod";
 import { validateData } from "../middleware/validation-middleware";
 import prisma from "../database";
 import { Hotelier } from "./reservation.controller";
+import PromotionService from "../services/promotion.service";
 
 
 export interface PublishedReservation{
@@ -45,18 +46,48 @@ export default class PublishedReservationController{
     private prefix = '/reservations';
     private publishedReservationService: PublishedReservationService;
     private reservationService: ReservationService;
+    private promotionService: PromotionService;
     // private hotelierService: Hotelier
 
     constructor(){
         this.publishedReservationService = new PublishedReservationService();
         this.reservationService = new ReservationService();
+        this.promotionService = new PromotionService();
     }
 
     public setupRoutes(router: Router){
-        // pega todas as reservas
-        router.get(this.prefix, (req, res) => this.getAllPublishedReservations(req, res));
-        // pega todas as reservas com filtros especificos (busca de reservas)
-        router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); 
+        router.get(this.prefix, (req, res) => this.getAllPublishedReservations(req, res)); // pega todas as reservas
+        router.get(this.prefix + '/:id', (req, res) => this.getPublishedReservationById(req, res)); // pega reserva detalhada por id
+        router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); // pega todas as reservas com filtros especificos (busca de reservas)
+        
+        
+    }
+
+    private async getPublishedReservationById(req: Request, res: Response){
+        const { id } = req.params;
+        const reservation = await this.publishedReservationService.getPublishedReservationById(parseInt(id));
+
+        if(!reservation){
+            return res.status(400).send({});
+            // throw new Error("Não existe reserva publicada com esse id");
+        }
+
+        console.log(reservation);
+
+        let associatedPromotions = {} as any;
+
+        if(reservation.promotion_id){
+            associatedPromotions = await this.promotionService.getPromotionById(reservation.promotion_id);
+        }
+
+        let fullReservation = {
+            ...reservation,
+            associatedPromotions
+        }
+
+        console.log(fullReservation)
+        
+        res.status(200).send(fullReservation);
     }
 
     private async getAllPublishedReservations(req: Request, res: Response){
@@ -68,7 +99,7 @@ export default class PublishedReservationController{
         const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
         const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
 
-        let reservationsInCity = [] as PublishedReservation[];
+        let reservationsInCity = [] as any[];
 
         for(let i = 0; i < reservations.length; i++){
             let hotelier = await prisma.hotelier.findUnique({
@@ -82,17 +113,16 @@ export default class PublishedReservationController{
             }
 
             if(hotelier.adress == city){
-                reservationsInCity.push(reservations[i]);
+                reservationsInCity.push({...reservations[i], city: hotelier.adress});
             }
         }   
 
+        let availableReservations = [] as any[];
 
-        let availableReservations = [] as PublishedReservation[];
-
-        for(let i = 0; i < reservations.length; i++){
-            let available = await this.reservationService.checkRoomAvailability(reservations[i].rooms, checkin, checkout, num_adults, num_children, reservations[i].id);
+        for(let i = 0; i < reservationsInCity.length; i++){
+            let available = await this.reservationService.checkRoomAvailability(reservations[i].rooms, checkin, checkout, num_adults, num_children, reservationsInCity[i].id);
             if(available){
-                availableReservations.push(reservations[i]);
+                availableReservations.push(reservationsInCity[i]);
             }
         }
 

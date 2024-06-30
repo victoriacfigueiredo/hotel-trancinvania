@@ -95,6 +95,16 @@ export default class PublishedReservationRepository {
         return publishedReservations;
     }
 
+    async getPublishedReservationById(id: number){
+        const publishedReservation = await this.prisma.publishedReservation.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        return publishedReservation;
+    }
+
     async getPublishedReservationsByFilters(params: IGetReservationsByFilters){
         const {num_rooms, num_adults, num_children} = params;
         const reservations = await this.prisma.publishedReservation.findMany({
