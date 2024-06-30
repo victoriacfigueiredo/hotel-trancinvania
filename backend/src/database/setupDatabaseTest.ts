@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Hotelier, PublishedReservation, Client, Reserve, PaymentMethod } from "../controllers/reservation.controller";
-import prisma from "../database";
+import prisma from ".";
 
 export default class SetupDatabaseTest{
 
@@ -51,13 +51,13 @@ export default class SetupDatabaseTest{
         }
     }
 
-    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Reserve, hotelier: Hotelier, promotion: Prisma.PromotionCreateInput, client: Client, paymentMethod: Prisma.PaymentMethodCreateInput){
+    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Reserve, hotelier: Prisma.HotelierCreateInput, promotion: Prisma.PromotionCreateInput, client: Client, paymentMethod: Prisma.PaymentMethodCreateInput){
         let {id, ...reserv} = reservation;
-        await this.prisma.client.create({data: client});
-        await this.prisma.paymentMethod.create({data: paymentMethod})
-        await this.prisma.hotelier.create({data: hotelier});
-        await this.prisma.promotion.create({data: promotion});
-        await this.prisma.publishedReservation.create({data: publishedReservation});
-        await this.prisma.reserve.create({data: reserv});
+        await prisma.client.create({data: client});
+        await prisma.paymentMethod.create({data: paymentMethod})
+        await prisma.hotelier.create({data: hotelier});
+        await prisma.promotion.create({data: promotion});
+        await prisma.publishedReservation.create({data: publishedReservation});
+        await prisma.reserve.create({data: reserv});
     }
 }
