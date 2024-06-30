@@ -3,8 +3,7 @@ import supertest from "supertest";
 import app from "../../src/app";
 import { CardType, Client, PaymentMethod, Promotion, PromotionType, PublishedReservation, Reserve } from "@prisma/client";
 import { prismaMock } from "../../setupTests";
-import { number } from "zod";
-import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/email.feature');
 const request = supertest(app);
@@ -29,7 +28,11 @@ const createHotelier = {
         username: 'let',
         password: 'let123',
         hotel: 'Encantado',
-        adress: 'Rua vale',
+        city: 'Paulista',
+        cep: '2621721',
+        address: 'Rua vale',
+        n_address: '123',
+        UF: 'PE',
         cnpj: '123.456.789-01',
 }
 

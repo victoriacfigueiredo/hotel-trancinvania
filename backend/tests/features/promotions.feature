@@ -3,13 +3,6 @@ As a usuário hoteleiro
 I want to cadastrar, atualizar e remover as promoções nas reservas publicadas
 So that Eu possa gerenciar eficientemente os descontos nas reservas
 
-Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
-    Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maleticiagaspar17@gmail.com" e a senha "let123"
-    And não há nenhum quarto com promoção cadastrada
-    When uma requisição DELETE é enviada para "/reservation/promotions"
-    And o status da resposta deve ser "404"
-    And é retornada a mensagem "Promotion not found"
-
 Scenario: Cadastro da promoção realizado com sucesso
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
     And o quarto "Flores" está nas reservas publicadas com o valor de "R$ 1300.00" a diária
@@ -23,6 +16,20 @@ Scenario: Tentativa de cadastro da promoção com algum campo não preenchido
     When uma requisição POST é enviada para "reservation/${reservation_id}/promotions" com desconto de "20%" e promoção "LIMITE_QUARTO"
     Then o status da resposta deve ser "400"
     And é retornada a mensagem "num_rooms is required"
+
+Scenario: Deletar a promoção da reserva
+    Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
+    And o quarto "Flores" tem uma promoção de "30%" cadastrada com o valor promocional de "R$ 910.00" a diária
+    When uma requisição DELETE é enviada para "/reservation/1/promotions" 
+    Then o status da resposta deve ser "200"
+    And é retornada a mensagem "A promoção foi deletada com sucesso!"
+
+Scenario: Edição na promoção de uma reserva
+    Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
+    And o quarto "Flores" tem uma promoção de "20%" cadastrada com o valor promocional de "R$ 1040.00" a diária
+    When uma requisição PUT é enviada para "/reservation/{reservation_id}/promotions" com desconto de "60%" e promoção "ILIMITADA"
+    Then o status da resposta deve ser "200"
+    And é retornada a mensagem "A promoção foi atualizada com sucesso!"
 
 Scenario: Deletar todas as promoções
     Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
@@ -42,9 +49,9 @@ Scenario: Cadastrar uma promoção em todas as reservas publicadas
     Then o status da resposta deve ser "201"
     And é retornada a mensagem "A promoção foi cadastrada em todas as reservas com sucesso!"
 
-Scenario: Edição na promoção de uma reserva
-    Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maria@gmail.com" e a senha "let123"
-    And o quarto "Flores" tem uma promoção de "20%" cadastrada com o valor promocional de "R$ 1040.00" a diária
-    When uma requisição PATCH é enviada para "/reservation/{reservation_id}/promotions" com desconto de "60%" e promoção "ILIMITADA"
-    Then o status da resposta deve ser "200"
-    And é retornada a mensagem "A promoção foi atualizada com sucesso!"
+Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
+    Given existe um usuário "Hoteleiro" do hotel "Encantado" logado com o e-mail "maleticiagaspar17@gmail.com" e a senha "let123"
+    And não há nenhum quarto com promoção cadastrada
+    When uma requisição DELETE é enviada para "/reservation/promotions"
+    And o status da resposta deve ser "404"
+    And é retornada a mensagem "Promotion not found"

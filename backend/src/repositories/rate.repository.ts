@@ -1,16 +1,11 @@
 import{PrismaClient, Client, Reserve, RateReservation, PublishedReservation} from "@prisma/client";
-
+import prisma from "../database";
 
 export default class RateRepository{
-    private prisma: PrismaClient;
-
-    constructor(){
-        this.prisma = new PrismaClient();
-    }
 
     async rateReservation(reservation_id: number, client_id:number, params: Partial<RateReservation>): Promise<void>{
         try {
-            const reservation = await this.prisma.reserve.findUnique({
+            const reservation = await prisma.reserve.findUnique({
                 where:{
                     id : reservation_id
                 }    
@@ -26,7 +21,7 @@ export default class RateRepository{
             }
 
             // Criação de RateReservation com dados combinados corretamente
-            await this.prisma.rateReservation.create({
+            await prisma.rateReservation.create({
                 data: {
                     reservation_id,
                     client_id,
@@ -42,7 +37,7 @@ export default class RateRepository{
 
     async getAllRatesbyPublishedReservation(publishedReservation_id : number): Promise<RateReservation[]>{
         try{
-            const rates = await this.prisma.rateReservation.findMany({
+            const rates = await prisma.rateReservation.findMany({
                 where: {
                     reserve: {
                         publishedReservationId: publishedReservation_id,
@@ -66,7 +61,7 @@ export default class RateRepository{
 
     async getAllRatesbyClient(client_id : number): Promise<RateReservation[]>{
         try{
-            const rates = await this.prisma.rateReservation.findMany({
+            const rates = await prisma.rateReservation.findMany({
                 where:{
                     client_id:client_id,
                     
@@ -89,7 +84,7 @@ export default class RateRepository{
     }
     async deleteRateReservation(client_id: number, reservation_id: number): Promise<void> { 
         try {
-            await this.prisma.rateReservation.deleteMany({
+            await prisma.rateReservation.deleteMany({
                 where:{
                     client_id: client_id,
                     reservation_id : reservation_id
@@ -103,7 +98,7 @@ export default class RateRepository{
     }
     async editRateReservation(client_id: number,reservation_id:number, params: Partial<RateReservation>): Promise<void>{
         try {
-            const rate = await this.prisma.rateReservation.update({
+            const rate = await prisma.rateReservation.update({
                 where: {
                     client_id_reservation_id: {
                         reservation_id: reservation_id,

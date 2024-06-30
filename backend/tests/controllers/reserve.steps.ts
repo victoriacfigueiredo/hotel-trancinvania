@@ -4,7 +4,7 @@ import app from '../../src/app';
 import {Reserve, PublishedReservation, PaymentMethod, CardType, Client} from '@prisma/client';
 import prisma from '../../src/database';
 import { prismaMock } from "../../setupTests";
-import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/reserve.feature');
 
@@ -30,7 +30,11 @@ const createHotelier = {
     username: 'let',
     password: 'let123',
     hotel: 'polengrito',
-    adress: 'Rua vale',
+    city: 'Paulista',
+    cep: '2621721',
+    address: 'Rua vale',
+    n_address: '123',
+    UF: 'PE',
     cnpj: '123.456.789-01',   
 }
 
