@@ -51,13 +51,46 @@ export default class SetupDatabaseTest{
         }
     }
 
-    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Reserve, hotelier: Prisma.HotelierCreateInput, promotion: Prisma.PromotionCreateInput, client: Client, paymentMethod: Prisma.PaymentMethodCreateInput){
-        let {id, ...reserv} = reservation;
-        await prisma.client.create({data: client});
-        await prisma.paymentMethod.create({data: paymentMethod})
-        await prisma.hotelier.create({data: hotelier});
-        await prisma.promotion.create({data: promotion});
-        await prisma.publishedReservation.create({data: publishedReservation});
-        await prisma.reserve.create({data: reserv});
+    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Prisma.ReserveCreateInput, hotelier: Prisma.HotelierCreateInput, promotion: Prisma.PromotionCreateInput, client: Prisma.ClientCreateInput, paymentMethod: Prisma.PaymentMethodCreateInput){
+        let cliente = await prisma.client.create({data: client});
+        let hoteleiro = await prisma.hotelier.create({data: hotelier});
+        let promocao = await prisma.promotion.create({data: promotion});
+
+
+
+        let promocoes = await prisma.promotion.findMany();
+        if(promocoes.length == 0){
+            promocao = await prisma.promotion.create({data: promotion});
+        }
+
+        
+        publishedReservation['hotelier_id'] = hoteleiro.id;
+        publishedReservation['promotion_id'] = promocao.id;
+        let pub = await prisma.publishedReservation.create({data: publishedReservation});
+
+                
+        let pubs = await prisma.publishedReservation.findMany();
+        if(pubs.length == 0){
+            publishedReservation['hotelier_id'] = hoteleiro.id;
+            publishedReservation['promotion_id'] = promocao.id;
+            pub = await prisma.publishedReservation.create({data: publishedReservation});
+        }
+
+        // console.log(pubs)
+        
+        
+        let clientes = await prisma.client.findMany();
+        if(clientes.length == 0){
+            cliente = await prisma.client.create({data: client});
+        }
+
+        paymentMethod['clientId'] = cliente.id;
+
+        let pay = await prisma.paymentMethod.create({data: paymentMethod})
+        
+        reservation['publishedReservationId'] = pub.id;
+        reservation['clientId'] = cliente.id;
+        reservation['paymentMethodId'] = pay.id;
+        await prisma.reserve.create({data: reservation});
     }
 }
