@@ -30,7 +30,11 @@ model Hotelier {
    username     String     @unique  
    password     String
    hotel        String 
-   adress       String
+   city         String
+   cep          String
+   address      String
+   n_address    String
+   UF           String
    cnpj         String     @unique 
    reservations PublishedReservation[]
    @@map("hotelier")
@@ -124,12 +128,12 @@ model RateReservation {
 model PaymentMethod {
   id           Int @id @default(autoincrement())
   name         String
-  numCard       String 
+  numCard      String 
   cvv          Int 
   expiryDate   String
   type         CardType
   clientId     Int 
-  cpf          String @unique 
+  cpf          String 
   Client       Client? @relation(fields: [clientId], references: [id])
   reservations Reserve[]
   @@unique ([clientId, numCard])

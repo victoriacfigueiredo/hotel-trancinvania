@@ -30,7 +30,11 @@ const createHotelier = {
     username: 'let',
     password: 'let123',
     hotel: 'polengrito',
-    adress: 'Rua vale',
+    city: 'Paulista',
+    cep: '2621721',
+    address: 'Rua vale',
+    n_address: '123',
+    UF: 'PE',
     cnpj: '123.456.789-01',   
 }
 
