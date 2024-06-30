@@ -4,7 +4,7 @@ import app from "../../src/app";
 import PublishedReservationRepository from "../../src/repositories/publishedReservation.repository";
 import { di } from "../../src/di";
 import { prismaMock } from "../../setupTests";
-import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
 import { PublishedReservation, Reserve } from "../../src/controllers/reservation.controller";
 import { PromotionType } from "../../src/enums/promotion-type.enum";
 import { CardType, PaymentMethod } from "@prisma/client";
@@ -50,9 +50,12 @@ let mockHotelier = {
     username: "host",
     password: "1234",
     hotel: "Hotel Attempt",
-    adress: "Recife",
+    city: 'Recife',
+    cep: '2621721',
+    address: 'Rua vale',
+    n_address: '123',
+    UF: 'PE',
     cnpj: "12345678000109",
-    reservations: undefined,
 }
 
 let mockPromotion = {
@@ -109,7 +112,7 @@ defineFeature(feature, (test) => {
                 
                 mockHotelier = {
                     ...mockHotelier,
-                    adress: local
+                    city: local
                 }
                 prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
             }
@@ -127,7 +130,7 @@ defineFeature(feature, (test) => {
             }
             prismaMock.reserve.create.mockResolvedValue(mockReservation);
             
-            setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
+            await setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
         })
 
         when(/^uma requisição POST for enviada para "(.*)" com o corpo da requisição sendo um JSON com campo city preenchido com "(.*)", campo num_adults preenchido com "(.*)", campo num_children preenchido com "(.*)", campo num_rooms preenchido com "(.*)", checkin com "(.*)" e checkout com "(.*)"$/, 
@@ -172,7 +175,7 @@ defineFeature(feature, (test) => {
 
                 mockHotelier = {
                     ...mockHotelier,
-                    adress: local
+                    city: local
                 }
                 prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
             }
@@ -213,7 +216,7 @@ defineFeature(feature, (test) => {
                 prismaMock.publishedReservation.create.mockResolvedValue(mockPublishedReservation);
                 mockHotelier = {
                     ...mockHotelier,
-                    adress: local
+                    city: local
                 }
                 prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
             }
@@ -231,7 +234,7 @@ defineFeature(feature, (test) => {
             
             prismaMock.reserve.create.mockResolvedValue(mockReservation);
             
-            setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
+            await setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
             
         })
 
@@ -267,7 +270,7 @@ defineFeature(feature, (test) => {
 
                 mockHotelier = {
                     ...mockHotelier,
-                    adress: local
+                    city: local
                 }
                 prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
             }
@@ -285,7 +288,7 @@ defineFeature(feature, (test) => {
             }
             prismaMock.reserve.create.mockResolvedValue(mockReservation);
             
-            setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
+            await setupDBTest.setupDatabaseForBuscaTests(mockPublishedReservation, mockReservation, mockHotelier, mockPromotion, mockClient, mockPaymentMethod);
         })
 
         when(/^uma requisição POST for enviada para "(.*)" com o corpo da requisição sendo um JSON com campo city preenchido com "(.*)", campo num_adults não preenchido, campo num_children preenchido com "(.*)", campo num_rooms preenchido com "(.*)", checkin com "(.*)" e checkout com "(.*)"$/, 

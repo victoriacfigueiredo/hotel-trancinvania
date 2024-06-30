@@ -81,7 +81,7 @@ export default class PublishedReservationController{
                 throw new Error("Hoteleiro não encontrado");
             }
 
-            if(hotelier.adress == city){
+            if(hotelier.city == city){
                 reservationsInCity.push(reservations[i]);
             }
         }   

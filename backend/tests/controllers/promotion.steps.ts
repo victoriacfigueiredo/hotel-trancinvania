@@ -3,7 +3,7 @@ import supertest from "supertest";
 import app from "../../src/app";
 import { Hotelier, PrismaClient, Promotion, PromotionType, PublishedReservation } from "@prisma/client";
 import {prismaMock} from "../../setupTests";
-import SetupDatabaseTest from "../../src/database/setupDatabaseTest";
+import SetupDatabaseTest from "../../src/email/setupDatabaseTest";
 
 const feature = loadFeature('tests/features/promotions.feature');
 const request = supertest(app);
