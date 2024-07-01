@@ -1,21 +1,18 @@
-import { PrismaClient, User, Reservation } from "@prisma/client";
+import { PrismaClient, Client,PublishedReservation } from "@prisma/client";
+import PublishedReservationRepository from "./publishedReservation.repository";
+import prisma from "../database";
 
 
 
 export default class SaveRepository {
 
-    private prisma: PrismaClient;
-
-    constructor(){
-        this.prisma = new PrismaClient();
-    }
     // savedListId depepnde do cliente
 
-    async saveReservation(userId: number, reservationId: number): Promise<{id: number}> {
+    async saveReservation(client_id: number, reservation_id: number): Promise<{id: number}> {
         try {
-            const reservation = await this.prisma.reservation.findUnique({
+            const reservation = await prisma.publishedReservation.findUnique({
                 where: {
-                    id: reservationId
+                    id: reservation_id
                 }
             });
 
@@ -23,25 +20,25 @@ export default class SaveRepository {
                 throw new Error('Reserva não encontrada');
             }
 
-            const user = await this.prisma.user.findUnique({
+            const client = await prisma.client.findUnique({
                 where: {
-                    id: userId
+                    id: client_id
                 }
             });
 
-            if (!user) {
-                throw new Error('Usuário não encontrado');
+            if (!client) {
+                throw new Error('Cliente não encontrado');
             }
 
             // Adiciona a reserva à lista de reservas salvas
-            const result = await this.prisma.userReservation.create({
+            const result = await prisma.clientSavedReservation.create({
                 data: {
-                    user_id: userId,
-                    reservation_id: reservationId
+                    client_id: client_id,
+                    reservation_id: reservation_id
                 }
             });
 
-            return { id:result.user_id};
+            return { id:result.client_id};
         } 
         catch (error) {
             throw error;
@@ -49,11 +46,11 @@ export default class SaveRepository {
     }
 
 
-    async getSavedReservationByUserId(user_id: number): Promise<Reservation[]> {
+    async getSavedReservationByClientId(client_id: number): Promise<PublishedReservation[]> {
         try {
-            const userReservations = await this.prisma.userReservation.findMany({
+            const clientReservations = await prisma.clientSavedReservation.findMany({
                 where: {
-                   user_id: user_id
+                   client_id: client_id
                 },
                 include: {
                     reservation: true
@@ -61,43 +58,43 @@ export default class SaveRepository {
 
             });
 
-            if (!userReservations) {
+            if (!clientReservations) {
                 throw new Error('Nenhuma reserva salva');
             }
-            let user_reservations: Reservation[] = [];
+            let client_reservations: PublishedReservation[] = [];
            
-            for (let i = 0; i < userReservations.length; i++) {
-                user_reservations.push(userReservations[i].reservation);
+            for (let i = 0; i < clientReservations.length; i++) {
+                client_reservations.push(clientReservations[i].reservation);
             }
 
-            return user_reservations as Reservation[];
+            return client_reservations as PublishedReservation[];
         } 
         catch (error) {
             throw error;
         }
     }
 
-    async getUsersbyReservationId(reservation_id: number): Promise<User[]>{
+    async getClientsbyReservationId(reservation_id: number): Promise<Client[]>{
         try{
-            const user = await this.prisma.userReservation.findMany({
+            const client = await prisma.clientSavedReservation.findMany({
             where :{
                 reservation_id :reservation_id
             },
             include:{
-                user: true
+                client: true
             }
 
             });
 
-            if (!user){
+            if (!client){
                 throw new Error("Nenhum usuário salvou a reserva")
             }
-            let usersbyreservation: User[]=[];
-            for (let i = 0; i < user.length; i++) {
-                usersbyreservation.push(user[i].user);
+            let clientsbyreservation: Client[]=[];
+            for (let i = 0; i < client.length; i++) {
+                clientsbyreservation.push(client[i].client);
             }
 
-            return usersbyreservation as User[];
+            return clientsbyreservation as Client[];
         }
 
         catch (error) {
@@ -105,11 +102,11 @@ export default class SaveRepository {
         }        
     }
 
-    async deleteSavedReservationById(user_id: number, reservation_id: number): Promise<void> {
+    async deleteSavedReservationById(client_id: number, reservation_id: number): Promise<void> {
         try {
-            await this.prisma.userReservation.deleteMany({
+            await prisma.clientSavedReservation.deleteMany({
                 where:{
-                    user_id : user_id,
+                    client_id : client_id,
                     reservation_id : reservation_id
                 }
             })

@@ -1,27 +1,27 @@
 Feature: Disparo de email para usuários com comprovante de pedido
-As a usuário “cliente”
+As a usuário "cliente"
 I want to Receber e-mails de confirmação, edição e cancelamento da reserva
 So that eu possa ter uma confirmação escrita das minhas transações e atualizações importantes da minha reserva 
 
-Scenario 1:  Finalização da reserva com sucesso
-Given Eu estou logada como “cliente” com login “lorena” e a senha “lory123”
-And Eu estou na página “Realizar reserva” do hotel “Flores”
-When Eu realizo a reserva
-Then Eu vejo uma mensagem de confirmação
-And  Eu recebo o e-mail de confirmação contendo os detalhes da reserva
+Scenario: Finalização da reserva com sucesso
+    Given existe um usuário "Cliente" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
+    And está na página "Realizar reserva" do quarto com id "1"
+    When uma requisição POST é enviada para "/client/1/publishedReservation/1/reserve" com os dados da reserva
+    Then o status da resposta deve ser "201"
+    And é retornada a mensagem "Reserva realizada com sucesso!"
 
-Scenario 2: Cancelamento da reserva  
-Given Eu estou logada como “cliente” com login “lorena” e a senha “lory123”
-And Eu estou na página “Minhas reservas” 
-And O hotel “Flores”  está na listagem das minhas reservas
-When Eu cancelo a reserva do hotel “Flores”
-Then Eu vejo uma mensagem de confirmação de cancelamento
-And Eu recebo o e-mail de confirmação do cancelamento contendo o nome do hotel e o valor que será devolvido
+Scenario: Edição da reserva  
+    Given existe um usuário "Cliente" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
+    And o quarto de id "1" está na listagem das reservas feitas por ele
+    When uma requisição PUT é enviada para "/client/1/publishedReservation/1/reserve/1" com os dados da reserva
+    Then o status da resposta deve ser "200"
+    And é retornada a mensagem "Reserva atualizada com sucesso!"
 
-Scenario 3: Edição da reserva  
-Given Eu estou logada como “cliente” com login “lorena” e a senha “lory123”
-And Eu estou na página “Minhas reservas” 
-And O hotel “Flores”  está na listagem das minhas reservas
-When Eu realizo alterações na reserva do hotel “Flores”
-Then Eu vejo uma mensagem de confirmação
-And Eu recebo o e-mail de confirmação das alterações contendo os detalhes da reserva e os campos alterados
+Scenario: Cancelamento da reserva  
+    Given existe um usuário "Cliente" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
+    And o quarto de id "1" está na listagem das reservas feitas por ele
+    When uma requisição DELETE é enviada para "/client/1/publishedReservation/1/reserve/1"
+    Then o status da resposta deve ser "200"
+    And é retornada a mensagem "Reserva cancelada com sucesso."
+
+
