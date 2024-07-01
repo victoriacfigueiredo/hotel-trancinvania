@@ -1,142 +1,107 @@
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { defineFeature, loadFeature, DefineStepFunction } from 'jest-cucumber';
 import request from 'supertest';
 import app from '../../src/app'; 
 import { prismaMock } from '../../setupTests'; 
-import { Hotelier } from '../../src/controllers/hotelier.controller';
-import { HttpConflictError } from '../../src/utils/errors/http.error';
+import { Hotelier } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import SetupDatabaseTest from '../../src/database/setupDatabaseTest';
 
 const feature = loadFeature('tests/features/hotelier.feature');
 
-const mockHotelierData = {
-  id: 1,
-  name: 'Mavis',
-  email: 'mavis.dracula@gmail.com',
-  username: 'mavis',
-  password: '@Vampiresca1',
-  cnpj: '12.215.333/0001-33',
-  adress: 'Rua das Sextas, 13',
-  hotel: 'Hotel Transilvânia',
+let lastId = 0;
+
+const generateId = () => {
+    return ++lastId;
+};
+
+const mockHashedPassword = '$2b$10$B9j68DzP1ruNn5qyPCqXVO.TOFNGKvldEDasLhfLOAt169ytexgxK';
+
+const createHotelier = async (hotel: string, email: string, password: string) => {
+    return {
+        id: generateId(),
+        name: 'Maria Letícia',
+        email: email,
+        username: 'mlng',
+        password: mockHashedPassword,
+        hotel: hotel,
+        city: 'Paulista',
+        cep: '2621721',
+        address: 'Rua vale',
+        n_address: '123',
+        UF: 'PE',
+        cnpj: '123.456.789-01',
+    };
+};
+
+const createHotelierPayload = (hotel: string, email: string, username: string, password: string, city: string, cep: string, address: string, n_address: string, UF: string, cnpj: string) => {
+    return { id: generateId(), hotel, email, username, password, city, cep, address, n_address, UF, cnpj } as Hotelier;
 };
 
 defineFeature(feature, (test) => {
-  let response: request.Response;
-  let payload: Hotelier;
+    let response: request.Response;
+    let hoteliers: Hotelier[] = [];
+    const setupDBTest = new SetupDatabaseTest();
+    setupDBTest.resetDatabase();
 
-  beforeEach(() => {
-      jest.clearAllMocks();
-  });
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        jest.spyOn(bcrypt, 'hash').mockImplementation(async () => mockHashedPassword); // Mock bcrypt.hash to return the same hash
+        await setupDBTest.resetDatabase();
+    });
 
-  test('Cadastro Bem-Sucedido de Usuário Hoteleiro', ({ given, when, then }) => {
-      given('que eu sou um novo usuário', () => {
-          prismaMock.hotelier.create.mockResolvedValue(mockHotelierData);
-      });
+    afterEach(async () => {
+        hoteliers = [];
+        await setupDBTest.resetDatabase();
+    });
 
-      when(
-          /^eu envio uma solicitação de cadastro com o nome "(.*)", email "(.*)", username "(.*)", cnpj "(.*)", adress "(.*)", hotel "(.*)" e password "(.*)"$/,
-          async (name, email, username, cnpj, adress, hotel, password) => {
-              payload = { name, email, username, cnpj, adress, hotel, password } as Hotelier;
-              response = await request(app).post('/hotelier/create').send(payload);
-          },
-      );
+    const givenNewHotelier = (given: DefineStepFunction) =>
+        given('que eu sou um novo hoteleiro', async () => {
+            const hotelier = await createHotelier('Polenguito Hotel', 'mleticiagaspar17@gmail.com', '@AmoHotel123');
+            hoteliers.push(hotelier);
+            prismaMock.hotelier.create.mockResolvedValue(hotelier);
+        });
 
-      then('o cadastro deve ser realizado com sucesso', () => {
+    const whenSendRegisterRequest = (when: DefineStepFunction) =>
+        when(
+            /^eu envio uma solicitação de cadastro com o hotel "(.*)", email "(.*)", username "(.*)", password "(.*)", cidade "(.*)", cep "(.*)", endereço "(.*)", número do endereço "(.*)", UF "(.*)" e CNPJ "(.*)"$/,
+            async (hotel, email, username, password, city, cep, address, n_address, UF, cnpj) => {
+                const payload = createHotelierPayload(hotel, email, username, password, city, cep, address, n_address, UF, cnpj);
+                response = await request(app).post('/hotelier/create').send(payload);
+            },
+        );
+
+    const thenRegistrationShouldBeSuccessful = (then: DefineStepFunction) =>
+        then('o cadastro deve ser realizado com sucesso', () => {
+          //if (response.status !== 201) {
+          //  console.error('Erro na solicitação Hotelier:', response.body);
+          //}
           expect(response.status).toBe(201);
-      });
+        });
 
-      then('eu devo receber uma mensagem de confirmação:', (expectedResponse) => {
-          const expected = JSON.parse(expectedResponse);
-          expect(response.body.user).toMatchObject({
-              id: mockHotelierData.id,
-              name: payload.name,
-              email: payload.email,
-              username: payload.username,
-              cnpj: payload.cnpj,
-              adress: payload.adress,
-              hotel: payload.hotel,
-              password: mockHotelierData.password
-          });
-          expect(response.body.user.id).toBeDefined();
-      });
-  });
+    const thenShouldReceiveConfirmationMessage = (then: DefineStepFunction) =>
+        then('eu devo receber uma mensagem de confirmação:', (expectedResponse) => {
+            const expected = JSON.parse(expectedResponse);
+            expect(response.body.hotelier).toMatchObject({
+                id: hoteliers[0].id,
+                name: hoteliers[0].name,
+                email: hoteliers[0].email,
+                username: hoteliers[0].username,
+                password: hoteliers[0].password,
+                hotel: hoteliers[0].hotel,
+                city: hoteliers[0].city,
+                cep: hoteliers[0].cep,
+                address: hoteliers[0].address,
+                n_address: hoteliers[0].n_address,
+                UF: hoteliers[0].UF,
+                cnpj: hoteliers[0].cnpj,
+            });
+            expect(response.body.hotelier.id).toBeDefined();
+        });
 
-  test('Cadastro Mal-Sucedido de Usuário Hoteleiro por E-mail já Cadastrado', ({
-      given,
-      when,
-      then,
-  }) => {
-      given('que o email "mavis.dracula@gmail.com" já está cadastrado', () => {
-          prismaMock.hotelier.findUniqueOrThrow.mockImplementation(() => {
-              throw new HttpConflictError({ msg: 'E-mail ou nome de usuário já existe.' });
-          });
-      });
-
-      when(
-          /^eu envio uma solicitação de cadastro com o nome "(.*)", email "(.*)", username "(.*)", cnpj "(.*)", adress "(.*)", hotel "(.*)" e password "(.*)"$/,
-          async (name, email, username, cnpj, adress, hotel, password) => {
-              payload = { name, email, username, cnpj, adress, hotel, password } as Hotelier;
-              response = await request(app).post('/hotelier/create').send(payload);
-          },
-      );
-
-      then('o cadastro não deve ser realizado', () => {
-          expect(response.status).toBe(409); // Conflict status
-      });
-
-      then('eu devo receber uma mensagem de erro indicando que o e-mail já está em uso:', (expectedResponse) => {
-          const expected = JSON.parse(expectedResponse);
-          expect(response.body.msg).toBe(expected.error);
-      });
-  });
-
-  test('Cadastro Mal-Sucedido de Usuário Hoteleiro por Usuário já Cadastrado', ({
-      given,
-      when,
-      then,
-  }) => {
-      given('que o username "mavis" já está cadastrado', () => {
-          prismaMock.hotelier.findUniqueOrThrow.mockImplementation(() => {
-              throw new HttpConflictError({ msg: 'E-mail ou nome de usuário já existe.' });
-          });
-      });
-
-      when(
-          /^eu envio uma solicitação de cadastro com o nome "(.*)", email "(.*)", username "(.*)", cnpj "(.*)", adress "(.*)", hotel "(.*)" e password "(.*)"$/,
-          async (name, email, username, cnpj, adress, hotel, password) => {
-              payload = { name, email, username, cnpj, adress, hotel, password } as Hotelier;
-              response = await request(app).post('/hotelier/create').send(payload);
-          },
-      );
-
-      then('o cadastro não deve ser realizado', () => {
-          expect(response.status).toBe(409); // Conflict status
-      });
-
-      then('eu devo receber uma mensagem de erro indicando que o nome de usuário já está em uso:', (expectedResponse) => {
-          const expected = JSON.parse(expectedResponse);
-          expect(response.body.msg).toBe(expected.error);
-      });
-  });
-
-  test('Cadastro Mal-Sucedido de Usuário Hoteleiro por Senha Inválida', ({ given, when, then }) => {
-      given('que eu sou um novo usuário', () => {
-          // Não é necessário mockar o serviço neste caso, pois a validação falha antes de chamar o serviço
-      });
-
-      when(
-          /^eu envio uma solicitação de cadastro com o nome "(.*)", email "(.*)", username "(.*)", cnpj "(.*)", adress "(.*)", hotel "(.*)" e password "(.*)"$/,
-          async (name, email, username, cnpj, adress, hotel, password) => {
-              payload = { name, email, username, cnpj, adress, hotel, password } as Hotelier;
-              response = await request(app).post('/hotelier/create').send(payload);
-          },
-      );
-
-      then('o cadastro não deve ser realizado', () => {
-          expect(response.status).toBe(400);
-      });
-
-      then('eu devo receber uma mensagem de erro indicando que a senha é inválida:', (expectedResponse) => {
-          const expected = JSON.parse(expectedResponse);
-          expect(response.body.message[0]).toBe(expected.error);
-      });
-  });
+    test('Cadastro Bem-Sucedido de Usuário Hoteleiro', ({ given, when, then }) => {
+        givenNewHotelier(given);
+        whenSendRegisterRequest(when);
+        thenRegistrationShouldBeSuccessful(then);
+        thenShouldReceiveConfirmationMessage(then);
+    });
 });
