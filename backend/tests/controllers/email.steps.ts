@@ -87,6 +87,10 @@ defineFeature(feature, (test) => {
     const setupDBTest = new SetupDatabaseTest();
     setupDBTest.resetDatabase();
 
+    beforeEach(async () => {
+      await setupDBTest.resetDatabase();
+   });
+
     afterEach(async () => {
         clients = [];
         reserves = [];

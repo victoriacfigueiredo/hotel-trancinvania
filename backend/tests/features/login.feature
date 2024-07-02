@@ -4,37 +4,51 @@ Feature: Realizar Login
   So that eu possa realizar ações no sistema de acordo com meu tipo de usuário
 
 Scenario: Login Bem-Sucedido
-  Given Eu estou na página de “Login”
-  And Eu estou cadastrado no Sistema com o “Nome de Usuário”  “barbaralencar”
-  And a “Senha” “@AmoBolo123”
-  When Eu preencho o campo “Nome de Usuário”  com “barbaralencar”
-  And eu preencho o campo “Senha” com “@AmoBolo123”
-  Then Eu vejo uma mensagem de confirmação “Login Realizado com Sucesso”
-  And fico logado no sistema
+  Given Eu estou cadastrado no Sistema com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  When eu envio uma solicitação de login com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  Then eu devo receber uma mensagem de confirmação com o token:
+  """
+  {
+	"token": "#is_placeholder"
+  }
+  """
 
 Scenario: Login Mal-Sucedido por Senha Incorreta
-  Given Eu estou na página de “Login”
-  And Eu estou cadastrado no Sistema com o “Nome de Usuário”  “barbaralencar”
-  And a “Senha” “@AmoBolo123”
-  When Eu preencho o campo “Nome de Usuário”  com “barbaralencar”
-  And eu preencho o campo “Senha” com “abacateverde”
-  Then Eu vejo uma mensagem de erro “Login ou Senha não correspondem”.
-  And continuo na página de "Login"
+  Given Eu estou cadastrado no Sistema com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  When eu envio uma solicitação de login com o "username" "barbaralencar" e a "password" "@AmoTorta123"
+  Then eu devo receber uma mensagem de erro:
+  """
+  {
+    "message": "Senha Incorreta"
+  }
+  """
 
 Scenario: Login Mal-Sucedido por Usuário não-cadastrado
-  Given Eu estou na página de “Login”
-  And Não há “Nome de Usuário” “barbaralencar” cadastrado no sistema
-  When Eu preencho o campo “Nome de Usuário”  com “barbaralencar”
-  And eu preencho o campo “Senha” com “abacateverde”
-  Then Eu vejo uma mensagem de erro “Usuário não existe no Sistema”.
-  And continuo na página de Login
+  Given Não há “username” “barbaralencar” cadastrado no sistema
+  When eu envio uma solicitação de login com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  Then eu devo receber uma mensagem de erro:
+  """
+  {
+	"message": "Usuário não Cadastrado"
+  }
+  """
 
-Scenario: Login Mal-Sucedido por Campo em Branco
-  Given Eu estou na página de “Login”
-  And Eu estou cadastrado no Sistema com o “Nome de Usuário”  com “barbaralencar”
-  And a “Senha” “@AmoBolo123”
-  When Eu preencho o campo  “Nome de Usuário”  com “barbaralencar”
-  And eu preencho o campo “Senha” com “”
-  Then Eu vejo uma mensagem de erro “Preencha todos os campos obrigatórios”.
-  And continuo na página de Login
+Scenario: Login Mal-Sucedido por Senha em Branco
+  Given Eu estou cadastrado no Sistema com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  When eu envio uma solicitação de login com o "username" "barbaralencar" e a "password" ""
+  Then eu devo receber uma mensagem de erro:
+  """
+  {
+  "message": "Missing credentials"
+  }
+  """
 
+Scenario: Login Mal-Sucedido por Nome de Usuário em Branco
+  Given Eu estou cadastrado no Sistema com o "username" "barbaralencar" e a "password" "@AmoBolo123"
+  When eu envio uma solicitação de login com o "username" "" e a "password" "@AmoBolo123"
+  Then eu devo receber uma mensagem de erro:
+  """
+  {
+	"message": "Missing credentials"
+  }
+  """
