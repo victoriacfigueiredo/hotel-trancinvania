@@ -12,7 +12,11 @@ CREATE TABLE "hotelier" (
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "hotel" TEXT NOT NULL,
-    "adress" TEXT NOT NULL,
+    "city" TEXT NOT NULL,
+    "cep" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "n_address" TEXT NOT NULL,
+    "UF" TEXT NOT NULL,
     "cnpj" TEXT NOT NULL,
 
     CONSTRAINT "hotelier_pkey" PRIMARY KEY ("id")
@@ -130,9 +134,6 @@ CREATE UNIQUE INDEX "client_cpf_key" ON "client"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "rateReservation_reservation_id_key" ON "rateReservation"("reservation_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "PaymentMethod_cpf_key" ON "PaymentMethod"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PaymentMethod_clientId_numCard_key" ON "PaymentMethod"("clientId", "numCard");

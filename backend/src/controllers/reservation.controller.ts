@@ -12,6 +12,11 @@ export interface Hotelier{
     email: string;
     password: string;
     hotel: string; 
+    city: string;
+    cep: string;
+    address: string;
+    n_address: string;
+    UF: string;
     adress: string;
     cnpj: string;
 }

@@ -1,17 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../database";
 import { Reserve, PublishedReservation, Client, PaymentMethod} from "../controllers/reservation.controller";
 import { HttpNotFoundError } from "../utils/errors/http.error";
 
 export default class ReservationRepository {
-    private prisma: PrismaClient;
-
-    constructor() {
-        this.prisma = new PrismaClient();
-    }
 
     async cancelReservation(id: number): Promise<void> {
         try {
-            await this.prisma.reserve.delete({
+            await prisma.reserve.delete({
                 where: {
                     id: id
                 }
@@ -23,7 +18,7 @@ export default class ReservationRepository {
 
     async cancelReservationByClient(clientId: number): Promise<void> {
         try {
-            await this.prisma.reserve.deleteMany({
+            await prisma.reserve.deleteMany({
                 where: {
                     clientId: clientId
                 }
@@ -36,7 +31,7 @@ export default class ReservationRepository {
 
     async getPublishedReservationById(publishedReservationId: number): Promise<PublishedReservation>{
         try {
-            const publishedReservation = await this.prisma.publishedReservation.findUnique({
+            const publishedReservation = await prisma.publishedReservation.findUnique({
                 where: {
                     id: publishedReservationId
                 }
@@ -52,7 +47,7 @@ export default class ReservationRepository {
     }
     async getClientById(clientId: number): Promise<Client>{
         try {
-            const client = await this.prisma.client.findUnique({
+            const client = await prisma.client.findUnique({
                 where: {
                     id: clientId
                 }
@@ -68,7 +63,7 @@ export default class ReservationRepository {
     }
     async getPaymentMethod(clientId: number): Promise<PaymentMethod[]>{
         try {
-            const paymentMethod = await this.prisma.paymentMethod.findMany({
+            const paymentMethod = await prisma.paymentMethod.findMany({
                 where: {
                     clientId: clientId,
                 }
@@ -84,7 +79,7 @@ export default class ReservationRepository {
     }
     async getReservationById(id: number): Promise<Reserve>{
         try {
-            const reservation = await this.prisma.reserve.findUnique({
+            const reservation = await prisma.reserve.findUnique({
                 where: {
                     id: id
                 }
@@ -100,7 +95,7 @@ export default class ReservationRepository {
     }
     async getReservationsByClient(clientId: number): Promise<Reserve[]> {
         try {
-            const reservations = await this.prisma.reserve.findMany({
+            const reservations = await prisma.reserve.findMany({
                 where: {
                     clientId: clientId
                 }
@@ -117,7 +112,7 @@ export default class ReservationRepository {
     }
     async createReservation(params: Reserve) : Promise<{id: number}>{
         try {
-            const result = await this.prisma.reserve.create({data: params})
+            const result = await prisma.reserve.create({data: params})
             
             return { id: result.id };
         } catch (error) {
@@ -126,7 +121,7 @@ export default class ReservationRepository {
     }
     async getReservationsByPeriod(checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
         try {
-            const reservations = await this.prisma.reserve.findMany({
+            const reservations = await prisma.reserve.findMany({
                 where: {
                     publishedReservationId: publishedReservationId,
                     checkin: {
@@ -149,7 +144,7 @@ export default class ReservationRepository {
     }
     async getReservationsByPeriodAndId(id: number, checkin: string, checkout: string, publishedReservationId: number): Promise<Reserve[]> {
         try {
-            const reservations = await this.prisma.reserve.findMany({
+            const reservations = await prisma.reserve.findMany({
                 where: {
                     publishedReservationId: publishedReservationId,
                     checkin: {
@@ -175,7 +170,7 @@ export default class ReservationRepository {
     }
     async updateReservation(id: number, params: Partial<Reserve>): Promise<void> {
         try {
-            await this.prisma.reserve.update({
+            await prisma.reserve.update({
                 where: {
                     id: id
                 },
