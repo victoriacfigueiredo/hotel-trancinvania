@@ -72,7 +72,7 @@ async generatePasswordResetToken(email: string) {
 
   const token = jwt.sign({ id: hotelier.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
   const html =  generateRecoveryEmailHtml(token);
-  await EmailService.sendEmail(email, 'Recupere sua Senha', undefined, html);
+  await EmailService.sendEmail(email, 'Recupere sua Senha', html);
 }
 
 async resetPassword(token: string, newPassword: string) {

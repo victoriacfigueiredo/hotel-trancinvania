@@ -85,7 +85,7 @@ export default class ClientService {
 
         const token = jwt.sign({ id: client.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
         const html = generateRecoveryEmailHtml(token);
-        await EmailService.sendEmail(email, 'Recupere sua Senha', undefined, html);
+        await EmailService.sendEmail(email, 'Recupere sua Senha', html);
     }
 
     async resetPassword(token: string, newPassword: string) {

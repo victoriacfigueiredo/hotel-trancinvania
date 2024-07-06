@@ -8,7 +8,7 @@ import { validateData } from '../middleware/validation-middleware';
 
 const passwordValidation = z.string().min(7, { message: "A senha deve ter mais de 6 dígitos" });
 const resetPasswordSchema = z.object({
-  password: passwordValidation,
+  newPassword: passwordValidation,
   token: z.string(),
 });
 
