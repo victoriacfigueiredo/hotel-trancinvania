@@ -79,3 +79,9 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
     And eu clico em pesquisar
     Then eu sou redirecionado para a página “Resultados”
     And eu vejo opções de reservas com esses filtros
+
+    Scenario: busca bem sucedida, encontrando reservas
+        Given o banco de reservas publicadas possui uma reserva publicada com local "Recife", quantidade de pessoas "3" e quantidade de quartos "1"
+        When uma requisição POST for enviada para "/reservations" com o corpo da requisição sendo um JSON com campo city preenchido com "Recife", campo num_adults preenchido com "2", campo num_children preenchido com "2", campo num_quartos preenchido com "1", checkin com "2024-06-18" e checkout com "2024-06-21"
+        Then a busca deve ser bem sucedida
+        And o JSON da resposta deve conter a reserva publicada com city "Recife", num_people "3" e num_rooms "1" 

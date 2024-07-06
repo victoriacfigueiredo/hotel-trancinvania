@@ -47,6 +47,12 @@ export class HttpNotFoundError extends HttpError {
   }
 }
 
+export class HttpConflictError extends HttpError {
+  constructor({ msg }: { msg: string }) {
+    super({ status: 409, msg, slug: 'conflict' });
+  }
+}
+
 export class HttpInternalServerError extends HttpError {
   constructor({ msg }: { msg?: string } = {}) {
     super({

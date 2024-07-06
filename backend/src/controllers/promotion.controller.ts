@@ -17,12 +17,6 @@ const promotionCreateDto = z.object({
   num_rooms: z.number().min(1).optional(),
 });
 
-const promotionUpdateDto = z.object({
-  discount: z.number().min(5).max(60).optional(),
-  type: z.nativeEnum(PromotionType).optional(),
-  num_rooms: z.number().min(1).optional(),
-});
-
 export default class PromotionController {
 
   private prefix = '/reservation/:reservation_id/promotions';
@@ -42,7 +36,7 @@ export default class PromotionController {
     router.get(this.prefix, (req, res) => this.getPromotionById(req, res));
     router.delete(this.prefixAll, (req, res) => this.deleteAllPromotions(req, res));
     router.delete(this.prefix, (req, res) => this.deletePromotion(req, res));
-    router.patch(this.prefix, validateData(promotionUpdateDto), (req, res) => this.updatePromotion(req, res));
+    router.put(this.prefix, validateData(promotionCreateDto), (req, res) => this.updatePromotion(req, res));
   }
 
   private async getAllPromotions(req: Request, res: Response) {
@@ -60,13 +54,13 @@ export default class PromotionController {
     const { reservation_id } = req.params;
     const { discount, type, num_rooms } = req.body;
     const id = await this.promotionService.insertPromotion(+reservation_id, discount, type, num_rooms);
-    res.status(201).json({ status: 201, message:`A promoção ${id} foi cadastrada com sucesso!`});
+    res.status(201).json({ status: 201, message:`A promoção foi cadastrada com sucesso!`});
   }
 
   private async insertPromotionAll(req: Request, res: Response) {
     const { discount, type, num_rooms } = req.body;
-    const id = await this.promotionService.insertPromotion( null, discount, type, num_rooms);
-    res.status(201).json({ status: 201, message:`A promoção ${id} foi cadastrada em todas as reservas com sucesso!`});
+    const id = await this.promotionService.insertPromotionAll( discount, type, num_rooms);
+    res.status(201).json({ status: 201, message:`A promoção foi cadastrada em todas as reservas com sucesso!`});
   }
 
   private async deleteAllPromotions(req: Request, res: Response) {
