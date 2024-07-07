@@ -13,14 +13,14 @@ export const BottomLeftTopRightImages: React.FC = () => {
         left="0"
         zIndex="0"
         display={{ base: "none", md: "block" }} // Hide on mobile, show on desktop
-        transform="scale(0.8)" // Scale down to half size
+        transform="scale(0.75)" // Scale down to half size
         transformOrigin="bottom left" // Scale from the bottom left corner
       />
       <Image
         src={Spider}
         alt="Top Right"
         position="absolute"
-        top="120px" // Adjust this value to be below the navbar
+        top="80px" // Adjust this value to be below the navbar
         right="0"
         zIndex="0"
         display={{ base: "none", md: "block" }} // Hide on mobile, show on desktop
