@@ -6,6 +6,7 @@ import { z } from "zod";
 import { validateData } from "../middleware/validation-middleware";
 import prisma from "../database";
 import { Hotelier } from "./reservation.controller";
+import PromotionService from "../services/promotion.service";
 
 
 export interface PublishedReservation{
@@ -57,11 +58,13 @@ export default class PublishedReservationController{
 
     private publishedReservationService: PublishedReservationService;
     private reservationService: ReservationService;
+    private promotionService: PromotionService;
     // private hotelierService: Hotelier
 
     constructor(){
         this.publishedReservationService = new PublishedReservationService();
         this.reservationService = new ReservationService();
+        this.promotionService = new PromotionService();
     }
 
     public setupRoutes(router: Router){
@@ -71,7 +74,7 @@ export default class PublishedReservationController{
         router.get(this.prefix + '/:id', (req, res) => this.getPublishedReservationById(req, res));
         router.post(this.prefixReservation, validateData(publishedReservationDto), (req, res) => this.insertPublishedReservation(req, res));
         router.put(this.prefix+ '/:id', validateData(publishedReservationDto), (req, res) => this.updatePublishedReservation(req, res));
-        router.delete(this.prefix+ '/:id', (req, res) => this.deletePublishedReservation(req, res));
+        router.delete(this.prefix + '/:id', (req, res) => this.deletePublishedReservation(req, res));
 
         // pega todas as reservas com filtros especificos (busca de reservas)
         router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); 
@@ -112,7 +115,7 @@ export default class PublishedReservationController{
         const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
         const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
 
-        let reservationsInCity = [] as PublishedReservation[];
+        let reservationsInCity = [] as any[];
 
         for(let i = 0; i < reservations.length; i++){
             let hotelier = await prisma.hotelier.findUnique({
@@ -126,16 +129,16 @@ export default class PublishedReservationController{
             }
 
             if(hotelier.city == city){
-                reservationsInCity.push(reservations[i]);
+                reservationsInCity.push({...reservations[i], city: hotelier.city});
             }
         }   
 
-        let availableReservations = [] as PublishedReservation[];
+        let availableReservations = [] as any[];
 
-        for(let i = 0; i < reservations.length; i++){
-            let available = await this.reservationService.checkRoomAvailability(reservations[i].rooms, checkin, checkout, num_adults, num_children, reservations[i].id);
+        for(let i = 0; i < reservationsInCity.length; i++){
+            let available = await this.reservationService.checkRoomAvailability(reservations[i].rooms, checkin, checkout, num_adults, num_children, reservationsInCity[i].id);
             if(available){
-                availableReservations.push(reservations[i]);
+                availableReservations.push(reservationsInCity[i]);
             }
         }
 

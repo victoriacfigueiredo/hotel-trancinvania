@@ -33,7 +33,7 @@ defineFeature(feature, (test) => {
 
     const setupDBTest = new SetupDatabaseTest();
     setupDBTest.resetDatabase();
-
+    
     const createPublishedReservation = async (name: string, price: number) => {
         return {
             id: publishedReservation.length + 1,
@@ -78,6 +78,10 @@ defineFeature(feature, (test) => {
             num_rooms: 3,
         }
     }
+
+    beforeEach(async () => {
+      await setupDBTest.resetDatabase();
+   });
 
     afterEach(async () => {
         promotions = [];

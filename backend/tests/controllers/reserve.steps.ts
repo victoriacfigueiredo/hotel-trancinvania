@@ -75,7 +75,6 @@ defineFeature(feature, (test) => {
     let clients: Client[] = []; 
     let payments: PaymentMethod[] = [];
     let publishedReservations: PublishedReservation[] = [];
-
     const setupDBTest = new SetupDatabaseTest();
     setupDBTest.resetDatabase();
 
@@ -94,6 +93,10 @@ defineFeature(feature, (test) => {
             paymentMethodId: 1
         }
     }
+    
+    beforeEach(async () => {
+      await setupDBTest.resetDatabase();
+   });
    
     afterEach(async () => {
         clients = [],
