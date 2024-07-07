@@ -122,7 +122,7 @@ export const NavBar: React.FC = () => {
               <MenuItem as={RouterLink} to="/client/login">
                 Sou Cliente
               </MenuItem>
-              <MenuItem as={RouterLink} to="/perfil/sou-hoteleiro">
+              <MenuItem as={RouterLink} to="/hotelier/login">
                 Sou Hoteleiro
               </MenuItem>
               <MenuItem as={RouterLink} to="/perfil/pagamento">
@@ -242,7 +242,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/perfil/sou-hoteleiro"
+                  to="/hotelier/login"
                   display="block"
                   textDecoration="none"
                   color="#000000"
