@@ -1,11 +1,10 @@
-// src/components/ui/flip-words-title.tsx
 import React from "react";
 import { Box, Heading, useColorModeValue } from "@chakra-ui/react";
 import { FlipWords } from "./ui/flip-words-effect";
 
 export function FlipWordsTitle() {
   const words = ["HUMANOS", "FANTASMAS", "VAMPIROS", "ZUMBIS"];
-  const textColor = useColorModeValue("gray.600", "gray.400");
+  const textColor = useColorModeValue("gray.100", "white");
 
   return (
     <Box
