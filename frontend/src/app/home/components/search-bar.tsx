@@ -9,7 +9,7 @@ export const SearchBar = () => {
         variant="outline"
         mx={2}
         height="80px"
-        width="250px"
+        width="180px"
       />
       <Input
         placeholder="Check-in"
@@ -17,7 +17,7 @@ export const SearchBar = () => {
         variant="outline"
         mx={2}
         height="80px"
-        width="250px"
+        width="180px"
       />
       <Input
         placeholder="Check-out"
@@ -25,14 +25,14 @@ export const SearchBar = () => {
         variant="outline"
         mx={2}
         height="80px"
-        width="250px"
+        width="180px"
       />
       <Input
         placeholder="Quem"
         variant="outline"
         mx={2}
         height="80px"
-        width="250px"
+        width="180px"
       />
       <IconButton
         aria-label="Search"
