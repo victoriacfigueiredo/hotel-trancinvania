@@ -27,9 +27,14 @@ const barImage = "https://i.imgur.com/GTJmsKo.png";
 const ghostFrontImage = "https://i.imgur.com/RF0q2DH.png";
 const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
+const passwordValidation = z
+  .string()
+  .min(7, { message: "A senha deve ter mais de 6 dígitos" });
 const LoginSchema = z.object({
-  username: z.string().nonempty("Username é obrigatório"),
-  password: z.string().nonempty("Senha é obrigatória"),
+  username: z.string().min(3, {
+    message: "Username deve ter pelo menos 3 caracteres",
+  }),
+  password: passwordValidation,
 });
 
 type LoginFormInputs = z.infer<typeof LoginSchema>;
