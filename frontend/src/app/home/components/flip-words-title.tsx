@@ -3,7 +3,7 @@ import { Box, Heading, useColorModeValue } from "@chakra-ui/react";
 import { FlipWords } from "./ui/flip-words-effect";
 
 export function FlipWordsTitle() {
-  const words = ["HUMANOS", "FANTASMAS", "VAMPIrOS", "ZUMBIS"];
+  const words = ["humanos", "FANTASMAS", "vampiros", "ZUMBIS"];
   const textColor = useColorModeValue("gray.100", "white");
 
   return (
