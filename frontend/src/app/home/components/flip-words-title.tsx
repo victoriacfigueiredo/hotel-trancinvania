@@ -17,7 +17,7 @@ export function FlipWordsTitle() {
       px={4}
     >
       <Heading
-        fontSize="80px"
+        fontSize="90px"
         mb={8}
         color={textColor}
         fontFamily="Trancinfont"
@@ -25,6 +25,7 @@ export function FlipWordsTitle() {
         alignItems="start"
         textAlign={"left"}
         fontWeight={400}
+        letterSpacing={"-0.07em"}
       >
         HOTÉIS PArA{" "}
         <Box

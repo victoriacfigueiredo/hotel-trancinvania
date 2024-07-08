@@ -75,7 +75,7 @@ export const FlipWords = ({
               fontWeight: 400,
             }}
           >
-            <Text as="span" fontFamily="Trancinfont">
+            <Text as="span" fontFamily="Trancinfont" letterSpacing={"-0.07em"}>
               {letter}
             </Text>
           </motion.span>
