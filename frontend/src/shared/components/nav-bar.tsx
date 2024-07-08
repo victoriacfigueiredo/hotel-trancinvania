@@ -87,13 +87,13 @@ export const NavBar: React.FC = () => {
               onMouseLeave={onReservasMenuClose}
             >
               <MenuItem as={RouterLink} to="/reservas/element1">
-                Element 1
+                Realizar Reserva
               </MenuItem>
               <MenuItem as={RouterLink} to="/reservas/element2">
-                Element 2
+                Publicar Reservas
               </MenuItem>
               <MenuItem as={RouterLink} to="/reservas/element3">
-                Element 3
+                Gerenciar Reservas
               </MenuItem>
             </MenuList>
           </Menu>
@@ -184,7 +184,7 @@ export const NavBar: React.FC = () => {
                   mb={2}
                   onClick={onClose}
                 >
-                  Elemento 1
+                  Realizar Reserva
                 </Link>
                 <Link
                   as={RouterLink}
@@ -196,7 +196,7 @@ export const NavBar: React.FC = () => {
                   mb={2}
                   onClick={onClose}
                 >
-                  Elemento 2
+                  Publicar Reservas
                 </Link>
                 <Link
                   as={RouterLink}
@@ -208,7 +208,7 @@ export const NavBar: React.FC = () => {
                   mb={2}
                   onClick={onClose}
                 >
-                  Elemento 3
+                  Gerenciar Reservas
                 </Link>
               </Box>
             </Box>
