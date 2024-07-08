@@ -1,5 +1,12 @@
-// src/App.tsx
-import { Box, Flex, Heading, Image, Button, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Button,
+  Text,
+  Container,
+} from "@chakra-ui/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
 import { SearchBar } from "../../components/search-bar";
 import { AnimatedTooltipPreview } from "../../components/animated-tooltip-preview";
@@ -19,29 +26,39 @@ const mavisUrl = "https://i.imgur.com/VvUqQfb.png";
 
 export const HomePage = () => {
   return (
-    <Box bg="#191919" color="#EAEAEA" minH="100vh" fontFamily="Inter">
+    <Box
+      bg="#191919"
+      color="#EAEAEA"
+      minH="100vh"
+      fontFamily="Inter"
+      position="relative"
+    >
       <NavBar />
 
-      <Flex justify="center" align="center" mb={8}>
+      <Container centerContent mt={32} p={0} minH="500px" position="relative">
         <Image
           src={draculaUrl}
           alt="Drácula"
-          width="367.2px"
-          height="683.4px"
-          mb={8}
-          mt={150}
+          position="absolute"
+          bottom="0"
+          left="-450px" // Ajuste conforme necessário
+          width="auto"
+          height="500px"
+          display={{ base: "none", md: "block" }}
         />
-        <Box textAlign="center" mx={4}>
-          <Text fontSize="30px" fontFamily="Inter" fontWeight="200">
+        <Box textAlign="center" position="relative" zIndex="1">
+          <Text fontSize="25px" fontFamily="Inter" fontWeight="200" mb={1}>
             O melhor gerenciador de hotéis do submundo.
           </Text>
           <FlipWordsTitle />
-          <SearchBar />
+          <Box mt={1} mb={1}>
+            <SearchBar />
+          </Box>
           <Button
             variant="outline"
-            height="80px"
-            width="307px"
-            fontSize="30px"
+            height="70px"
+            width="220px"
+            fontSize="25px"
             fontWeight="200"
             fontFamily="Inter"
             borderColor="#EAEAEA"
@@ -54,20 +71,23 @@ export const HomePage = () => {
             borderRadius="13px"
             px={12}
             bg="transparent"
-            mt={100}
+            mt={1}
           >
             Saiba mais
           </Button>
         </Box>
         <Image
           src={mavisUrl}
-          alt="Mavis Drácula"
-          width="324px"
-          height="682.3px"
-          mb={8}
-          mt={150}
+          alt="Mavis"
+          position="absolute"
+          bottom="0"
+          right="-450px" // Ajuste conforme necessário
+          width="auto"
+          height="500px"
+          display={{ base: "none", md: "block" }}
         />
-      </Flex>
+      </Container>
+
       <Box bg="#191919" color="#EAEAEA" p={8} fontFamily="Inter">
         <Flex
           justify="center"
@@ -75,7 +95,7 @@ export const HomePage = () => {
           gap="50px"
           wrap="wrap"
           mb={12}
-          mt={300}
+          mt={24}
         >
           <Card
             imageUrl={iconsUrls[0]}
