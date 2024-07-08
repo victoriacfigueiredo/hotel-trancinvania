@@ -4,7 +4,7 @@ import { Text } from "@chakra-ui/react";
 
 export const FlipWords = ({
   words,
-  duration = 1000,
+  duration = 1500,
   className,
 }: {
   words: string[];
@@ -69,9 +69,15 @@ export const FlipWords = ({
               delay: index * 0.08,
               duration: 0.4,
             }}
-            style={{ display: "inline-block", fontFamily: "Trancinfont" }}
+            style={{
+              display: "inline-block",
+              fontFamily: "Trancinfont",
+              fontWeight: 400,
+            }}
           >
-            <Text as="span">{letter}</Text>
+            <Text as="span" fontFamily="Trancinfont">
+              {letter}
+            </Text>
           </motion.span>
         ))}
       </motion.div>
