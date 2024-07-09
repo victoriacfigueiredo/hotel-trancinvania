@@ -1,6 +1,5 @@
 import { IGetReservationsByFilters, PublishedReservation } from "../controllers/publishedReservation.controller";
 import PublishedReservationRepository from "../repositories/publishedReservation.repository";
-import ReservationRepository from "../repositories/reservation.repository";
 import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
 
 
@@ -12,12 +11,12 @@ export default class PublishedReservationService {
         this.publishedReservationRepository = new PublishedReservationRepository();
     }
 
-    private preparePublishedReservationParams(hotelier_id: number, name: string, rooms: number, people: number, wifi: boolean, breakfast: boolean, airConditioner: boolean, parking: boolean, room_service: boolean, price: number, promotion_id?: number | null): PublishedReservation{
+    private preparePublishedReservationParams(hotelier_id: number, name: string, rooms: number, people: number, wifi: boolean, breakfast: boolean, airConditioner: boolean, parking: boolean, room_service: boolean, price: number, promotion_id?: number | null, imageUrl?: string): PublishedReservation{
         if(promotion_id === undefined){
             promotion_id = null;
         }
         let new_price = price;
-        let params = { name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, new_price, promotion_id, hotelier_id } as PublishedReservation;
+        let params = { name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, new_price, promotion_id, hotelier_id, imageUrl } as PublishedReservation;
         return params;
     }
 
@@ -35,14 +34,27 @@ export default class PublishedReservationService {
         return Reservation;
     }
 
-    public async insertPublishedReservation(hotelier_id: number, name: string, rooms: number, people: number, wifi:boolean, breakfast:boolean, airConditioner:boolean, parking: boolean, room_service: boolean, price: number):Promise<void>{
+    public async insertPublishedReservation(hotelier_id: number, name: string, rooms: number, people: number, wifi:boolean, breakfast:boolean, airConditioner:boolean, parking: boolean, room_service: boolean, price: number): Promise<number>{
         const params = this.preparePublishedReservationParams(hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price);
         try{
             const reservation = await this.publishedReservationRepository.checkReservationAlreadyExists(hotelier_id, name);
             if(reservation){
                 throw new HttpBadRequestError({msg: 'Reseva existente!'})
             }
-            await this.publishedReservationRepository.insertPublishedReservation(params);
+            const reservation_id = await this.publishedReservationRepository.insertPublishedReservation(params);
+            return reservation_id;
+        }catch(error: any){
+            if (error instanceof HttpError){
+                throw error;
+            }else{
+                throw new HttpInternalServerError({msg: `Error inserting reservation: ${error.message}`});
+            }
+        }
+    }
+
+    public async insertImageUrl(reservation_id: number, imageUrl: string): Promise<void>{
+        try{
+            await this.publishedReservationRepository.insertImageUrl(reservation_id, imageUrl);
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;

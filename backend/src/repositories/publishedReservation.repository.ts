@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-
 import { PublishedReservation } from "../controllers/publishedReservation.controller";
 import prisma from "../database";
 import { HttpNotFoundError } from "../utils/errors/http.error";
-import PublishedReservationController, { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
+import { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
 import { Reserve } from "../controllers/reservation.controller";
 
 export default class PublishedReservationRepository {
@@ -108,6 +106,10 @@ export default class PublishedReservationRepository {
 
     async deletePublishedReservationById(id:number){
         await prisma.publishedReservation.delete({where:{id:id}});
+    }
+
+    async insertImageUrl(reservation_id: number, imageUrl): Promise<void>{
+        await prisma.publishedReservation.update({where: {id: reservation_id}, data: {imageUrl: imageUrl}});
     }
 
     async checkNoReservation(publishedReservationId: number): Promise <Reserve[] | null>{

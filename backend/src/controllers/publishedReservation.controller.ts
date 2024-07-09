@@ -1,13 +1,34 @@
 import { Request, Response, Router } from "express";
-import { Promotion } from "./promotion.controller";
 import PublishedReservationService from "../services/publishedReservation.service";
 import ReservationService from "../services/reservation.service";
 import { z } from "zod";
 import { validateData } from "../middleware/validation-middleware";
 import prisma from "../database";
-import { Hotelier } from "./reservation.controller";
+import multer, {Multer} from "multer";
+import path from "path";
 import PromotionService from "../services/promotion.service";
+import fs from 'fs';
+import { HttpNotFoundError } from "../utils/errors/http.error";
 
+declare global {
+    namespace Express {
+      interface Request {
+        file?: Multer.File;
+      }
+    }
+  }
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../images'));
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); 
+    }
+});
+  
+  
+const upload = multer({ storage: storage });
 
 export interface PublishedReservation{
     id: number;
@@ -23,6 +44,7 @@ export interface PublishedReservation{
     new_price: number;
     promotion_id?: number | null;
     hotelier_id: number;
+    imageUrl?: string | null;
 }
 
 export interface IGetReservationsByFilters{
@@ -69,15 +91,27 @@ export default class PublishedReservationController{
 
     public setupRoutes(router: Router){
         // pega todas as reservas
+        router.post('/reservation/:reservation_id/upload', upload.single('image'), (req, res) => this.uploadImage(req, res));
         router.get(this.prefix, (req, res) => this.getAllPublishedReservations(req, res));
 
-        router.get(this.prefix + '/:id', (req, res) => this.getPublishedReservationById(req, res));
-        router.post(this.prefixReservation, validateData(publishedReservationDto), (req, res) => this.insertPublishedReservation(req, res));
+        router.get(this.prefix + '/:id',  (req, res) => this.getPublishedReservationById(req, res));
+        router.post(this.prefixReservation, (req, res) => this.insertPublishedReservation(req, res));
         router.put(this.prefix+ '/:id', validateData(publishedReservationDto), (req, res) => this.updatePublishedReservation(req, res));
         router.delete(this.prefix + '/:id', (req, res) => this.deletePublishedReservation(req, res));
 
         // pega todas as reservas com filtros especificos (busca de reservas)
         router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); 
+    }
+
+    private async uploadImage(req: Request, res: Response){
+        const { reservation_id } = req.params;
+        const file = req.file;
+        if (!file) {
+            throw new Error('Arquivo não encontrado');
+        }
+        const imageUrl = `/images/${file.filename}`;
+        await this.publishedReservationService.insertImageUrl(+reservation_id, imageUrl);
+        res.status(200).json(file);
     }
 
     private async getAllPublishedReservations(req: Request, res: Response){
@@ -95,7 +129,7 @@ export default class PublishedReservationController{
         const { hotelier_id } = req.params;
         const { name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price } = req.body;
         const id = await this.publishedReservationService.insertPublishedReservation(+hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price);
-        res.status(201).json({status: 201, message: 'Reserva cadastrada com sucesso'});
+        res.status(200).json({id});
     }
 
     private async updatePublishedReservation(req: Request, res: Response){
@@ -107,6 +141,28 @@ export default class PublishedReservationController{
 
     private async deletePublishedReservation(req: Request, res: Response){
         const { id } = req.params;
+
+        const reservation = await this.publishedReservationService.getPublishedReservationById(+id);
+        if (!reservation) {
+            return res.status(404).json({ error: 'Reserva não encontrada' });
+        }
+
+        if (reservation.imageUrl) {
+            const imagePath = path.join(__dirname, '..', reservation.imageUrl);
+            console.log('Caminho da imagem:', imagePath); 
+            
+            if (fs.existsSync(imagePath)) {
+              fs.unlink(imagePath, (err) => {
+                if (err) {
+                    throw new HttpNotFoundError({msg: 'imagem n encontrada'});
+                } else {
+                  console.log('Imagem deletada com sucesso:', imagePath);
+                }
+              });
+            } else {
+              throw new HttpNotFoundError({msg: 'imagem n encontrada'});
+            }
+          }
         await this.publishedReservationService.deletePublishedReservation(+id);
         res.status(200).json({status: 200, message: 'Reserva deletada com sucesso'});
     }
