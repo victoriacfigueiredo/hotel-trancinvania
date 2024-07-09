@@ -5,7 +5,6 @@ import { BottomLeftTopRightImages } from "../../../../shared/components/spider-i
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RecoveryFormInputs, RecoverySchema } from "../../forms/recoveryForm";
-import "react-toastify/dist/ReactToastify.css";
 const keyImage = "https://i.imgur.com/5GmX6rc.png";
 
 
