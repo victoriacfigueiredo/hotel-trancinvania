@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Heading, useColorModeValue } from "@chakra-ui/react";
 import { FlipWords } from "./ui/flip-words-effect";
 

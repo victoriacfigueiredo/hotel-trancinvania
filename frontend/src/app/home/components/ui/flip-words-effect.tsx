@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Text } from "@chakra-ui/react";
 
@@ -44,7 +44,7 @@ export const FlipWords = ({
         }}
         transition={{
           duration: 0.4,
-          ease: "easeInOut",
+          ease: { type: "spring", stiffness: 100, damping: 10 },
           type: "spring",
           stiffness: 100,
           damping: 10,

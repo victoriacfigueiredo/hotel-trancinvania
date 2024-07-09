@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Avatar,
   AvatarGroup,
@@ -28,8 +28,14 @@ export const AnimatedTooltip = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const springConfig = { stiffness: 100, damping: 5 };
   const x = useMotionValue(0);
-  const rotate = useSpring(useTransform(x, [-100, 100], [-45, 45]), springConfig);
-  const translateX = useSpring(useTransform(x, [-100, 100], [-50, 50]), springConfig);
+  const rotate = useSpring(
+    useTransform(x, [-100, 100], [-45, 45]),
+    springConfig
+  );
+  const translateX = useSpring(
+    useTransform(x, [-100, 100], [-50, 50]),
+    springConfig
+  );
 
   const handleMouseMove = (event: any) => {
     const halfWidth = event.target.offsetWidth / 2;
