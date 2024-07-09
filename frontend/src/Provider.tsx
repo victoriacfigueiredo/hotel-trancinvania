@@ -1,15 +1,19 @@
 import { ReactNode } from "react";
-import { HomeProvider } from "./app/example/context/HomeContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./shared/theme/theme";
 import { Fonts } from "./shared/theme/Fonts";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const Provider = ({ children }: { children: ReactNode }) => {
   return (
-    <ChakraProvider theme={theme}>
-      <Fonts />
-      <HomeProvider>{children}</HomeProvider>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <Fonts />
+        {children}
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 };
 

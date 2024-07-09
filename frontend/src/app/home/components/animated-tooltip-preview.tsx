@@ -1,5 +1,3 @@
-import React from "react";
-import { Box } from "@chakra-ui/react";
 import { AnimatedTooltip } from "./ui/animated-tooltip";
 
 const people = [
@@ -48,7 +46,5 @@ const people = [
 ];
 
 export function AnimatedTooltipPreview() {
-  return (
-    <AnimatedTooltip items={people} />
-  );
+  return <AnimatedTooltip items={people} />;
 }

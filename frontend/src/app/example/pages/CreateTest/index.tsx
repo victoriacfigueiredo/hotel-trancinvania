@@ -1,14 +1,22 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import styles from "./index.module.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext, useEffect } from "react";
-import { HomeContext } from "../../context/HomeContext";
 import { TestFormSchema, TestFormType } from "../../forms/TestForm";
 import { Link } from "react-router-dom";
-import Button from "../../../../shared/components/Button";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Heading,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
+import { useCreateTest } from "../../hooks";
 
 const CreateTest = () => {
-  const { state, prevState, service } = useContext(HomeContext);
+  const createTestsMutation = useCreateTest();
 
   const {
     register,
@@ -19,47 +27,89 @@ const CreateTest = () => {
     resolver: zodResolver(TestFormSchema),
   });
 
+  const toast = useToast();
+
   const onSubmit: SubmitHandler<TestFormType> = async (body) => {
-    service.createTest(body);
+    await createTestsMutation
+      .mutateAsync(body)
+      .then(() => {
+        toast({
+          title: "Teste criado com sucesso",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Erro ao criar teste",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
     reset();
   };
 
-  useEffect(() => {
-    if (
-      state.createTestRequestStatus !== prevState?.createTestRequestStatus &&
-      state.createTestRequestStatus.isSuccess()
-    ) {
-      alert("Teste criado com sucesso!");
-    }
-  }, [state, prevState]);
-
   return (
-    <section className={styles.container}>
-      <h1 className={styles.title}>Crie um test</h1>
-      <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.formInputContainer}>
-          <input
-            data-cy="input-name"
-            {...register("name")}
-            placeholder="Digite o nome"
-            className={styles.formInput}
-          />
-          {errors.name && (
-            <span data-cy="input-name-error" className={styles.formError}>
-              {errors.name.message}
-            </span>
-          )}
-        </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+    >
+      <Heading as="h1" marginBottom={"4"}>
+        Crie um teste
+      </Heading>
 
-        <Button data-cy="create" type="submit">
-          CRIAR
-        </Button>
+      <Box
+        as="form"
+        width="400px"
+        p={8}
+        borderWidth={1}
+        borderRadius="md"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <VStack spacing={4}>
+          <FormControl isInvalid={!!errors.name}>
+            <FormLabel htmlFor="name">Nome</FormLabel>
+            <Input
+              id="name"
+              data-cy="input-name"
+              placeholder="Digite o nome"
+              {...register("name")}
+            />
+            {errors.name && (
+              <FormErrorMessage data-cy="input-name-error">
+                {errors.name.message}
+              </FormErrorMessage>
+            )}
+          </FormControl>
+        </VStack>
 
-        <Link data-cy="view-tests" to="/tests">
-          VER TESTS
-        </Link>
-      </form>
-    </section>
+        <VStack mt={4} spacing={4} w="full">
+          <Button
+            isLoading={createTestsMutation.isPending}
+            w="full"
+            data-cy="create"
+            type="submit"
+            colorScheme="blue"
+          >
+            CRIAR
+          </Button>
+          <Button
+            w="full"
+            as={Link}
+            to="/tests"
+            colorScheme="teal"
+            variant="outline"
+          >
+            VER TESTS
+          </Button>
+        </VStack>
+      </Box>
+    </Box>
   );
 };
 
