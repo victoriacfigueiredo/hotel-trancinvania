@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateTest from "./app/home/pages/CreateTest";
 import ListTests from "./app/home/pages/ListTests";
-import { Promotion } from "./app/home/pages/Promotion";
-import { PublishedReservation } from "./app/home/pages/PublishedReservation/Register";
-import { AllPublishedReservation } from "./app/home/pages/PublishedReservation/Reservations";
-import { ReservationDetails } from "./app/home/pages/PublishedReservation/ReservationDetails";
+import { Promotion } from "./app/Promotion/pages";
+import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
+import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
+import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 
 const router = createBrowserRouter([
   {

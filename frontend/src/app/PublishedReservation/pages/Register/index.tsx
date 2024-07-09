@@ -11,18 +11,18 @@ import {
     Box,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import './style.css';
-import { Footer, Header, TeiaImg } from '../../Promotion';
-import APIService from '../../../../APIService';
+import { Footer, TeiaImg } from '../../../Promotion/pages/index';
+import APIServicePublishedReservation from '../../APIService';
 import { useNavigate } from 'react-router-dom';
+import { NavBar } from '../../../../shared/components/nav-bar';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
     const [rooms, setRooms] = useState('');
     const [people, setPeople] = useState('');
     const [price, setPrice] = useState('');
-    const [image, setImage] = useState('');
-    const [imageUrl, setImageUrl] = useState('')
+    const [image, setImage] = useState<File>();
+    const [imageUrl, setImageUrl] = useState('');
     const [wifi, setWifi] = useState(false);
     const [airConditioner, setAirConditioner] = useState(false);
     const [breakfast, setBreakfast] = useState(false);
@@ -32,9 +32,9 @@ export const PublishedReservation = () => {
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         const imagePreview = file ? URL.createObjectURL(file) : ''
-        console.log(imagePreview)
-        setImageUrl(imagePreview)
+        setImageUrl(imagePreview);
         setImage(file);
+
     }
 
     const handleDataChange = (setFunction) => event => {
@@ -45,7 +45,7 @@ export const PublishedReservation = () => {
         setFunction(event.target.checked);
     };
 
-    const api = new APIService();
+    const api = new APIServicePublishedReservation();
     const navigate = useNavigate();
 
     const handlePublicReservation = async() => {
@@ -55,7 +55,10 @@ export const PublishedReservation = () => {
             toast.warning('Preencha todos os campos!');
         }else{
             try{
-                await api.createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const {data} = await api.createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const formData = new FormData();
+                formData.append('image', image);
+                await api.uploadImage(+data.id, formData);
                 toast.success('Reserva publicada com sucesso!');
                 setTimeout(() => {
                     navigate('/publishedReservationList');
@@ -66,10 +69,9 @@ export const PublishedReservation = () => {
             }
         }
     }
-
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
-            <Header/>
+            <NavBar/>
             <Box mt="30px">
             <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="600px" position="relative">
                     <Box fontSize="18px" color="#eaeaea" fontWeight="bold" position="absolute" top="-14px" bg="#191919" px="10px" mx="auto">
@@ -78,9 +80,9 @@ export const PublishedReservation = () => {
                     <Flex justifyContent="space-between">
                         <Box>
                             <Box width="300px" aspectRatio="16/9" bg="#6A0572" display="flex" alignItems="center" justifyContent="center" color="#eaeaea" border="1px dashed #eaeaea" cursor="pointer" position="relative" _hover={{fontWeight: "bold"}}>
-                                {imageUrl && <img src={imageUrl} alt="Preview" className='inputPicture' style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>}
+                                {image && <img src={imageUrl} alt="Preview" className='inputPicture' style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>}
                                 <Input type='file' accept='image/*' onChange={handleImageChange} opacity="0" position="absolute" width="300px" height="100%" cursor="pointer" aspectRatio="16/9"></Input>
-                                <Box display={imageUrl ? "none" : "inline"}>Escolha uma imagem</Box>
+                                <Box display={image ? "none" : "inline"}>Escolha uma imagem</Box>
                             </Box>
                            
                             <Flex flexDirection="column" mt="25px" gap="5px">

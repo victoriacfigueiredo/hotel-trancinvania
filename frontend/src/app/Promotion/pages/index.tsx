@@ -15,9 +15,12 @@ import logoImg from './logo.png';
 import aranhaImg from './aranha.png';
 import teiaImg from './teia.png';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import APIService from '../../../APIService';
-import { PromotionType } from '../../../APIService';
-import { LabelComponent } from '../PublishedReservation/Register';
+import APIServicePromotion from '../APIService';
+import { PromotionType } from '../APIService';
+import { LabelComponent } from '../../PublishedReservation/pages/Register';
+import { NavBar } from '../../../shared/components/nav-bar';
+import APIServicePublishedReservation from '../../PublishedReservation/APIService';
+
 
 export const Promotion = () => {
     const { reservation_id } = useParams();
@@ -28,7 +31,8 @@ export const Promotion = () => {
     const [actionType, setActionType] = useState('');
 
     const navigate = useNavigate();
-    const api = new APIService();
+    const apiPromotion = new APIServicePromotion();
+    const apiPublishedReservation = new APIServicePublishedReservation();
     const location = useLocation();
 
     useEffect(() => {
@@ -39,7 +43,7 @@ export const Promotion = () => {
         const fetchReservationData = async () => {
             if(reservation_id){
                 try {
-                    const response = await api.getPublishedReservationById(+reservation_id);
+                    const response = await apiPublishedReservation.getPublishedReservationById(+reservation_id);
                     setReservationData(response.data);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
@@ -61,6 +65,7 @@ export const Promotion = () => {
         setNumRooms(event.target.value);
     };
 
+
     const handleConfirmRegister = async() => {
         if(discount === '' || promoType === undefined){
             toast.warning('Preencha todos os campos!');
@@ -74,26 +79,22 @@ export const Promotion = () => {
                 if(reservation_id){
                     if (actionType === 'createSingle') {
                         if(promoType === 'ilimitada'){
-                            await api.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
+                            await apiPromotion.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
                         }else{
-                            await api.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
+                            await apiPromotion.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
                         }
                         toast.success('Promoção cadastrada com sucesso!');
                     }else if (actionType === 'update') {
                         if(promoType === 'ilimitada'){
-                            await api.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
+                            await apiPromotion.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
                         }else{
-                            await api.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
+                            await apiPromotion.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
                         }
                         toast.success('Promoção atualizada com sucesso!');
                     }
                 }else{
                     if (actionType === 'createAll') {
-                        if(promoType === 'ilimitada'){
-                            await api.createPromotionAll(parseInt(discount, 10), PromotionType.ILIMITADA);
-                        }else{
-                            await api.createPromotionAll(parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
-                        }
+                        await apiPromotion.createPromotionAll(parseInt(discount, 10), PromotionType.ILIMITADA);
                         toast.success('Promoção cadastrada com sucesso!');
                     }
                 }
@@ -123,34 +124,37 @@ export const Promotion = () => {
     const price = +reservationData.price;
 
     return (
-        <Box bg="#191919" minH="100vh" overflow="hidden" display="flex" flexDirection="column" justifyContent="space-between">
-            <Header />
-            <Box as="main" mt="30px">
+        <Box bg="#191919" h="100vh" overflow="hidden" display="flex" flexDirection="column" justifyContent="space-between">
+            <NavBar/>
+            <Box as="main" mt="30px" mx="auto" width="90%" maxWidth="600px">
             <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="360px" position="relative">
                     <Text fontSize="20px" color="#eaeaea" fontWeight="bold" position="absolute" top="-14px" bg="#191919" px="10px" mx="auto" left="20%">
                         Dados da Promoção
                     </Text>
                         <Flex flexDirection="column" mt="20px">
                             <LabelComponent value="Desconto" type="number" input={discount} onChange={handleDiscountChange} />
-                            <FormControl mb="15px">
-                                <FormLabel htmlFor="promoType" color="white" mb="8px">Promoção</FormLabel>
-                                <Select isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
-                                    <option value='nothig' style={{ backgroundColor: '#6A0572' }}></option>
-                                    <option value='ilimitada' style={{ backgroundColor: '#6A0572' }}>Ilimitada</option>
-                                    <option value='limiteQuarto' style={{ backgroundColor: '#6A0572' }}>Limite de Quarto</option>
-                                </Select>
-                            </FormControl>
-                            {promoType === 'limiteQuarto' && (
-                                <LabelComponent value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} />
-                            )}
+                            
                             {reservation_id && (
-                                <Box mb="25px">
-                                    <FormLabel htmlFor="valor" color="white" mb="8px">Valor</FormLabel>
-                                    <Flex justify="center" alignItems="center">
-                                        <Text bg="#6A0572" color="white" p="7px" borderRadius="4px" border="1px solid #eaeaea" width="100%">R$ {price.toFixed(2)}</Text>
-                                        <Text color="white" fontSize="24px" mx="10px">→</Text>
-                                        <Text bg="#6A0572" color="white" p="7px" borderRadius="4px" border="1px solid #eaeaea" width="100%">R$ {handlePriceChange()}</Text>
-                                    </Flex>
+                                <Box>
+                                    <FormControl mb="15px">
+                                    <FormLabel htmlFor="promoType" color="white" mb="8px">Promoção</FormLabel>
+                                        <Select placeholder="" isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
+                                            <option value='nothig' style={{ backgroundColor: '#6A0572' }}></option>
+                                            <option value='ilimitada' style={{ backgroundColor: '#6A0572' }}>Ilimitada</option>
+                                            <option value='limiteQuarto' style={{ backgroundColor: '#6A0572' }}>Limite de Quarto</option>
+                                        </Select>
+                                    </FormControl>
+                                    {promoType === 'limiteQuarto' && (
+                                        <LabelComponent value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} />
+                                    )}
+                                    <Box mb="25px">
+                                        <FormLabel htmlFor="valor" color="white" mb="8px">Valor</FormLabel>
+                                        <Flex justify="center" alignItems="center">
+                                            <Text bg="#6A0572" color="white" p="7px" borderRadius="4px" border="1px solid #eaeaea" width="100%">R$ {price.toFixed(2)}</Text>
+                                            <Text color="white" fontSize="24px" mx="10px">→</Text>
+                                            <Text bg="#6A0572" color="white" p="7px" borderRadius="4px" border="1px solid #eaeaea" width="100%">R$ {handlePriceChange()}</Text>
+                                        </Flex>
+                                    </Box>
                                 </Box>
                             )}
                             <Flex justify="space-between" mt="10px">
@@ -165,7 +169,8 @@ export const Promotion = () => {
                     </Box>
                 <Box bgImage={`url(${aranhaImg})`} position="absolute" top="90px" left="85%" w="200px" h="350px" bgSize="contain" bgRepeat="no-repeat" />
             </Box>
-                <Footer />
+            <Box bgImage={`url(${teiaImg})`} position="absolute" bottom="0px" left="0px" w="400px" h="350px" bgSize="contain" bgRepeat="no-repeat" />
+            <Box as="footer" bg="#191919" h="50px" display="flex" justifyContent="center" />
                 <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
         </Box>);
     }
