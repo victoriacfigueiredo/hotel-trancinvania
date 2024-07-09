@@ -26,6 +26,7 @@ let mockPublishedReservation = {
     new_price: 450,
     promotion_id: 1,
     hotelier_id: 1, 
+    imageUrl: null
 }
 
 let mockReservation = {

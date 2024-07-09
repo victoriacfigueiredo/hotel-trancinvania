@@ -49,6 +49,7 @@ defineFeature(feature, (test) => {
             new_price: price,
             promotion_id: null,
             hotelier_id: 1,
+            imageUrl: null
         }
     }
 
@@ -67,6 +68,7 @@ defineFeature(feature, (test) => {
             new_price: price,
             promotion_id: promotion_id,
             hotelier_id: 1,
+            imageUrl: null,
         }
     }
 

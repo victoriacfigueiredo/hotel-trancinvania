@@ -53,6 +53,7 @@ const createPublishedReservation = async (name: string, rooms: number, people: n
         new_price: 1000,
         promotion_id: null,
         hotelier_id: 1,
+        imageUrl: null
     }
 }
 
