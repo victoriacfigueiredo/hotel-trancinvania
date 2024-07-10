@@ -20,8 +20,8 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
-//import LogoHotel from "../assets/logo_hotel.png";
-import logoImg from '../../app/Promotion/pages/logo.png';
+//import logoImg from '../../app/Promotion/pages/logo.png';
+import LogoHotel from "../assets/logo_hotel.png";
 
 //const hotelLogoUrl = "https://i.imgur.com/sZnZjMW.png";
 //const hotelLogoUrlExp = "https://i.imgur.com/QcX5CZ7.png";
@@ -42,8 +42,7 @@ export const NavBar: React.FC = () => {
   return (
     <Box bg="#EAEAEA" color="#000000" height="90px">
       <Flex justify="space-between" align="center" p={4} height="100%">
-        <Image src={logoImg} alt="Hotel Transilvânia Logo" height="80px"/>
-
+        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="80px" />
         {/* Desktop Menu */}
         <Flex
           align="center"
@@ -276,3 +275,4 @@ export const NavBar: React.FC = () => {
     </Box>
   );
 };
+
