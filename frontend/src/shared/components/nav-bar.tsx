@@ -1,5 +1,3 @@
-import logoImg from '../../app/Promotion/pages/logo.png';
-
 import {
   Box,
   Flex,
@@ -23,6 +21,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
 import LogoHotel from "../assets/logo_hotel.png";
+import logoImg from '../../app/Promotion/pages/logo.png';
 
 //const hotelLogoUrl = "https://i.imgur.com/sZnZjMW.png";
 //const hotelLogoUrlExp = "https://i.imgur.com/QcX5CZ7.png";
