@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { LoginFormInputs, LoginSchema } from "../../../forms/LoginForm";
+import { useNavigate } from "react-router-dom";
 
 const moonImage = "https://i.imgur.com/QxLtz78.png";
 //const barImage = "https://i.imgur.com/JamSVlX.png";
@@ -28,6 +29,7 @@ const ghostFrontImage = "https://i.imgur.com/RF0q2DH.png";
 const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
 const LoginHotelier: React.FC = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -45,6 +47,9 @@ const LoginHotelier: React.FC = () => {
       duration: 5000,
       isClosable: true,
     });
+  };
+  const handleForgotPasswordClick = () => {
+    navigate("/password/recover");
   };
 
   return (
@@ -118,6 +123,7 @@ const LoginHotelier: React.FC = () => {
                         bg: "red.500",
                         color: "white",
                       }}
+                      onClick={handleForgotPasswordClick}
                     >
                       Esqueci a Senha
                     </Button>

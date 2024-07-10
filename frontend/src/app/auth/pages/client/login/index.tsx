@@ -21,6 +21,7 @@ import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { LoginFormInputs, LoginSchema } from "../../../forms/LoginForm";
 import { useLoginClientMutation } from "../../../hooks";
+import { useNavigate } from "react-router";
 
 const moonImage = "https://i.imgur.com/QxLtz78.png";
 //const barImage = "https://i.imgur.com/JamSVlX.png";
@@ -29,6 +30,7 @@ const ghostFrontImage = "https://i.imgur.com/RF0q2DH.png";
 const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
 const LoginClient: React.FC = () => {
+  const navigate = useNavigate();
   const loginClientMutation = useLoginClientMutation();
   const {
     register,
@@ -48,6 +50,10 @@ const LoginClient: React.FC = () => {
       duration: 5000,
       isClosable: true,
     });
+  };
+
+  const handleForgotPasswordClick = () => {
+    navigate("/password/recover");
   };
 
   return (
@@ -126,6 +132,7 @@ const LoginClient: React.FC = () => {
                         bg: "red.500",
                         color: "white",
                       }}
+                      onClick={handleForgotPasswordClick}
                     >
                       Esqueci a Senha
                     </Button>
