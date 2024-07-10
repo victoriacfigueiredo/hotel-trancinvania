@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
+//import logoImg from '../../app/Promotion/pages/logo.png';
 import LogoHotel from "../assets/logo_hotel.png";
 
 //const hotelLogoUrl = "https://i.imgur.com/sZnZjMW.png";
@@ -39,10 +40,9 @@ export const NavBar: React.FC = () => {
   } = useDisclosure();
 
   return (
-    <Box bg="#EAEAEA" color="#000000" height="80px">
+    <Box bg="#EAEAEA" color="#000000" height="90px">
       <Flex justify="space-between" align="center" p={4} height="100%">
-        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="60px" />
-
+        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="80px" />
         {/* Desktop Menu */}
         <Flex
           align="center"
@@ -89,10 +89,10 @@ export const NavBar: React.FC = () => {
               <MenuItem as={RouterLink} to="/reservas/element1">
                 Realizar Reserva
               </MenuItem>
-              <MenuItem as={RouterLink} to="/reservas/element2">
+              <MenuItem as={RouterLink} to="/publishedReservation">
                 Publicar Reservas
               </MenuItem>
-              <MenuItem as={RouterLink} to="/reservas/element3">
+              <MenuItem as={RouterLink} to="/publishedReservationList">
                 Gerenciar Reservas
               </MenuItem>
             </MenuList>
@@ -188,7 +188,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/reservas/element2"
+                  to="/publishedReservation"
                   display="block"
                   textDecoration="none"
                   color="#000000"
@@ -200,7 +200,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/reservas/element3"
+                  to="/publishedReservationList"
                   display="block"
                   textDecoration="none"
                   color="#000000"
@@ -275,3 +275,4 @@ export const NavBar: React.FC = () => {
     </Box>
   );
 };
+

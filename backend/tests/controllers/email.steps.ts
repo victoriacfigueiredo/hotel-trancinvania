@@ -50,6 +50,7 @@ const createPublishedReservation = {
         new_price: 100.00,
         promotion_id: null,
         hotelier_id: 1,
+        imageUrl: null,
 }
 
 const createReservation = async (publishedReservationId: number) => {

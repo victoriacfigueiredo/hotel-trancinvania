@@ -1,4 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Promotion } from "./app/Promotion/pages";
+import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
+import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
+import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
@@ -16,7 +20,7 @@ const router = createBrowserRouter([
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
-  /*{
+    /*{
     path: "/register/client",
     Component: ClientRegister,
   },*/
@@ -24,6 +28,26 @@ const router = createBrowserRouter([
     path: "/register/hotelier",
     Component: HotelierRegister,
   },*/
+  {
+    path: '/promotions/:reservation_id',
+    Component: Promotion,
+  },
+  {
+    path: '/promotions',
+    Component: Promotion,
+  },
+  {
+    path: '/publishedReservation',
+    Component: PublishedReservation,
+  },
+  {
+    path: '/publishedReservationList',
+    Component: AllPublishedReservation,
+  },
+  {
+    path: '/publishedReservationDetails/:reservation_id',
+    Component: ReservationDetails,
+  }
 ]);
 
 export default function App() {
