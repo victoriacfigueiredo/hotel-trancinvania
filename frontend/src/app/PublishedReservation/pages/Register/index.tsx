@@ -74,10 +74,10 @@ export const PublishedReservation = () => {
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
             <NavBar/>
-            <Box mt="30px">
-            <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="600px" position="relative">
-                    <Box fontSize="18px" color="#eaeaea" fontWeight="bold" position="absolute" top="-14px" bg="#191919" px="10px" mx="auto">
-                        Dados da Reserva
+            <Box mt="50px">
+            <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="650px" position="relative">
+                    <Box fontSize="30px" color="#eaeaea" fontFamily="Trancinfont" position="absolute" top="-30px" bg="#191919" px="10px" mx="auto">
+                        Dados da reserva
                     </Box>
                     <Flex justifyContent="space-between">
                         <Box>

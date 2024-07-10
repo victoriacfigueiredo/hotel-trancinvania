@@ -128,7 +128,7 @@ export const Promotion = () => {
             <NavBar/>
             <Box as="main" mt="30px" mx="auto" width="90%" maxWidth="600px">
             <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="360px" position="relative">
-                    <Text fontSize="20px" color="#eaeaea" fontWeight="bold" position="absolute" top="-14px" bg="#191919" px="10px" mx="auto" left="20%">
+                    <Text fontSize="30px" fontFamily="Trancinfont" color="#eaeaea" position="absolute" top="-25px" bg="#191919" px="10px" mx="auto" left="20%">
                         Dados da Promoção
                     </Text>
                         <Flex flexDirection="column" mt="20px">
