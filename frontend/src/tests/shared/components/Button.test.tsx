@@ -1,6 +1,6 @@
+import { Button } from "@chakra-ui/react";
 import { fireEvent, render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import Button from "../../../shared/components/Button";
 
 describe("Button component", () => {
   it("renders the button", () => {
