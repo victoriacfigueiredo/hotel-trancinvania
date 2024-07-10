@@ -2,7 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
-import { recoverPassword } from "./app/auth/pages/recoverPassword";
+import { RecoverPassword } from "./app/auth/pages/recoverPassword";
+import { ResetNewPassword } from "./app/auth/pages/resetPassword/reset_newPassword";
+import { ResetToken } from "./app/auth/pages/resetPassword/reset_token";
 
 const router = createBrowserRouter([
   {
@@ -18,9 +20,22 @@ const router = createBrowserRouter([
     Component: LoginHotelier,
   },
   {
-    path: "/recover-password",
-    Component: recoverPassword,
+    path: "/password/recover",
+    Component: RecoverPassword,
   },
+  {
+    path: "client/password/reset",
+    Component: ResetNewPassword,
+  },
+  {
+    path: "client/password/reset",
+    Component: ResetNewPassword,
+  },
+  {
+    path: "/password/token",
+    Component: ResetToken,
+  },
+
   /*{
     path: "/register/client",
     Component: ClientRegister,
