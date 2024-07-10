@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
-import LogoHotel from "../assets/logo_hotel.png";
+//import LogoHotel from "../assets/logo_hotel.png";
 import logoImg from '../../app/Promotion/pages/logo.png';
 
 //const hotelLogoUrl = "https://i.imgur.com/sZnZjMW.png";
@@ -90,10 +90,10 @@ export const NavBar: React.FC = () => {
               <MenuItem as={RouterLink} to="/reservas/element1">
                 Realizar Reserva
               </MenuItem>
-              <MenuItem as={RouterLink} to="/reservas/element2">
+              <MenuItem as={RouterLink} to="/publishedReservation">
                 Publicar Reservas
               </MenuItem>
-              <MenuItem as={RouterLink} to="/reservas/element3">
+              <MenuItem as={RouterLink} to="/publishedReservationList">
                 Gerenciar Reservas
               </MenuItem>
             </MenuList>
@@ -189,7 +189,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/reservas/element2"
+                  to="/publishedReservation"
                   display="block"
                   textDecoration="none"
                   color="#000000"
@@ -201,7 +201,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/reservas/element3"
+                  to="/publishedReservationList"
                   display="block"
                   textDecoration="none"
                   color="#000000"

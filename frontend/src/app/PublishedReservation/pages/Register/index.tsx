@@ -9,12 +9,14 @@ import {
     Flex,
     Checkbox,
     Box,
+    Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
 import { Footer, TeiaImg } from '../../../Promotion/pages/index';
 import APIServicePublishedReservation from '../../APIService';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
+import { RiImageAddFill } from 'react-icons/ri';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -79,10 +81,10 @@ export const PublishedReservation = () => {
                     </Box>
                     <Flex justifyContent="space-between">
                         <Box>
-                            <Box width="300px" aspectRatio="16/9" bg="#6A0572" display="flex" alignItems="center" justifyContent="center" color="#eaeaea" border="1px dashed #eaeaea" cursor="pointer" position="relative" _hover={{fontWeight: "bold"}}>
+                            <Box width="300px" aspectRatio="16/9" bg="#6A0572" display="flex" alignItems="center" justifyContent="center" color="#eaeaea" border="1px dashed #eaeaea" cursor="pointer" position="relative" _hover={{background: "#6A0589"}}>
                                 {image && <img src={imageUrl} alt="Preview" className='inputPicture' style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>}
                                 <Input type='file' accept='image/*' onChange={handleImageChange} opacity="0" position="absolute" width="300px" height="100%" cursor="pointer" aspectRatio="16/9"></Input>
-                                <Box display={image ? "none" : "inline"}>Escolha uma imagem</Box>
+                                <Box display={image ? "none" : "inline"}><Icon as = {RiImageAddFill} color="#eaeaea" boxSize="50px"/></Box>
                             </Box>
                            
                             <Flex flexDirection="column" mt="25px" gap="5px">
