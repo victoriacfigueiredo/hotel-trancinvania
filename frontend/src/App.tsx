@@ -7,6 +7,7 @@ import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
+import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: '/publishedReservationUpdate/:reservation_id',
     Component: PublishedReservationUpdate,
+  },
+  {
+    path: '/reservations',
+    Component: AllPublishedReservationClient,
   }
 ]);
 
