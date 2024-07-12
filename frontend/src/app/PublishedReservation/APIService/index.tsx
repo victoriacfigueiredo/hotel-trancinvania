@@ -16,7 +16,7 @@ export default class APIServicePublishedReservation{
     }
 
     async updatePublishedReservation(reservation_id: number,  name: string, rooms: number, people: number, wifi: boolean, breakfast: boolean, airConditioner: boolean, parking: boolean, room_service: boolean, price: number){
-        return this.api.put(`/reservations/${reservation_id}`, {name: name, rooms: rooms, people: people, wifi: wifi, breakfast: breakfast, airConditioner: airConditioner, parking: parking, room_service: room_service, price:price});
+        return this.api.patch(`/reservations/${reservation_id}`, {name: name, rooms: rooms, people: people, wifi: wifi, breakfast: breakfast, airConditioner: airConditioner, parking: parking, room_service: room_service, price:price});
     }
 
     async deletePublishedReservation(reservation_id: number){

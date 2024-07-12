@@ -6,6 +6,7 @@ import { ReservationDetails } from "./app/PublishedReservation/pages/Reservation
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
+import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: '/publishedReservationDetails/:reservation_id',
     Component: ReservationDetails,
+  },
+  {
+    path: '/publishedReservationUpdate/:reservation_id',
+    Component: PublishedReservationUpdate,
   }
 ]);
 
