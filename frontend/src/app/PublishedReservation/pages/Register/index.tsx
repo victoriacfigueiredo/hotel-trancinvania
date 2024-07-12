@@ -12,11 +12,11 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import APIServicePublishedReservation from '../../APIService';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
+import { createPublishedReservation, uploadImage } from '../../services';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -47,7 +47,6 @@ export const PublishedReservation = () => {
         setFunction(event.target.checked);
     };
 
-    const api = new APIServicePublishedReservation();
     const navigate = useNavigate();
 
     const handlePublicReservation = async() => {
@@ -57,10 +56,10 @@ export const PublishedReservation = () => {
             toast.warning('Preencha todos os campos!');
         }else{
             try{
-                const {data} = await api.createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const data = await createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
                 const formData = new FormData();
                 formData.append('image', image);
-                await api.uploadImage(+data.id, formData);
+                await uploadImage(+data.id, formData);
                 toast.success('Reserva publicada com sucesso!');
                 setTimeout(() => {
                     navigate('/publishedReservationList');

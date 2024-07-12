@@ -12,13 +12,13 @@ import {
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
 import aranhaImg from './aranha.png';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import APIServicePromotion from '../APIService';
-import { PromotionType } from '../APIService';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';;
+import { PromotionType } from '../models/promotion';
 import { LabelComponent } from '../../PublishedReservation/pages/Register';
 import { NavBar } from '../../../shared/components/nav-bar';
-import APIServicePublishedReservation from '../../PublishedReservation/APIService';
 import { BottomLeftTopRightImages } from '../../../shared/components/spider-images';
+import { createPromotion, createPromotionAll, updatePromotion } from '../services';
+import { getPublishedReservationById } from '../../PublishedReservation/services';
 
 
 export const Promotion = () => {
@@ -30,8 +30,6 @@ export const Promotion = () => {
     const [actionType, setActionType] = useState('');
 
     const navigate = useNavigate();
-    const apiPromotion = new APIServicePromotion();
-    const apiPublishedReservation = new APIServicePublishedReservation();
     const location = useLocation();
 
     useEffect(() => {
@@ -42,8 +40,8 @@ export const Promotion = () => {
         const fetchReservationData = async () => {
             if(reservation_id){
                 try {
-                    const response = await apiPublishedReservation.getPublishedReservationById(+reservation_id);
-                    setReservationData(response.data);
+                    const response = await getPublishedReservationById(+reservation_id);
+                    setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
                 }
@@ -78,22 +76,22 @@ export const Promotion = () => {
                 if(reservation_id){
                     if (actionType === 'createSingle') {
                         if(promoType === 'ilimitada'){
-                            await apiPromotion.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
+                            await createPromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA });
                         }else{
-                            await apiPromotion.createPromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
+                            await createPromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)} );
                         }
                         toast.success('Promoção cadastrada com sucesso!');
                     }else if (actionType === 'update') {
                         if(promoType === 'ilimitada'){
-                            await apiPromotion.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.ILIMITADA);
+                            await updatePromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA});
                         }else{
-                            await apiPromotion.updatePromotion(+reservation_id, parseInt(discount, 10), PromotionType.LIMITE_QUARTO, parseInt(numRooms, 10));
+                            await updatePromotion(+reservation_id, {discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)});
                         }
                         toast.success('Promoção atualizada com sucesso!');
                     }
                 }else{
                     if (actionType === 'createAll') {
-                        await apiPromotion.createPromotionAll(1, parseInt(discount, 10), PromotionType.ILIMITADA);
+                        await createPromotionAll(1, {discount: parseInt(discount, 10), type: PromotionType.ILIMITADA} );
                         toast.success('Promoção cadastrada com sucesso!');
                     }
                 }

@@ -6,25 +6,25 @@ import {
     Button,
     Flex,
 } from '@chakra-ui/react';
-import APIServicePromotion from '../../../Promotion/APIService';
-import APIServicePublishedReservation from '../../APIService';
 import maisImg from './mais.png';
 import morcegoImg from './bat.png';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
+import { deleteAllPromotions, getPromotionById } from '../../../Promotion/services';
+import { getAllPublishedReservation } from '../../services';
+import { PublishedReservationModel } from '../../models/publishedReservation';
+import { PromotionModel } from '../../../Promotion/models/promotion';
+
 
 export const AllPublishedReservation = () => {
-    const [reservations, setReservations] = useState<any[]>([]);
-    const [promotion, setPromotion] = useState<any>({});
-
-    const apiPromotion = new APIServicePromotion();
-    const apiPublishedReservation = new APIServicePublishedReservation();
+    const [reservations, setReservations] = useState<PublishedReservationModel[]>([]);
+    const [promotion, setPromotion] = useState<PromotionModel>({} as PromotionModel);
 
     useEffect(() => {
         const fetchReservations = async () => {
           try {
-            const response = await apiPublishedReservation.getAllPublishedReservation();
-            setReservations(response.data);
+            const response = await getAllPublishedReservation();
+            setReservations(response);
           } catch (error) {
             console.error('Erro ao obter as reservas:', error);
           }
@@ -37,7 +37,7 @@ export const AllPublishedReservation = () => {
 
     const handleDeletePromotion = async() => {
         try{
-            await apiPromotion.deleteAllPromotions(1);
+            await deleteAllPromotions(1);
             toast.success('Promoções deletadas com sucesso!');
         }catch(error){
             const err = error as { response: { data: { message: string } } };
@@ -47,8 +47,8 @@ export const AllPublishedReservation = () => {
 
     const handlePromotionChange = async (reservation_id: number) => {
         try {
-            const prom = await apiPromotion.getPromotionById(reservation_id);
-            const discount = prom.data.discount ?? 0;
+            const data = await getPromotionById(reservation_id);
+            const discount = data.discount ?? 0;
             setPromotion((prevPromotions) => ({
                 ...prevPromotions,
                 [reservation_id]: discount,

@@ -12,14 +12,15 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import APIServicePublishedReservation from '../../APIService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
+import { getPublishedReservationById, updatePublishedReservation, uploadImage } from '../../services';
+import { PublishedReservationModel } from '../../models/publishedReservation';
 
 export const PublishedReservationUpdate = () => {
-    const [reservationData, setReservationData] = useState<any>(null);
+    const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
     const { reservation_id } = useParams();
     const [name, setName] = useState('');
     const [rooms, setRooms] = useState('');
@@ -48,15 +49,14 @@ export const PublishedReservationUpdate = () => {
         setFunction(event.target.checked);
     };
 
-    const api = new APIServicePublishedReservation();
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchReservationData = async () => {
             if (reservation_id) {
                 try {
-                    const response = await api.getPublishedReservationById(+reservation_id);
-                    setReservationData(response.data);
+                    const response = await getPublishedReservationById(+reservation_id);
+                    setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
                 }
@@ -86,7 +86,7 @@ export const PublishedReservationUpdate = () => {
         } else {
             try {
                 if(reservation_id){
-                        await api.updatePublishedReservation(
+                        await updatePublishedReservation(
                         +reservation_id,
                         name !== '' ? name : reservationData.name,
                         rooms !== '' ? parseInt(rooms, 10) : reservationData.rooms,
@@ -101,7 +101,7 @@ export const PublishedReservationUpdate = () => {
                     if(image){
                         const formData = new FormData();
                         formData.append('image', image);
-                        await api.uploadImage(+reservation_id, formData);
+                        await uploadImage(+reservation_id, formData);
                     } 
                     toast.success('Reserva atualizada com sucesso!');
                     setTimeout(() => {
