@@ -37,7 +37,7 @@ export const AllPublishedReservation = () => {
 
     const handleDeletePromotion = async() => {
         try{
-            await apiPromotion.deleteAllPromotions();
+            await apiPromotion.deleteAllPromotions(1);
             toast.success('Promoções deletadas com sucesso!');
         }catch(error){
             const err = error as { response: { data: { message: string } } };

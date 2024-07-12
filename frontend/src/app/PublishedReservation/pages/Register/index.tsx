@@ -12,11 +12,11 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import { Footer, TeiaImg } from '../../../Promotion/pages/index';
 import APIServicePublishedReservation from '../../APIService';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
+import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -74,9 +74,10 @@ export const PublishedReservation = () => {
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
             <NavBar/>
-            <Box mt="50px">
+            <BottomLeftTopRightImages/>
+            <Box>
             <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="650px" position="relative">
-                    <Box fontSize="30px" color="#eaeaea" fontFamily="Trancinfont" position="absolute" top="-30px" bg="#191919" px="10px" mx="auto">
+                    <Box fontSize="30px" color="#eaeaea" fontFamily="Trancinfont" position="absolute" top="-35px" bg="#191919" px="10px" mx="auto">
                         Dados da reserva
                     </Box>
                     <Flex justifyContent="space-between">
@@ -112,9 +113,7 @@ export const PublishedReservation = () => {
                         </Button>
                     </Flex>
                 </Box>
-                <TeiaImg />
             </Box>
-            <Footer />
             <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
         </Box>);
 };

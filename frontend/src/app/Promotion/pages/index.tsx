@@ -11,15 +11,14 @@ import {
   Box, 
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import logoImg from './logo.png';
 import aranhaImg from './aranha.png';
-import teiaImg from './teia.png';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import APIServicePromotion from '../APIService';
 import { PromotionType } from '../APIService';
 import { LabelComponent } from '../../PublishedReservation/pages/Register';
 import { NavBar } from '../../../shared/components/nav-bar';
 import APIServicePublishedReservation from '../../PublishedReservation/APIService';
+import { BottomLeftTopRightImages } from '../../../shared/components/spider-images';
 
 
 export const Promotion = () => {
@@ -94,7 +93,7 @@ export const Promotion = () => {
                     }
                 }else{
                     if (actionType === 'createAll') {
-                        await apiPromotion.createPromotionAll(parseInt(discount, 10), PromotionType.ILIMITADA);
+                        await apiPromotion.createPromotionAll(1, parseInt(discount, 10), PromotionType.ILIMITADA);
                         toast.success('Promoção cadastrada com sucesso!');
                     }
                 }
@@ -124,9 +123,10 @@ export const Promotion = () => {
     const price = +reservationData.price;
 
     return (
-        <Box bg="#191919" h="100vh" overflow="hidden" display="flex" flexDirection="column" justifyContent="space-between">
+        <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
             <NavBar/>
-            <Box as="main" mt="30px" mx="auto" width="90%" maxWidth="600px">
+            <BottomLeftTopRightImages/>
+            <Box as="main" mx="auto" width="90%" maxWidth="600px">
             <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="360px" position="relative">
                     <Text fontSize="30px" fontFamily="Trancinfont" color="#eaeaea" position="absolute" top="-25px" bg="#191919" px="10px" mx="auto" left="20%">
                         Dados da Promoção
@@ -167,33 +167,10 @@ export const Promotion = () => {
                             </Flex>
                         </Flex>
                     </Box>
-                <Box bgImage={`url(${aranhaImg})`} position="absolute" top="90px" left="85%" w="200px" h="350px" bgSize="contain" bgRepeat="no-repeat" />
             </Box>
-            <Box bgImage={`url(${teiaImg})`} position="absolute" bottom="0px" left="0px" w="400px" h="350px" bgSize="contain" bgRepeat="no-repeat" />
-            <Box as="footer" bg="#191919" h="50px" display="flex" justifyContent="center" />
                 <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
         </Box>);
     }
-
-export const Header = () => {
-    return (
-        <Box as="header" bg="#eaeaea" h="90" display="flex" justifyContent="space-between">
-            <Box bgImage={`url(${logoImg})`} w="160px" h="90px" ml="20px" bgSize="cover" />
-            <Box fontSize="18px" color="#a4161a" fontWeight="bold" m="30px" p="7px">
-                marialet
-            </Box>
-        </Box>
-    );
-}
-
-export const Footer = () => {
-    return (
-        <Box>
-            <Box bgImage={`url(${teiaImg})`} position="absolute" bottom="0px" left="0px" w="400px" h="350px" bgSize="contain" bgRepeat="no-repeat" />
-            <Box as="footer" bg="#191919" h="50px" display="flex" justifyContent="center" />
-        </Box>
-    )
-}
 
 export const TeiaImg = () => {
     return (<Box bgImage={`url(${aranhaImg})`} position="absolute" top="90px" left="85%" w="200px" h="350px" bgSize="contain" bgRepeat="no-repeat" />);

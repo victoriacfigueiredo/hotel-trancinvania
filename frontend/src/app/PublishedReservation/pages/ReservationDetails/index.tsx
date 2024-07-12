@@ -17,7 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { FaCar, FaCoffee, FaConciergeBell, FaSnowflake, FaWifi } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
-import {MdOutlineBedroomChild} from 'react-icons/md'
+import {MdOutlineBedroomChild} from 'react-icons/md';
 
 export const ReservationDetails = () => {
     const { reservation_id } = useParams();
@@ -82,7 +82,7 @@ export const ReservationDetails = () => {
 
     return(<Box bg="#191919" minH="100vh" display="flex" flexDirection="column">
             <NavBar/>
-            <Box >
+            <Box ml="20px">
             <Flex flex="1" bg="#191919" justifyContent="center" alignItems="center" position="relative">
                 <Box position="absolute" left="100px" top="70px" width="500px">
                     <Box position="relative" width="100%" height="300px" bg="#6A0572" zIndex="1" backgroundSize="cover" backgroundPosition="center" style={{backgroundImage: `url(http://localhost:5001${reservationData.imageUrl})`}}/>
@@ -107,13 +107,13 @@ export const ReservationDetails = () => {
                         {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
                     </HStack>
                 </Box>
-                    <Flex flexDirection={'column'} gap="12px" ml="300px" mt="70px">
+                    <Flex flexDirection={'column'} gap="12px" ml="320px" mt="70px">
                         <Box mb="25px">
                             <DataComponent value={`${reservationData.rooms} Quartos`} icon={MdOutlineBedroomChild}/>
                             <Box boxSize="12px"></Box>
                             <DataComponent value={`${reservationData.people} Pessoas`} icon={FaPerson}/>
                         </Box>
-                        <ButtonComponent label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate('/publishedReservation')}/>
+                        <ButtonComponent label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate(`/publishedReservationUpdate/${reservationData.id}`)}/>
                         <ButtonComponent label="Deletar Reserva" icon = {<DeleteIcon/>} onClick={handleDeleteReservation}/>
                         <ButtonComponent label="Cadastrar Promoção" icon={<AddIcon/>} onClick={() => navigate(`/promotions/${reservation_id}?action=createSingle`)}/>
                         <ButtonComponent label="Editar Promoção" icon={<EditIcon />} onClick={() => navigate(`/promotions/${reservation_id}?action=update`)}/>
