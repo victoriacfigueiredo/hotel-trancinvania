@@ -12,21 +12,26 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import { NavBar } from "../../../../shared/components/nav-bar";
-import { BottomLeftTopRightImages } from "../../../../shared/components/spider-images";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RecoveryFormInputs, RecoverySchema } from "../../forms/recoveryForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useSendRecoveryEmailClientMutation } from "../../../hooks";
+import {
+  RecoveryFormInputs,
+  RecoverySchema,
+} from "../../../forms/RecoveryForm";
+import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
+import { NavBar } from "../../../../../shared/components/nav-bar";
 
 const keyImage = "https://i.imgur.com/5GmX6rc.png";
 const mummyImage = "https://i.imgur.com/zhv11La.png";
 const zoombieImage = "https://i.imgur.com/Y0svuZU.png";
 
-export const RecoverPassword: React.FC = () => {
+export const RecoverPasswordClient: React.FC = () => {
   const navigate = useNavigate();
+  const sendRecoveryEmailMutation = useSendRecoveryEmailClientMutation();
   const {
     register,
     handleSubmit,
@@ -35,28 +40,19 @@ export const RecoverPassword: React.FC = () => {
     resolver: zodResolver(RecoverySchema),
   });
 
-  const onSubmit = () => {
-    toast.success(
-      "Token enviado para o seu e-mail! Verifique sua caixa de entrada."
-    );
-    setTimeout(() => {
-      navigate("/password/token");
-    }, 3000);
+  const onSubmit = async (data: RecoveryFormInputs) => {
+    try {
+      await sendRecoveryEmailMutation.mutateAsync(data);
+      toast.success(
+        "Token enviado para o seu e-mail! Verifique sua caixa de entrada."
+      );
+      setTimeout(() => {
+        navigate("/client/password/reset");
+      }, 3000);
+    } catch (error) {
+      toast.error("Falha ao enviar o e-mail de recuperação. Tente novamente.");
+    }
   };
-  /*const handleSentClick = () => {
-    navigate("/password/token");
-  };
-   const toast = useToast();
-
-  const onSubmit = () => {
-    toast({
-      title: "Token enviado para o seu e-mail!",
-      description: "Verifique sua caixa de entrada.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  };*/
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
@@ -70,7 +66,7 @@ export const RecoverPassword: React.FC = () => {
             alt="Múmia"
             position="absolute"
             bottom="0"
-            left="-230px" // Adjust this value to position the ghost correctly
+            left="-190px"
             width="auto"
             height="480px"
             display={{ base: "none", md: "block" }}
@@ -129,7 +125,8 @@ export const RecoverPassword: React.FC = () => {
                     colorScheme="red"
                     bg="#A4161A"
                     type="submit"
-                    //onClick={handleSentClick}
+                    isLoading={sendRecoveryEmailMutation.isPending}
+                    loadingText="Enviando"
                   >
                     Enviar
                   </Button>
@@ -142,7 +139,7 @@ export const RecoverPassword: React.FC = () => {
             alt="Zumbi"
             position="absolute"
             bottom="0"
-            right="-220px" // Adjust this value to position the ghost correctly
+            right="-220px"
             width="auto"
             height="410px"
             display={{ base: "none", md: "block" }}
@@ -152,3 +149,5 @@ export const RecoverPassword: React.FC = () => {
     </Box>
   );
 };
+
+export default RecoverPasswordClient;

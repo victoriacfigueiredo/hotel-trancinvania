@@ -2,9 +2,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
-import { RecoverPassword } from "./app/auth/pages/recoverPassword";
-import { ResetNewPassword } from "./app/auth/pages/resetPassword/reset_newPassword";
-import { ResetToken } from "./app/auth/pages/resetPassword/reset_token";
+import RecoverPasswordHotelier from "./app/auth/pages/recoverPassword/recoverHotelier";
+import RecoverPasswordClient from "./app/auth/pages/recoverPassword/recoverClient";
+import ResetPasswordClient from "./app/auth/pages/resetPassword/resetPClient";
+import ResetPasswordHotelier from "./app/auth/pages/resetPassword/resetPHotelier";
 
 const router = createBrowserRouter([
   {
@@ -16,34 +17,25 @@ const router = createBrowserRouter([
     Component: LoginClient,
   },
   {
+    path: "client/password/recover",
+    Component: RecoverPasswordClient,
+  },
+  {
+    path: "client/password/reset",
+    Component: ResetPasswordClient,
+  },
+  {
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
   {
-    path: "/password/recover",
-    Component: RecoverPassword,
+    path: "hotelier/password/recover",
+    Component: RecoverPasswordHotelier,
   },
   {
-    path: "client/password/reset",
-    Component: ResetNewPassword,
+    path: "hotelier/password/reset",
+    Component: ResetPasswordHotelier,
   },
-  {
-    path: "client/password/reset",
-    Component: ResetNewPassword,
-  },
-  {
-    path: "/password/token",
-    Component: ResetToken,
-  },
-
-  /*{
-    path: "/register/client",
-    Component: ClientRegister,
-  },*/
-  /*{
-    path: "/register/hotelier",
-    Component: HotelierRegister,
-  },*/
 ]);
 
 export default function App() {

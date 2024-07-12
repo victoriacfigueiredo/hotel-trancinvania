@@ -53,7 +53,7 @@ const LoginClient: React.FC = () => {
   };
 
   const handleForgotPasswordClick = () => {
-    navigate("/password/recover");
+    navigate("/client/password/recover");
   };
 
   return (
@@ -66,7 +66,7 @@ const LoginClient: React.FC = () => {
             src={ghostFrontImage}
             alt="Fantasma de Frente"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             left="-290px" // Adjust this value to position the ghost correctly
             width="auto"
             height="200px"
@@ -78,11 +78,15 @@ const LoginClient: React.FC = () => {
                 <Image
                   src={moonImage}
                   alt="Login Icon"
-                  width="79.5px"
-                  height="69.8px"
+                  width="auto"
+                  height="75px"
                   mr={3}
                 />
-                <Text fontFamily="Trancinfont" fontSize="5xl">
+                <Text
+                  fontFamily="Trancinfont"
+                  fontSize="6xl"
+                  letterSpacing={"-0.07em"}
+                >
                   LOGIN CLIENTE
                 </Text>
               </HStack>
@@ -118,18 +122,19 @@ const LoginClient: React.FC = () => {
                     <Button
                       type="submit"
                       colorScheme="red"
-                      fontWeight={200}
+                      fontWeight={400}
                       isLoading={loginClientMutation.isPending}
+                      bg="#A4161A"
                     >
                       Entrar
                     </Button>
                     <Button
                       variant="outline"
-                      borderColor="red.500"
-                      fontWeight={200}
+                      borderColor="#A4161A"
+                      fontWeight={400}
                       color={"white"}
                       _hover={{
-                        bg: "red.500",
+                        bg: "#A4161A",
                         color: "white",
                       }}
                       onClick={handleForgotPasswordClick}
@@ -159,7 +164,7 @@ const LoginClient: React.FC = () => {
             src={ghostSideImage}
             alt="Fantasma de Lado"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             right="-230px" // Adjust this value to position the ghost correctly
             width="230px"
             height="auto"

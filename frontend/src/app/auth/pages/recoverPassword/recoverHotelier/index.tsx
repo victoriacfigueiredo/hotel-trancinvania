@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Container,
   Flex,
   FormControl,
@@ -13,22 +12,26 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   RecoveryFormInputs,
   RecoverySchema,
-} from "../../../forms/recoveryForm";
+} from "../../../forms/RecoveryForm";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useSendRecoveryEmailHotelierMutation } from "../../../hooks";
 
-const wizardImage = "https://i.imgur.com/En0qPaO.png";
-const booImage = "https://i.imgur.com/1oLAmzY.png";
+const keyImage = "https://i.imgur.com/5GmX6rc.png";
+const mummyImage = "https://i.imgur.com/zhv11La.png";
+const zoombieImage = "https://i.imgur.com/Y0svuZU.png";
 
-export const ResetToken: React.FC = () => {
+export const RecoverPasswordHotelier: React.FC = () => {
   const navigate = useNavigate();
+  const sendRecoveryEmailMutation = useSendRecoveryEmailHotelierMutation();
   const {
     register,
     handleSubmit,
@@ -37,26 +40,43 @@ export const ResetToken: React.FC = () => {
     resolver: zodResolver(RecoverySchema),
   });
 
-  const onSubmit = () => {
-    toast.success(
-      "Token enviado para o seu e-mail! Verifique sua caixa de entrada."
-    );
+  const onSubmit = async (data: RecoveryFormInputs) => {
+    try {
+      await sendRecoveryEmailMutation.mutateAsync(data);
+      toast.success(
+        "Token enviado para o seu e-mail! Verifique sua caixa de entrada."
+      );
+      setTimeout(() => {
+        navigate("/hotelier/password/reset");
+      }, 3000);
+    } catch (error) {
+      toast.error("Falha ao enviar o e-mail de recuperação. Tente novamente.");
+    }
   };
-  const handleSendEmailAgainClick = () => {
-    navigate("/password/recover");
-  };
+
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
         <Flex position="relative" alignItems="flex-end">
+          <Image
+            src={mummyImage}
+            alt="Múmia"
+            position="absolute"
+            bottom="0"
+            left="-190px"
+            width="auto"
+            height="480px"
+            display={{ base: "none", md: "block" }}
+          />
           <Container maxW="container.md" position="relative" zIndex={1}>
             <Flex direction="column" align="center" justify="center">
               <HStack alignItems={"flex-start"} mb={5}>
                 <Image
-                  src={booImage}
-                  alt="Reset Password Icon"
+                  src={keyImage}
+                  alt="Recover Password Icon"
                   width="auto"
                   height="90px"
                   mr={3}
@@ -70,11 +90,11 @@ export const ResetToken: React.FC = () => {
                 </Text>
               </HStack>
               <Text fontSize={"20px"} fontWeight={"300"} mb={4}>
-                Não se assuste! Cole abaixo o token que
+                Esqueceu sua senha? Digite o e-mail que você
                 <br />
-                você recebeu por e-mail e escolha sua
+                cadastrou no campo abaixo e te enviaremos um
                 <br />
-                nova senha.
+                token para recuperá-la.
               </Text>
               <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
                 <Flex
@@ -89,50 +109,39 @@ export const ResetToken: React.FC = () => {
                     mt={6}
                     maxWidth="400px"
                   >
-                    <FormLabel htmlFor="email">Token</FormLabel>
+                    <FormLabel htmlFor="email">Email</FormLabel>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="Digite seu Token"
+                      placeholder="Digite seu e-mail"
                       {...register("email")}
                     />
                     <FormErrorMessage>
                       {errors.email && errors.email.message}
                     </FormErrorMessage>
                   </FormControl>
-                  <ButtonGroup spacing={4}>
-                    <Button mt={6} colorScheme="red" bg="#A4161A" type="submit">
-                      Continuar
-                    </Button>
-                    <Button
-                      mt={6}
-                      colorScheme="red"
-                      type="submit"
-                      variant="outline"
-                      borderColor="red.500"
-                      color={"white"}
-                      _hover={{
-                        bg: "transparent",
-                        color: "red.500",
-                        //borderColor: "#FAC006",
-                      }}
-                      onClick={handleSendEmailAgainClick}
-                    >
-                      Enviar novamente
-                    </Button>
-                  </ButtonGroup>
+                  <Button
+                    mt={6}
+                    colorScheme="red"
+                    bg="#A4161A"
+                    type="submit"
+                    isLoading={sendRecoveryEmailMutation.isPending}
+                    loadingText="Enviando"
+                  >
+                    Enviar
+                  </Button>
                 </Flex>
               </form>
             </Flex>
           </Container>
           <Image
-            src={wizardImage}
-            alt="Feiticeiro"
+            src={zoombieImage}
+            alt="Zumbi"
             position="absolute"
             bottom="0"
-            right="-300px" // Adjust this value to position the ghost correctly
+            right="-220px"
             width="auto"
-            height="480px"
+            height="410px"
             display={{ base: "none", md: "block" }}
           />
         </Flex>
@@ -140,3 +149,5 @@ export const ResetToken: React.FC = () => {
     </Box>
   );
 };
+
+export default RecoverPasswordHotelier;

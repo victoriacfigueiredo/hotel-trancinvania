@@ -49,7 +49,7 @@ const LoginHotelier: React.FC = () => {
     });
   };
   const handleForgotPasswordClick = () => {
-    navigate("/password/recover");
+    navigate("/hotelier/password/recover");
   };
 
   return (
@@ -62,7 +62,7 @@ const LoginHotelier: React.FC = () => {
             src={ghostFrontImage}
             alt="Fantasma de Frente"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             left="-290px" // Adjust this value to position the ghost correctly
             width="auto"
             height="200px"
@@ -74,11 +74,15 @@ const LoginHotelier: React.FC = () => {
                 <Image
                   src={moonImage}
                   alt="Login Icon"
-                  width="79.5px"
-                  height="69.8px"
+                  width="auto"
+                  height="75px"
                   mr={3}
                 />
-                <Text fontFamily="Trancinfont" fontSize="5xl">
+                <Text
+                  fontFamily="Trancinfont"
+                  fontSize="6xl"
+                  letterSpacing={"-0.07em"}
+                >
                   LOGIN HOTELEIrO
                 </Text>
               </HStack>
@@ -111,16 +115,21 @@ const LoginHotelier: React.FC = () => {
                     </FormControl>
                   </VStack>
                   <ButtonGroup spacing={4}>
-                    <Button type="submit" colorScheme="red" fontWeight={200}>
+                    <Button
+                      type="submit"
+                      colorScheme="red"
+                      fontWeight={400}
+                      bg="#A4161A"
+                    >
                       Entrar
                     </Button>
                     <Button
                       variant="outline"
-                      borderColor="red.500"
-                      fontWeight={200}
+                      borderColor="#A4161A"
+                      fontWeight={400}
                       color={"white"}
                       _hover={{
-                        bg: "red.500",
+                        bg: "#A4161A",
                         color: "white",
                       }}
                       onClick={handleForgotPasswordClick}
@@ -150,7 +159,7 @@ const LoginHotelier: React.FC = () => {
             src={ghostSideImage}
             alt="Fantasma de Lado"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             right="-230px" // Adjust this value to position the ghost correctly
             width="230px"
             height="auto"
