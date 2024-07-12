@@ -2,10 +2,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
-import RecoverPasswordHotelier from "./app/auth/pages/recoverPassword/recoverHotelier";
-import RecoverPasswordClient from "./app/auth/pages/recoverPassword/recoverClient";
-import ResetPasswordClient from "./app/auth/pages/resetPassword/resetPClient";
-import ResetPasswordHotelier from "./app/auth/pages/resetPassword/resetPHotelier";
+import RecoverPasswordHotelier from "./app/auth/pages/hotelier/recover";
+import RecoverPasswordClient from "./app/auth/pages/client/recover";
+import ResetPasswordClient from "./app/auth/pages/client/reset";
+import ResetPasswordHotelier from "./app/auth/pages/hotelier/reset";
 
 const router = createBrowserRouter([
   {
