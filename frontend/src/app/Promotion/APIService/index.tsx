@@ -24,11 +24,11 @@ export default class APIServicePromotion{
         return this.api.delete(`/reservation/${reservation_id}/promotions`);
     }
 
-    async createPromotionAll(discount: number, type: PromotionType, num_rooms?: number){
-        return this.api.post(`/reservation/promotions`, {discount: discount, type: type, num_rooms: num_rooms});
+    async createPromotionAll(hotelier_id: number, discount: number, type: PromotionType, num_rooms?: number){
+        return this.api.post(`/hotelier/${hotelier_id}/reservation/promotions`, {discount: discount, type: type, num_rooms: num_rooms});
     }
 
-    async deleteAllPromotions(){
-        return this.api.delete(`/reservation/promotions`);
+    async deleteAllPromotions(hotelier_id: number){
+        return this.api.delete(`/hotelier/${hotelier_id}/reservation/promotions`);
     }
 }
