@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Button, HStack } from '@chakra-ui/react';
-import { NavBar } from '../../../shared/components/nav-bar';
+import { NavBar } from '../../../../shared/components/nav-bar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

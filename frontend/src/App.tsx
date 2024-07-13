@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateTest from "./app/home/pages/CreateTest";
 import ListTests from "./app/home/pages/ListTests";
-import CreateReservation from "./app/reservation/CreateReservation"
-import PayReservation from "./app/reservation/PayReservation"
-import MyReservations from "./app/reservation/MyReservations"
+import CreateReservation from "./app/reservation/pages/CreateReservation"
+import PayReservation from "./app/reservation/pages/PayReservation"
+import MyReservations from "./app/reservation/pages/MyReservations"
 import SelectReservation from "./app/reservation/SelectReservation"
-import EditReservation from "./app/reservation/EditReservation"
-import EditPay from "./app/reservation/EditPay"
+import EditReservation from "./app/reservation/pages/EditReservation"
+import EditPay from "./app/reservation/pages/EditPay"
 
 const router = createBrowserRouter([
   {

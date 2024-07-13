@@ -1,5 +1,5 @@
 import React, { useState, ForwardedRef } from 'react';
-import { JustSpider } from "../components/just-spider";
+import { JustSpider } from "../../components/just-spider";
 import {
   Box,
   Text,
@@ -31,7 +31,7 @@ import {
 } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { NavBar } from '../../../shared/components/nav-bar';
+import { NavBar } from '../../../../shared/components/nav-bar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
