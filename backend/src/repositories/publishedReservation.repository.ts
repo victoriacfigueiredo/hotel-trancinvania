@@ -20,12 +20,11 @@ export default class PublishedReservationRepository {
         });
     }
 
-    async updatePromotionIdAllReservations(promotion_id: number): Promise<void>{  
-        await prisma.publishedReservation.updateMany({
-            
+    
+    async updatePromotionIdAllReservations(hotelier_id: number, promotion_id: number): Promise<void>{  
+        await prisma.publishedReservation.updateMany({ where: {hotelier_id: hotelier_id},
             data: {
                 promotion_id: promotion_id,
-                
             },
         });
     }

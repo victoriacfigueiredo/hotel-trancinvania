@@ -12,11 +12,11 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import { Footer, TeiaImg } from '../../../Promotion/pages/index';
-import APIServicePublishedReservation from '../../APIService';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
+import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
+import { createPublishedReservation, uploadImage } from '../../services';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -47,7 +47,6 @@ export const PublishedReservation = () => {
         setFunction(event.target.checked);
     };
 
-    const api = new APIServicePublishedReservation();
     const navigate = useNavigate();
 
     const handlePublicReservation = async() => {
@@ -57,10 +56,10 @@ export const PublishedReservation = () => {
             toast.warning('Preencha todos os campos!');
         }else{
             try{
-                const {data} = await api.createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const data = await createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
                 const formData = new FormData();
                 formData.append('image', image);
-                await api.uploadImage(+data.id, formData);
+                await uploadImage(+data.id, formData);
                 toast.success('Reserva publicada com sucesso!');
                 setTimeout(() => {
                     navigate('/publishedReservationList');
@@ -74,10 +73,11 @@ export const PublishedReservation = () => {
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
             <NavBar/>
-            <Box mt="30px">
-            <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="600px" position="relative">
-                    <Box fontSize="18px" color="#eaeaea" fontWeight="bold" position="absolute" top="-14px" bg="#191919" px="10px" mx="auto">
-                        Dados da Reserva
+            <BottomLeftTopRightImages/>
+            <Box>
+            <Box border="2px solid #eaeaea" borderRadius="5px" p="20px" textAlign="center" mx="auto" maxW="650px" position="relative">
+                    <Box fontSize="30px" color="#eaeaea" fontFamily="Trancinfont" position="absolute" top="-35px" bg="#191919" px="10px" mx="auto">
+                        Dados da reserva
                     </Box>
                     <Flex justifyContent="space-between">
                         <Box>
@@ -112,9 +112,7 @@ export const PublishedReservation = () => {
                         </Button>
                     </Flex>
                 </Box>
-                <TeiaImg />
             </Box>
-            <Footer />
             <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
         </Box>);
 };

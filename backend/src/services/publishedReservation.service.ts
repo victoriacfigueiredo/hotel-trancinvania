@@ -1,7 +1,7 @@
 import { IGetReservationsByFilters, PublishedReservation } from "../controllers/publishedReservation.controller";
 import PublishedReservationRepository from "../repositories/publishedReservation.repository";
 import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
-
+import fs from 'fs';
 
 export default class PublishedReservationService {
 
@@ -81,7 +81,7 @@ export default class PublishedReservationService {
         }
     }
 
-    public async deletePublishedReservation(id: number) {
+    public async deletePublishedReservation(id: number, imagePath: string) {
         try{
             const reservation = await this.publishedReservationRepository.getPublishedReservationById(id);
             if(!reservation){
@@ -89,8 +89,18 @@ export default class PublishedReservationService {
             }
             const reservations = await this.publishedReservationRepository.checkNoReservation(id);
             if(reservations?.length !== 0){
-                throw new HttpBadRequestError({msg: 'Esse quartos possui reservas pendentes'})
+                throw new HttpBadRequestError({msg: 'Possui reservas'})
             }
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                  if (err) {
+                      throw new HttpNotFoundError({msg: 'imagem n encontrada'});
+                  }
+                });
+              } else {
+                throw new HttpNotFoundError({msg: 'imagem n encontrada'});
+              }
+
             await this.publishedReservationRepository.deletePublishedReservationById(id);
         }catch(error: any){
             if (error instanceof HttpError){
