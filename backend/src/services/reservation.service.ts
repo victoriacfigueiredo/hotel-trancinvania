@@ -46,7 +46,7 @@ export default class ReservationService {
 
         // Calculando o preço da reserva
         const numDays = this.calculateNumDays(checkin, checkout);
-        const price = numDays * num_rooms * publishedReservation.price;
+        const price = numDays * num_rooms * publishedReservation.new_price;
 
         let params = { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, price, publishedReservationId, clientId, paymentMethodId } as Reserve;
         return params;
@@ -134,7 +134,7 @@ export default class ReservationService {
         if (!publishedReservation) {
             throw new HttpNotFoundError({msg: 'Oferta de reserva não encontrada'});
         }
-        const price = numDays * num_rooms * publishedReservation.price;
+        const price = numDays * num_rooms * publishedReservation.new_price;
         return price;
     }
 
