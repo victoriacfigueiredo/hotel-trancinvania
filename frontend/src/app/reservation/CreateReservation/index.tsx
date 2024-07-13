@@ -63,13 +63,20 @@ const CustomDateInput = React.forwardRef(
   ),
 );
 
-const App: React.FC = () => {
+const CreateReservation: React.FC = () => {
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+
+  const goBack = async () => {
+    window.location.href = "http://localhost:3000/select-reservation";
+  };
 
   const handleDataInput = async () => {
     if (checkInDate === null || checkOutDate === null) {
       toast.warning('Preencha todos os campos!');
+    }
+    else {
+      window.location.href = "http://localhost:3000/pay-reservation";
     }
   };
 
@@ -110,7 +117,7 @@ const App: React.FC = () => {
             fontWeight="bold"
             textAlign="center"
           >
-            Quarto Zumbi Digital
+            Zumbi Digital
           </Text>
           <Text color="#EAEAEA" fontSize="xl" textAlign="center">
             R$ 1200,00 a diária
@@ -252,6 +259,7 @@ const App: React.FC = () => {
               leftIcon={<Icon as={FaArrowLeft} />}
               width="146px"
               height="50px"
+              onClick={goBack}
             >
             </Button>
             <Button
@@ -273,4 +281,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default CreateReservation;
