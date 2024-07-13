@@ -4,7 +4,7 @@ import ListTests from "./app/home/pages/ListTests";
 import CreateReservation from "./app/reservation/pages/CreateReservation"
 import PayReservation from "./app/reservation/pages/PayReservation"
 import MyReservations from "./app/reservation/pages/MyReservations"
-import SelectReservation from "./app/reservation/SelectReservation"
+import SelectReservation from "./app/reservation/pages/SelectReservation"
 import EditReservation from "./app/reservation/pages/EditReservation"
 import EditPay from "./app/reservation/pages/EditPay"
 

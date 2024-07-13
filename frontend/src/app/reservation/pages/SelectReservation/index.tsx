@@ -1,8 +1,8 @@
 import React from 'react';
-import { JustSpider } from '../components/just-spider';
+import { JustSpider } from '../../components/just-spider';
 import { Box, Text, Icon, HStack, Button, VStack } from '@chakra-ui/react';
 import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
-import { NavBar } from '../../../shared/components/nav-bar';
+import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SelectReservation: React.FC = () => {

@@ -1,5 +1,5 @@
 import {Image} from "@chakra-ui/react";
-import Spider from "../assets/spider.png";
+import Spider from "../../../shared/assets/spider.png";
 export const JustSpider: React.FC = () => {
     return (      
       <Image
