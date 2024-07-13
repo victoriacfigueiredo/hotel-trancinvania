@@ -1,5 +1,5 @@
 import React, { useState, ForwardedRef } from 'react';
-import {JustSpider} from '../../../shared/components/just-spider'
+import {JustSpider} from '../components/just-spider'
 import { JustNet } from '../components/just-net';
 import {
     Box,

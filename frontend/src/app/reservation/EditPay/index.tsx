@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import {JustSpider} from '../../../shared/components/just-spider'
+import {JustSpider} from '../components/just-spider'
 import { JustNet } from '../components/just-net';
 import Select, { SingleValue } from 'react-select';
 import {

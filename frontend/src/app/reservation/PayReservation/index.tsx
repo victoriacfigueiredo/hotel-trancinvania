@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { JustSpider } from '../../../shared/components/just-spider';
+import { JustSpider } from '../components/just-spider';
 import { Box, Text, Stack, Icon, HStack, FormControl, FormLabel, Button, ButtonGroup } from '@chakra-ui/react';
 import { FaArrowLeft, FaCheck, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell } from 'react-icons/fa';
 import Select, { SingleValue } from 'react-select';
