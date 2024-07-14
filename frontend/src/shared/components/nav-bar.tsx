@@ -1,3 +1,4 @@
+
 import {
   Box,
   Flex,
@@ -275,4 +276,3 @@ export const NavBar: React.FC = () => {
     </Box>
   );
 };
-
