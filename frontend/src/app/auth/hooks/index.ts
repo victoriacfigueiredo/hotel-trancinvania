@@ -6,7 +6,9 @@ import {
   sendRecoveryEmailHotelier,
   resetPasswordClient,
   sendRecoveryEmailClient,
+  registerClient,
 } from "../services";
+import { RegisterClientFormInputs } from "../forms/RegisterForm";
 
 export function useLoginClientMutation() {
   return useMutation({
@@ -22,6 +24,12 @@ export function useResetPasswordClientMutation() {
 export function useSendRecoveryEmailClientMutation() {
   return useMutation({
     mutationFn: sendRecoveryEmailClient,
+  });
+}
+
+export function useRegisterClientMutation() {
+  return useMutation({
+    mutationFn: (data: RegisterClientFormInputs) => registerClient(data),
   });
 }
 

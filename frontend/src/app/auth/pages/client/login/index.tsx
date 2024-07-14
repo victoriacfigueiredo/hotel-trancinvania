@@ -148,7 +148,11 @@ const LoginClient: React.FC = () => {
                 <Text>
                   Ainda não possui conta? <br />
                   Cadastre-se como{" "}
-                  <Link color="#0097B2" fontWeight={800}>
+                  <Link
+                    color="#0097B2"
+                    fontWeight={800}
+                    href="/client/register"
+                  >
                     Cliente
                   </Link>
                   , para fazer reservas incríveis.

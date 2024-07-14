@@ -113,7 +113,7 @@ export const NavBar: React.FC = () => {
               display="flex"
               alignItems="center"
             >
-              <Text>Perfil</Text>
+              <Text>Conta</Text>
             </MenuButton>
             <MenuList
               onMouseEnter={onPerfilMenuOpen}

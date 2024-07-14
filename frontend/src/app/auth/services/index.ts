@@ -4,6 +4,7 @@ import { LoginResponse } from "../models/LoginModel";
 import { ResetTokenInputs } from "../forms/ResetForm";
 import { RecoveryFormInputs } from "../forms/RecoveryForm";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
+import { RegisterClientFormInputs } from "../forms/RegisterForm";
 
 export async function loginClient({
   username,
@@ -36,6 +37,13 @@ export async function sendRecoveryEmailClient({
       email,
     }
   );
+  return response.data;
+}
+
+export async function registerClient(
+  data: RegisterClientFormInputs
+): Promise<void> {
+  const response = await apiService.post<void>("/auth/client/register", data);
   return response.data;
 }
 

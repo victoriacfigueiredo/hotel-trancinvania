@@ -6,6 +6,7 @@ import RecoverPasswordHotelier from "./app/auth/pages/hotelier/recover";
 import RecoverPasswordClient from "./app/auth/pages/client/recover";
 import ResetPasswordClient from "./app/auth/pages/client/reset";
 import ResetPasswordHotelier from "./app/auth/pages/hotelier/reset";
+import RegisterClient from "./app/auth/pages/client/register";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "client/password/reset",
     Component: ResetPasswordClient,
+  },
+  {
+    path: "/client/register",
+    Component: RegisterClient,
   },
   {
     path: "/hotelier/login",
