@@ -14,6 +14,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
         {children}
       </ChakraProvider>
     </QueryClientProvider>
+  );
 };
 
 export default Provider;

@@ -1,6 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import CreateTest from "./app/home/pages/CreateTest";
-import ListTests from "./app/home/pages/ListTests";
 import CreateReservation from "./app/reservation/pages/CreateReservation"
 import PayReservation from "./app/reservation/pages/PayReservation"
 import MyReservations from "./app/reservation/pages/MyReservations"
@@ -30,7 +28,7 @@ const router = createBrowserRouter([
   {
     path: "/hotelier/login",
     Component: LoginHotelier,
-  }
+  },
   {
     path: "/create-reservation",
     Component: CreateReservation,
