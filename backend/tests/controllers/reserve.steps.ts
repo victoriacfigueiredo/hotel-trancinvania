@@ -59,8 +59,8 @@ const createPublishedReservation = async (name: string, rooms: number, people: n
 const createPaymentMethod = async(name: string, clientId: number) => {
     return{
         id: 1,
-        name: name,
-        numCard: "1234567891010112",
+        name: "Victoria C Figueiredo",
+        numCard: name,
         cvv: 300,
         expiryDate: "09/28",
         type: CardType.CREDITO,

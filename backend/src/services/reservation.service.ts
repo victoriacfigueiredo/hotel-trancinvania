@@ -4,13 +4,17 @@ import ReservationRepository from "../repositories/reservation.repository";
 import {HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError} from '../utils/errors/http.error';
 import EmailService from "./email.service";
 
+
 export default class ReservationService {
 
+
     private reservationRepository: ReservationRepository;
+
 
     constructor() {
         this.reservationRepository = new ReservationRepository();
     }
+
 
     private async prepareReservationParams(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<Reserve> {
         if (!num_rooms || !checkin || !checkout || !num_adults || !paymentMethodName) {
@@ -31,11 +35,11 @@ export default class ReservationService {
         if (!paymentMethods) {
             throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
         }
-        
-        // Encontrar o método de pagamento pelo nome
+       
+        // Encontrar o método de pagamento pelo numero
         let paymentMethodId = 0;
         for (const payMethod of paymentMethods) {
-            if (payMethod.name.toLowerCase() === paymentMethodName.toLowerCase()) {
+            if (payMethod.numCard.toLowerCase() === paymentMethodName.toLowerCase()) {
                 paymentMethodId = payMethod.id;
                 break;
             }
@@ -44,13 +48,16 @@ export default class ReservationService {
             throw new HttpNotFoundError({msg: 'Cadastre um método de pagamento.'});
         }
 
+
         // Calculando o preço da reserva
         const numDays = this.calculateNumDays(checkin, checkout);
         const price = numDays * num_rooms * publishedReservation.new_price;
 
+
         let params = { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, price, publishedReservationId, clientId, paymentMethodId } as Reserve;
         return params;
     }
+
 
     private calculateNumDays(checkin: string, checkout: string): number {
         const checkinDate = new Date(checkin);
@@ -59,12 +66,14 @@ export default class ReservationService {
         return Math.ceil(timeDifference / (1000 * 3600 * 24));
     }
 
+
     async sendEmailtoClientCreate(title: string, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, clientId: number, publishedReservationId: number): Promise<void>{
         const client = await this.reservationRepository.getClientById(clientId);
         const reservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
         const htmlContent = await createHtmlContent(client.name, reservation.name, checkin, checkout, num_rooms, num_adults, num_children)
         EmailService.sendEmail(`${client.email}`, title, htmlContent);
     }
+
 
     async sendEmailtoClientUpdate(title: string, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, reservationId: number): Promise<void>{
         const reservation = await this.reservationRepository.getReservationById(reservationId);
@@ -74,6 +83,7 @@ export default class ReservationService {
         EmailService.sendEmail(`${client.email}`, title, htmlContent);
     }
 
+
     async sendEmailtoClientDelete(title: string, reservationId: number) : Promise<void>{
         const reservation = await this.reservationRepository.getReservationById(reservationId);
         const client = await this.reservationRepository.getClientById(reservation.clientId);
@@ -81,6 +91,7 @@ export default class ReservationService {
         const htmlContent = await createDeleteContent(client.name, publishedReservation.name, reservation.checkin, reservation.checkout, reservation.price);
         EmailService.sendEmail(`${client.email}`, title, htmlContent);
     }
+
 
     async createReservation(num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string, publishedReservationId: number, clientId: number): Promise<{id: number}> {
         try{
@@ -101,7 +112,7 @@ export default class ReservationService {
             }
         }
     }
-    
+   
     async cancelReservation(id: number): Promise<void> {
         try{
             await this.sendEmailtoClientDelete("Cancelamento da reserva", id);
@@ -115,6 +126,7 @@ export default class ReservationService {
         }
     }
 
+
     async cancelReservationByClient(clientId: number): Promise<void> {
         try {
             await this.reservationRepository.cancelReservationByClient(clientId);
@@ -127,9 +139,11 @@ export default class ReservationService {
         }
     }
 
+
     async calculatePrice(num_rooms: number, checkin: string, checkout: string, publishedReservationId: number): Promise<number> {
         const numDays = this.calculateNumDays(checkin, checkout);
         const publishedReservation = await this.reservationRepository.getPublishedReservationById(publishedReservationId);
+
 
         if (!publishedReservation) {
             throw new HttpNotFoundError({msg: 'Oferta de reserva não encontrada'});
@@ -137,6 +151,7 @@ export default class ReservationService {
         const price = numDays * num_rooms * publishedReservation.new_price;
         return price;
     }
+
 
     async updateReservation(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName?: string): Promise<void> {
         if (!num_rooms || !checkin || !checkout || !num_adults || !paymentMethodName) {
@@ -152,18 +167,18 @@ export default class ReservationService {
             reservation.checkout = checkout;
             reservation.num_adults = num_adults;
             reservation.num_children = num_children;
-        
+       
             if (paymentMethodName) {
                 // Buscar os métodos de pagamento do cliente
                 const paymentMethods = await this.reservationRepository.getPaymentMethod(reservation.clientId);
                 if (!paymentMethods) {
                     throw new HttpNotFoundError({msg: 'Cadastre o método de pagamento'});
                 }
-        
-                // Encontrar o método de pagamento pelo nome
+       
+                // Encontrar o método de pagamento pelo numero
                 let paymentMethodId = 0;
                 for (const payMethod of paymentMethods) {
-                    if (payMethod.name.toLowerCase() === paymentMethodName.toLowerCase()) {
+                    if (payMethod.numCard.toLowerCase() === paymentMethodName.toLowerCase()) {
                         paymentMethodId = payMethod.id;
                         break;
                     }
@@ -171,18 +186,18 @@ export default class ReservationService {
                 if (paymentMethodId === 0) {
                     throw new HttpNotFoundError({msg: 'Cadastre o método de pagamento'});
                 }
-        
+       
                 reservation.paymentMethodName = paymentMethodName;
                 reservation.paymentMethodId = paymentMethodId;
             }
-        
+       
             const availableRooms = await this.doublecheckRoomAvailability(reservation.id, reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.num_adults, reservation.num_children, reservation.publishedReservationId);
             if (!availableRooms) {
                 throw new HttpNotFoundError({msg: 'Não há quartos disponíveis para o período selecionado'});
             }
             const newPrice = await this.calculatePrice(reservation.num_rooms, reservation.checkin, reservation.checkout, reservation.publishedReservationId);
             reservation.price = newPrice;
-        
+       
             await this.reservationRepository.updateReservation(id, reservation);
             this.sendEmailtoClientUpdate("Atualização na reserva", num_rooms, checkin, checkout, num_adults, num_children, id);
         }catch(error: any){
@@ -193,14 +208,15 @@ export default class ReservationService {
             }
         }
     }
-    
+   
     async getReservationById(id: number): Promise<Reserve> {
         try{
-            return await this.reservationRepository.getReservationById(id);     
+            return await this.reservationRepository.getReservationById(id);    
         }catch(error: any){
             throw new HttpInternalServerError({msg: `Error fetching reservation: ${error.message}`});
-        }   
+        }  
     }
+
 
     public async getReservationsByClient(clientId: number): Promise<Reserve[]> {
         try{
@@ -226,6 +242,8 @@ export default class ReservationService {
         const availableRooms = publishedReservation.rooms - reservedRooms;
         return availableRooms >= num_rooms;        
     }
+
+
 
 
     public async doublecheckRoomAvailability(id: number, num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, publishedReservationId: number): Promise<boolean> {
