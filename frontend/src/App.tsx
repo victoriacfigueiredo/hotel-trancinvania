@@ -30,6 +30,7 @@ const router = createBrowserRouter([
   {
     path: "/hotelier/login",
     Component: LoginHotelier,
+  }
   {
     path: "/create-reservation",
     Component: CreateReservation,
