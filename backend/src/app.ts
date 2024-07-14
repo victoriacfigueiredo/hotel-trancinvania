@@ -4,10 +4,11 @@ import cors from 'cors';
 import logger from './logger';
 import { HttpError } from './utils/errors/http.error';
 import { FailureResult } from './utils/result';
-import Database from './database';
 import router from '../src/routes/index';
+import path from 'path';
 
 const app: express.Express = express();
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.json());
 
 app.use(

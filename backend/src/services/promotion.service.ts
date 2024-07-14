@@ -32,12 +32,18 @@ export default class PromotionService {
     async insertPromotion( reservation_id: number, discount: number, type: string, num_rooms?: number | null): Promise<number> {
         let params = this.preparePromotionParams(discount, type, num_rooms);
         try{
+            const reservation = await this.publishedReservationRepository.getPublishedReservationById(reservation_id);
             const promotion = await this.publishedReservationRepository.getPromotionIdByReservationId(reservation_id);
             if (promotion) {
                 throw new HttpConflictError({
-                    msg: 'Promotion already exists'
+                    msg: 'Essa reserva já possui promoção'
                 });
+            }else if(num_rooms && reservation.rooms < num_rooms){
+                throw new HttpBadRequestError({
+                    msg: `Há apenas ${reservation.rooms} quartos cadastrados`
+                })
             }
+
             const promotion_id = await this.promotionRepository.insertPromotion(params);
             await this.publishedReservationRepository.updatePromotionIdReservation(reservation_id, +promotion_id);
             await this.publishedReservationRepository.updatePriceAllReservations();
@@ -51,11 +57,11 @@ export default class PromotionService {
         }
     }
 
-    async insertPromotionAll( discount: number, type: string, num_rooms?: number | null): Promise<number> {
+    async insertPromotionAll(hotelier_id: number, discount: number, type: string, num_rooms?: number | null): Promise<number> {
         let params = this.preparePromotionParams(discount, type, num_rooms);
         try{
             const promotion_id = await this.promotionRepository.insertPromotion(params);
-            await this.publishedReservationRepository.updatePromotionIdAllReservations(+promotion_id);
+            await this.publishedReservationRepository.updatePromotionIdAllReservations(hotelier_id, promotion_id);
             await this.publishedReservationRepository.updatePriceAllReservations();
             return promotion_id;
         }catch(error: any){
@@ -100,12 +106,13 @@ export default class PromotionService {
             const promotion_id = await this.publishedReservationRepository.getPromotionIdByReservationId(reservation_id)
             if (!promotion_id) {
                 throw new HttpNotFoundError({
-                    msg: 'Promotion not found'
+                    msg: 'Não há promoção cadastrada'
                 });
             }
             const rows = await this.publishedReservationRepository.getQuantityOfPromotions(promotion_id);
             if(rows > 1){
-                await this.insertPromotion(reservation_id, params.discount, params.type, params.num_rooms);
+                const promotion_id = await this.promotionRepository.insertPromotion(params);
+                await this.publishedReservationRepository.updatePromotionIdReservation(reservation_id, +promotion_id);
             }else{
                 await this.promotionRepository.updatePromotionById(promotion_id, params);
             }
@@ -124,7 +131,7 @@ export default class PromotionService {
             const promotion_id = await this.publishedReservationRepository.getPromotionIdByReservationId(reservation_id);
             if (!promotion_id) {
                 throw new HttpNotFoundError({
-                    msg: 'Promotion not found'
+                    msg: 'Não há promoção cadastrada'
                 });
             }
             await this.publishedReservationRepository.updatePromotionIdReservation(reservation_id, null);
@@ -142,14 +149,14 @@ export default class PromotionService {
         }
     }
 
-    async deleteAllPromotions(): Promise<void> {
+    async deleteAllPromotions(hotelier_id: number): Promise<void> {
         try{
             if(!await this.publishedReservationRepository.promotionInReservation()){
                 throw new HttpNotFoundError({
-                    msg: 'Promotion not found'
+                    msg: 'Nenhuma promoção encontrada'
                 });
             }
-            await this.promotionRepository.deleteAllPromotions();
+            await this.promotionRepository.deleteAllPromotions(hotelier_id);
             await this.publishedReservationRepository.updatePriceAllReservations();
         }catch(error: any){
             if (error instanceof HttpError){

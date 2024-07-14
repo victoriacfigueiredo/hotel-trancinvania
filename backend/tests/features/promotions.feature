@@ -54,4 +54,4 @@ Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
     And não há nenhum quarto com promoção cadastrada
     When uma requisição DELETE é enviada para "/reservation/promotions"
     And o status da resposta deve ser "404"
-    And é retornada a mensagem "Promotion not found"
+    And é retornada a mensagem "Nenhuma promoção encontrada"

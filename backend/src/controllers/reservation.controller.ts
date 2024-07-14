@@ -51,7 +51,7 @@ export interface PublishedReservation{
     price: number;
     new_price: number;
     promotion?: Promotion;
-    promotionId?: number;
+    promotion_id?: number;
     hotelier?: Hotelier;
     hotelier_id: number;
 }
