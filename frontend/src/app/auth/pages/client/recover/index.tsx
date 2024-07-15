@@ -18,12 +18,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useSendRecoveryEmailClientMutation } from "../../../hooks";
+import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
+import { NavBar } from "../../../../../shared/components/nav-bar";
 import {
   RecoveryFormInputs,
   RecoverySchema,
 } from "../../../forms/RecoveryForm";
-import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
-import { NavBar } from "../../../../../shared/components/nav-bar";
 
 const keyImage = "https://i.imgur.com/5GmX6rc.png";
 const mummyImage = "https://i.imgur.com/zhv11La.png";
