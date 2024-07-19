@@ -12,7 +12,6 @@ import {
   Input,
   Link,
   Text,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
@@ -21,6 +20,9 @@ import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { LoginFormInputs, LoginSchema } from "../../../forms/LoginForm";
 import { useNavigate } from "react-router-dom";
+import { useLoginHotelierMutation } from "../../../hooks";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const moonImage = "https://i.imgur.com/QxLtz78.png";
 //const barImage = "https://i.imgur.com/JamSVlX.png";
@@ -30,6 +32,7 @@ const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
 const LoginHotelier: React.FC = () => {
   const navigate = useNavigate();
+  const loginHotelierMutation = useLoginHotelierMutation();
   const {
     register,
     handleSubmit,
@@ -37,16 +40,17 @@ const LoginHotelier: React.FC = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(LoginSchema),
   });
-  const toast = useToast();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    toast({
-      title: "Login bem-sucedido!",
-      description: `Bem-vindo, ${data.username}!`,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+  const onSubmit = async (data: LoginFormInputs) => {
+    try {
+      await loginHotelierMutation.mutateAsync(data);
+      toast.success(`Login bem-sucedido! Bem-vindo, ${data.username}!`);
+      setTimeout(() => {
+        navigate("/publishedReservationList");
+      }, 3000);
+    } catch (error) {
+      toast.error("Falha ao fazer login. Tente novamente.");
+    }
   };
   const handleForgotPasswordClick = () => {
     navigate("/hotelier/password/recover");
@@ -54,6 +58,7 @@ const LoginHotelier: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -143,7 +148,11 @@ const LoginHotelier: React.FC = () => {
                 <Text>
                   Ainda não possui conta? <br />
                   Cadastre-se como{" "}
-                  <Link color="#0097B2" fontWeight={800}>
+                  <Link
+                    color="#0097B2"
+                    fontWeight={800}
+                    href="/hotelier/register"
+                  >
                     Hoteleiro
                   </Link>
                   , para atrair novos clientes.
