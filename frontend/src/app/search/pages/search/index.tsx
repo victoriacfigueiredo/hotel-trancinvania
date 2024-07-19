@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, Spacer } from "@chakra-ui/react"
+import { Box, Flex, Heading, Spacer } from "@chakra-ui/react"
 import { NavBar } from "../../../../shared/components/nav-bar"
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -9,22 +9,23 @@ import { toast } from "react-toastify";
 
 export const SearchPage = () => {
 
-    const [queryParams, setQueryParams] = useSearchParams();
+    const [queryParams] = useSearchParams();
     const [search, setSearch] = useState<ISearch>();
     const [reservations, SetReservations] = useState<any[]>([]);
-    const [promotion, SetPromotion] = useState<any>();
+    // const [promotion, SetPromotion] = useState<any>();
+    const promotion = {};
     
     
     
     useEffect(() => {
 
         const handleSearch = async () => {
-            let city = queryParams.get("city");
-            let checkin = queryParams.get("checkin");
-            let checkout = queryParams.get("checkout");
-            let num_adults = queryParams.get("num_adults");
-            let num_children = queryParams.get("num_children");
-            let num_rooms = queryParams.get("num_rooms");
+            const city = queryParams.get("city");
+            const checkin = queryParams.get("checkin");
+            const checkout = queryParams.get("checkout");
+            const num_adults = queryParams.get("num_adults");
+            const num_children = queryParams.get("num_children");
+            const num_rooms = queryParams.get("num_rooms");
     
             if(!city || !checkin || !checkout || !num_adults || !num_children || !num_rooms){
                 return;
@@ -56,7 +57,7 @@ export const SearchPage = () => {
               return;
             }
 
-            console.log(response)
+            // console.log(response)
         
             SetReservations(response);
         }

@@ -62,32 +62,32 @@ export const SearchBar = () => {
     }
   }
 
-  const increaseNumAdultos = (event) => {
+  const increaseNumAdultos = () => {
     setNumAdultos(numAdultos + 1);
   }
 
-  const decreaseNumAdultos = (event) => {
+  const decreaseNumAdultos = () => {
     if(numAdultos > 0){
       setNumAdultos(numAdultos - 1);
     }
   }
 
-  const increaseNumCriancas = (event) => {
+  const increaseNumCriancas = () => {
     setNumCriancas(numCriancas + 1);
   }
 
-  const decreaseNumCriancas = (event) => {
+  const decreaseNumCriancas = () => {
     if(numCriancas > 0){
       setNumCriancas(numCriancas - 1);
     }
   }
 
 
-  const increaseNumRooms = (event) => {
+  const increaseNumRooms = () => {
     setNumRooms(numRooms + 1);
   }
 
-  const decreaseNumRooms = (event) => {
+  const decreaseNumRooms = () => {
     if(numRooms > 0){
       setNumRooms(numRooms - 1);
     }
