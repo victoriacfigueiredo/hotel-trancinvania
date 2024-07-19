@@ -16,32 +16,26 @@ const people = [
   {
     id: 3,
     name: "Maria Letícia",
-    designation: "Promoções e Disparo de E-mails",
+    designation: "Promoções, E-mail e Reservas",
     image: "https://i.imgur.com/RwDa0K6.png",
   },
   {
     id: 4,
+    name: "Victória Cesar",
+    designation: "Realizar Reservas",
+    image: "https://i.imgur.com/N5YaGKi.png",
+  },
+  {
+    id: 5,
     name: "Matheus Augusto",
     designation: "Métodos de Pagamento",
     image: "https://i.imgur.com/2ccf5ry.png",
   },
   {
-    id: 5,
+    id: 6,
     name: "Matheus Galdino",
     designation: "Busca com Filtro",
     image: "https://i.imgur.com/9KP19I1.png",
-  },
-  {
-    id: 6,
-    name: "Thaís Neves",
-    designation: "Gerenciar e Publicar Reservas",
-    image: "https://i.imgur.com/j15hgfa.png",
-  },
-  {
-    id: 7,
-    name: "Victória Cesar",
-    designation: "Realizar Reservas",
-    image: "https://i.imgur.com/N5YaGKi.png",
   },
 ];
 
