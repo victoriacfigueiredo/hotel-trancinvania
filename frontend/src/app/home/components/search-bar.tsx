@@ -8,15 +8,15 @@ export const SearchBar = () => {
         placeholder="Destino"
         variant="outline"
         mx={2}
-        height="80px"
-        width="180px"
+        height="70px"
+        width="130px"
       />
       <Input
         placeholder="Check-in"
         type="date"
         variant="outline"
         mx={2}
-        height="80px"
+        height="70px"
         width="180px"
       />
       <Input
@@ -24,22 +24,24 @@ export const SearchBar = () => {
         type="date"
         variant="outline"
         mx={2}
-        height="80px"
+        height="70px"
         width="180px"
       />
       <Input
         placeholder="Quem"
         variant="outline"
         mx={2}
-        height="80px"
-        width="180px"
+        height="70px"
+        width="130px"
       />
       <IconButton
         aria-label="Search"
         icon={<FaSearch />}
         mx={2}
-        height="80px"
-        width="80px"
+        height="70px"
+        width="70px"
+        bg="#A4161A"
+        colorScheme="red"
       />
     </Flex>
   );
