@@ -14,6 +14,7 @@ import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
+import { SearchPage } from "./app/search/pages/search";
 
 
 const router = createBrowserRouter([
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/edit-pay",
     Component: EditPay,
+  },
+  {
+    path: "/search",
+    Component: SearchPage,
   },
     /*{
     path: "/register/client",
