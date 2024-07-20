@@ -1,94 +1,84 @@
-Feature: Cadastro e ManutenÃ§Ã£o de MÃ©todos de Pagamento
-Como um UsuÃ¡rio Cliente
-Eu quero cadastrar, alterar e excluir mÃ©todos de pagamento
-Para que eu possa realizar pagamentos com mÃ©todos diferentes
+Feature: Cadastro e Manutenção de Métodos de Pagamento
+As a Usuário Cliente
+I want to Cadastrar, alterar e excluir métodos de pagamento
+So that Eu posso realizar pagamentos com métodos diferentes 
 
-Scenario 1: Cadastrar MÃ©todo de pagamento com sucesso
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and nenhum mÃ©todo de pagamento estÃ¡ cadastrado
-  When seleciono a opÃ§Ã£o â€œCadastrar novo mÃ©todo de pagamentoâ€
-  and preencho o campo â€œnomeâ€ com â€œCartÃ£o ItaÃºâ€
-  and preencho o campo â€œnÃºmero cartÃ£oâ€ com â€œ1234 5678 9123 4567â€
-  and preencho o campo â€œcvvâ€ com â€œ123â€
-  and preencho o campo "data de validade" com "07/2030"
-  and seleciono o campo â€œTipoâ€ com â€œDEBITOâ€
-  and preencho o campo "cpf" com "12345678909"
-  Then tento realizar o cadastro
-  and vejo a mensagem â€œCartÃ£o cadastrado com sucesso!â€
-  and vejo â€œCartÃ£o ItaÃºâ€ na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
 
-Scenario 2: Tentativa de Cadastro de MÃ©todo de pagamento jÃ¡ cadastrado
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado com o campo â€œTipoâ€ com o valor â€œdÃ©bitoâ€
-  When seleciono a opÃ§Ã£o â€œCadastrar novo mÃ©todo de Pagamentoâ€
-  and preencho o campo â€œnome titularâ€ com â€œMatheus Silvaâ€
-  and preencho o campo â€œnÃºmero cartÃ£oâ€ com â€œ1234 5678 9123 4567â€
-  and preencho o campo "data de validade" com "07-2030"
-  and preencho o campo â€œcvcâ€ com â€œ123â€
-  and seleciono o campo â€œTipoâ€ com â€œdÃ©bitoâ€
-  and preencho o campo â€œapelidoâ€ com â€œCartÃ£o ItaÃºâ€
-  Then tento realizar o cadastro
-  and vejo a mensagem â€œCartÃ£o jÃ¡ Cadastrado!â€
-  and vejo â€œCartÃ£o ItaÃºâ€ na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
+Scenario 1: Cadastrar Método de pagamento com sucesso
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and nenhum método de pagamento está cadastrado 
+  When eu seleciono a opção “Cadastrar novo método de pagamento”
+  and eu preencho o campo “nome titular” com “Matheus silva”
+  and eu preencho campo “número cartão” com “1234 5678 9123 4567” 
+  and eu preencho o campo “cvc” com “123”
+  and eu seleciono o campo  “Tipo” com “débito” 
+  and eu preencho o campo “apelido” com “Cartão Itaú”
+  Then eu tento realizar o cadastro
+  and eu vejo a mensagem “Cartão cadastrado com sucesso!”
+  and eu vejo “Cartão itaú”  na página “Meus Métodos de Pagamento”
+	
+Scenario 2: Tentativa de Cadastro de Método de pagamento  já cadastrado
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” está cadastrado com o campo “Tipo” com o valor “débito”
+  When eu seleciono a opção “Cadastrar novo método de Pagamento” 
+  and eu preencho o campo “nome titular” com “Matheus silva”
+  and eu preencho campo “número cartão” com “1234 5678 9123 4567” 	
+  and eu preencho o campo “cvc” com “123”
+  and eu seleciono o campo  “Tipo” com “débito” 
+  and eu preencho o campo “apelido” com “Cartão Itaú”
+  Then eu tento realizar o cadastro
+  and eu vejo a mensagem “Cartão já Cadastrado!”
+  and eu vejo “Cartão itaú”  na página “Meus Métodos de Pagamento”
 
-Scenario 3: Tentativa de Cadastrar MÃ©todo de pagamento com informaÃ§Ãµes insuficientes
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ nÃ£o estÃ¡ cadastrado
-  When seleciono a opÃ§Ã£o â€œCadastrar novo mÃ©todo de pagamentoâ€
-  and preencho o campo â€œnome titularâ€ com â€œMatheus Silvaâ€
-  and preencho o campo â€œnÃºmero cartÃ£oâ€ com â€œ1234 5678 9123 4567â€
-  and seleciono o campo â€œTipoâ€ com â€œdÃ©bitoâ€
-  and preencho o campo â€œapelidoâ€ com â€œCartÃ£o ItaÃºâ€
-  Then tento realizar o cadastro
-  and vejo a mensagem â€œCampos nÃ£o foram totalmente preenchidosâ€
-  and continuo o cadastro do mÃ©todo de pagamento
+Scenario 3: Tentativa de Cadastrar Método de pagamento com informações insuficientes
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” não está cadastrado
+  When eu seleciono a opção “Cadastrar novo método de pagamento” 
+  and eu preencho o campo “nome titular” com “Matheus silva”
+  and eu preencho campo “número cartão” com “1234 5678 9123 4567” 
+  and eu seleciono o campo  “Tipo” com “débito” 
+  and eu preencho o campo “apelido” com “Cartão Itaú”
+  Then eu tento realizar o cadastro
+  and eu vejo a mensagem “Campos não foram totalmente preenchidos”
+  and eu continuo o cadastro do método de pagamento
 
-Scenario 4: Alterar mÃ©todo de pagamento com sucesso
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado com o campo â€œTipoâ€ com o valor â€œdÃ©bitoâ€
-  When seleciono a opÃ§Ã£o â€œAlterarâ€ no mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€
-  and seleciono o campo â€œTipoâ€ com â€œcrÃ©ditoâ€
-  Then tento realizar a atualizaÃ§Ã£o
-  and vejo a mensagem â€œâ€˜CartÃ£o ItaÃºâ€™ alterado com Sucesso!â€
-  and vejo â€œCartÃ£o ItaÃºâ€ na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€ com o â€œTipoâ€ â€œCrÃ©ditoâ€
+Scenario 4: Alterar método de pagamento com sucesso
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” está cadastrado com Campo “Tipo” com o valor  “débito”
+  When eu seleciono a opção “Alterar” no método de pagamento “Cartão itaú”
+  and eu seleciono o campo  “Tipo” com “crédito” 
+  Then eu tento realizar a atualização
+  and eu vejo a mensagem “‘Cartão Itaú’ alterado com Sucesso!”
+  and eu vejo “Cartão itaú”  na página “Meus Métodos de Pagamento” com o “Tipo” “Crédito”
 
-Scenario 5: Tentativa de Alterar mÃ©todo de pagamento com informaÃ§Ã£o em Branco
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado e o campo â€œcvcâ€ com valor â€œ123â€
-  When seleciono a opÃ§Ã£o â€œAlterarâ€ no mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€
-  and preencho o campo â€œcvcâ€ com "123"
-  Then tento realizar o cadastro
-  and vejo a mensagem â€œCampos nÃ£o foram totalmente preenchidosâ€
-  and continuo a alteraÃ§Ã£o do mÃ©todo de pagamento
+Scenario 5:  Tentativa de Alterar método de pagamento com informação em Branco
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” está cadastrado e o campo “cvc” com valor “123”
+  When eu seleciono a opção “Alterar” no método de pagamento “Cartão itaú”
+  and eu preencho  o campo  “cvc” com “   ” 
+  Then eu tento realizar o cadastro
+  and eu vejo a mensagem “Campos não foram totalmente preenchidos”
+  and eu continuo a alteração do método de pagamento
 
-Scenario 6: Deletar mÃ©todo de pagamento com sucesso
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado
-  When seleciono a opÃ§Ã£o â€œDeletarâ€ no mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€
-  Then vejo a mensagem â€œDeseja deletar mÃ©todo de pagamento?â€
-  and seleciono a opÃ§Ã£o â€œsimâ€
-  and vejo a mensagem â€œMÃ©todo de pagamento Deletado com Sucesso!â€
-
-Scenario 7: DesistÃªncia de exclusÃ£o de mÃ©todo de pagamento
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado
-  When seleciono a opÃ§Ã£o â€œDeletarâ€ no mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€
-  Then vejo a mensagem â€œDeseja deletar mÃ©todo de pagamento?â€
-  and seleciono a opÃ§Ã£o â€œnÃ£oâ€
-  and continuo na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€ com o cartÃ£o "CartÃ£o ItaÃº" cadastrado
-
-Scenario 8: DesistÃªncia de exclusÃ£o de mÃ©todo de pagamento
-  Given que estou logado como usuÃ¡rio â€œClienteâ€ com login â€œMatheusâ€ e senha â€œ123â€
-  and estou na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
-  and o mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€ estÃ¡ cadastrado
-  When seleciono a opÃ§Ã£o â€œDeletarâ€ no mÃ©todo de pagamento â€œCartÃ£o ItaÃºâ€
-  Then vejo a mensagem â€œDeseja deletar mÃ©todo de pagamento?â€
-  and seleciono a opÃ§Ã£o â€œnÃ£oâ€
-  and continuo na pÃ¡gina â€œMeus MÃ©todos de Pagamentoâ€
+Scenario 6: Deletar método de pagamento com sucesso
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” está cadastrado 
+  When eu seleciono a opção “Deletar” no método de pagamento “Cartão itaú”
+  Then eu vejo a mensagem “Deseja deletar método de pagamento?”
+  and eu seleciono a opção “sim”
+  and eu vejo a mensagem “Método de pagamento Deletado  com Sucesso!”
+	
+Scenario 7: Desistência de exclusão de método de pagamento
+  Given eu estou logado como usuário “Cliente” com login “Matheus” e senha “123”
+  and eu estou na página “Meus Métodos de Pagamento”
+  and o método de pagamento “Cartão itaú” está cadastrado 
+  When eu seleciono a opção “Deletar” no método de pagamento “Cartão itaú”
+  Then eu vejo a mensagem “Deseja deletar método de pagamento?”
+  and eu seleciono a opção “não”
+  and eu continuo na página “Meus Métodos de Pagamento”

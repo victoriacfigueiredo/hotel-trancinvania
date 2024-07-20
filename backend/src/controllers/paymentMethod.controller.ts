@@ -6,8 +6,8 @@ import {CardType} from '../enums/paymentMethod-type.enum'
 
 
 const dateRegex =  /^(0[1-9]|1[0-2])\/\d{4}$/;
-const numberValidation = z.string().min(16, { message: 'o numero deve ter 16 dígitos' });
-const cpfValidation = z.string().min(11, { message: 'o CPF deve ter 11 dígitos' });
+const numberValidation = z.string().min(16, { message: 'o numero deve ter 16 digitos' });
+const cpfValidation = z.string().min(11, { message: 'o CPF deve ter 11 digitos' });
 
 export interface paymentMethod {
   id: number;
@@ -22,7 +22,7 @@ export interface paymentMethod {
 
 const payMethodCreate = z.object({
   numCard: z.string().min(1).max(17, {message: "o numero deve ter 16 dígitos"}),
-  cvv: z.number().int().min(100, { message: "CVV deve ser um número de 3 dígitos entre 100 e 999" }).max(999, { message: "CVV deve ser um número de 3 dígitos entre 100 e 999" }),
+  cvv: z.number().int().min(100, { message: "CVV deve ser um número de 3 digitos entre 100 e 999" }).max(999, { message: "CVV deve ser um nÃºmero de 3 dÃ­gitos entre 100 e 999" }),
   expiryDate: z.string().regex(dateRegex, {message: "Válidade não está no formato correto"}),
   type: z.nativeEnum(CardType),
   clientId: z.number().int(),
@@ -66,10 +66,14 @@ export default class PaymentMethodController {
   }
 
   private async insertPayMethod(req: Request, res: Response) {
-    const {payMethod_id} = req.params;
-    const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
-    const id = await this.payMethodService.insertPaymentMethod(name, numCard, cvv, expiryDate, type, clientId, cpf);
-    res.status(201).json({ status: 201, message:`Cartao Cadastrado com Sucesso`});
+    try {
+      const {payMethod_id} = req.params;
+      const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
+      const id = await this.payMethodService.insertPaymentMethod(name, numCard, cvv, expiryDate, type, clientId, cpf);
+      res.status(201).json({ status: 201, message:`Cartao Cadastrado com Sucesso`});
+    } catch (error: any){
+      res.status(500).json({message: 'Erro no Cadastro de Metodo de Pagamento'});
+    }
   }
 
   private async deleteAllPayMethod(req: Request, res: Response) {
@@ -89,7 +93,7 @@ export default class PaymentMethodController {
       const payMethod = await this.payMethodService.deletePayMethodById(+paymentMethod_id);
       res.status(200).json({message: 'Metodo de pagamento Deletado com Sucesso'});
     } catch (error: any) {
-      res.status(500).json({ message: `Error deleting payment method:  ${error.message} ID:` + req.params.paymentMethod_id});
+      res.status(500).json({ message: 'Erro ao Deletar Metodo de Pagamento'});
     }
   }
 
@@ -100,7 +104,7 @@ export default class PaymentMethodController {
       const payMethod = await this.payMethodService.updatePayMethod(+paymentMethod_id, name, numCard, cvv, expiryDate, type, clientId, cpf);
       res.status(200).json({message: 'Metodo de Pagamento Alterado com Sucesso'});
     } catch (error: any) {
-      res.status(500).json({ message: `Error updating payment method:  ${error.message} ID:` + req.params.paymentMethod_id});
+      res.status(500).json({ message: 'Erro na alteracao de metodo de pagamento'});
     }
   }
 }
