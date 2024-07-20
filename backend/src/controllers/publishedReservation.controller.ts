@@ -7,8 +7,7 @@ import prisma from "../database";
 import multer, {Multer} from "multer";
 import path from "path";
 import PromotionService from "../services/promotion.service";
-import fs from 'fs';
-import { HttpNotFoundError } from "../utils/errors/http.error";
+
 
 declare global {
     namespace Express {
@@ -74,6 +73,18 @@ const publishedReservationDto = z.object({
     price: z.number(),
 })
 
+const publishedReservationUpdateDto = z.object({
+    name: z.string().optional(),
+    rooms: z.number().min(1).optional(),
+    people: z.number().min(1).optional(),
+    wifi: z.boolean().optional(),
+    breakfast: z.boolean().optional(),
+    airConditioner: z.boolean().optional(),
+    parking: z.boolean().optional(),
+    room_service: z.boolean().optional(),
+    price: z.number().optional(),
+})
+
 export default class PublishedReservationController{
     private prefix = '/reservations';
     private prefixReservation = '/hotelier/:hotelier_id/reservations';
@@ -95,8 +106,8 @@ export default class PublishedReservationController{
         router.get(this.prefix, (req, res) => this.getAllPublishedReservations(req, res));
 
         router.get(this.prefix + '/:id',  (req, res) => this.getPublishedReservationById(req, res));
-        router.post(this.prefixReservation, (req, res) => this.insertPublishedReservation(req, res));
-        router.put(this.prefix+ '/:id', validateData(publishedReservationDto), (req, res) => this.updatePublishedReservation(req, res));
+        router.post(this.prefixReservation, validateData(publishedReservationDto), (req, res) => this.insertPublishedReservation(req, res));
+        router.patch(this.prefix + '/:id', (req, res) => this.updatePublishedReservation(req, res));
         router.delete(this.prefix + '/:id', (req, res) => this.deletePublishedReservation(req, res));
 
         // pega todas as reservas com filtros especificos (busca de reservas)
@@ -149,28 +160,12 @@ export default class PublishedReservationController{
 
         if (reservation.imageUrl) {
             const imagePath = path.join(__dirname, '..', reservation.imageUrl);
-            console.log('Caminho da imagem:', imagePath); 
-            
-            if (fs.existsSync(imagePath)) {
-              fs.unlink(imagePath, (err) => {
-                if (err) {
-                    throw new HttpNotFoundError({msg: 'imagem n encontrada'});
-                } else {
-                  console.log('Imagem deletada com sucesso:', imagePath);
-                }
-              });
-            } else {
-              throw new HttpNotFoundError({msg: 'imagem n encontrada'});
-            }
-          }
-        await this.publishedReservationService.deletePublishedReservation(+id);
+            await this.publishedReservationService.deletePublishedReservation(+id, imagePath); 
+        }
         res.status(200).json({status: 200, message: 'Reserva deletada com sucesso'});
     }
 
-    private async getPublishedReservationsByFilters(req: Request, res: Response) {
-        const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
-        const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
-
+    private async filterReservationsByCity(reservations: PublishedReservation[], city: string){
         let reservationsInCity = [] as any[];
 
         for(let i = 0; i < reservations.length; i++){
@@ -187,7 +182,16 @@ export default class PublishedReservationController{
             if(hotelier.city == city){
                 reservationsInCity.push({...reservations[i], city: hotelier.city});
             }
-        }   
+        }
+
+        return reservationsInCity;
+    }
+
+    private async getPublishedReservationsByFilters(req: Request, res: Response) {
+        const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
+        const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
+
+        let reservationsInCity = await this.filterReservationsByCity(reservations, city);
 
         let availableReservations = [] as any[];
 

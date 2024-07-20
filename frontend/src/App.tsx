@@ -1,4 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import CreateReservation from "./app/reservation/pages/CreateReservation"
+import PayReservation from "./app/reservation/pages/PayReservation"
+import MyReservations from "./app/reservation/pages/MyReservations"
+import SelectReservation from "./app/reservation/pages/SelectReservation"
+import EditReservation from "./app/reservation/pages/EditReservation"
+import EditPay from "./app/reservation/pages/EditPay"
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
@@ -9,8 +15,9 @@ import { Rate } from "./app/Rate";
 import { Whishlist } from "./app/Wishlist";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
-
-
+import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
+import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
+import { SearchPage } from "./app/search/pages/search";
 
 const router = createBrowserRouter([
   {
@@ -45,7 +52,34 @@ const router = createBrowserRouter([
     path: "/perfil/profile/whishlist",
     Component: Whishlist,
   },
- 
+  {
+    path: "/create-reservation",
+    Component: CreateReservation,
+  },
+  {
+    path: "/pay-reservation",
+    Component: PayReservation,
+  },
+  {
+    path: "/my-reservations",
+    Component: MyReservations,
+  },
+  {
+    path: "/select-reservation",
+    Component: SelectReservation,
+  },
+  {
+    path: "/edit-reservation",
+    Component: EditReservation,
+  },
+  {
+    path: "/edit-pay",
+    Component: EditPay,
+  },
+  {
+    path: "/search",
+    Component: SearchPage,
+  },
     /*{
     path: "/register/client",
     Component: ClientRegister,
@@ -73,6 +107,14 @@ const router = createBrowserRouter([
   {
     path: '/publishedReservationDetails/:reservation_id',
     Component: ReservationDetails,
+  },
+  {
+    path: '/publishedReservationUpdate/:reservation_id',
+    Component: PublishedReservationUpdate,
+  },
+  {
+    path: '/reservations',
+    Component: AllPublishedReservationClient,
   }
 ]);
 

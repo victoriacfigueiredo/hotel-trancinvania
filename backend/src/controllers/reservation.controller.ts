@@ -5,13 +5,14 @@ import ReservationService from '../services/reservation.service';
 import { CardType } from '../enums/paymentMethod-type.enum';
 import {Promotion} from '../controllers/promotion.controller';
 
+
 export interface Hotelier{
     id: number;
-    name: string; 
+    name: string;
     username: string;
     email: string;
     password: string;
-    hotel: string; 
+    hotel: string;
     city: string;
     cep: string;
     address: string;
@@ -21,28 +22,30 @@ export interface Hotelier{
     cnpj: string;
 }
 
+
 export interface Reserve {
     id: number;
     num_rooms: number;
     checkin: string; // "YYYY-MM-DD"
     checkout: string;
     num_adults: number;
-    num_children: number; 
-    paymentMethodName: string;
+    num_children: number;
+    paymentMethodName: string; //numero do cartao
     price: number;
     publishedReservationId: number;
     clientId: number;
     paymentMethodId: number;
 }
 
+
 export interface PublishedReservation{
     id: number;
     name: string;
-    rooms: number; 
-    people: number; 
+    rooms: number;
+    people: number;
     wifi: Boolean;
     breakfast: Boolean;  
-    airConditioner: Boolean; 
+    airConditioner: Boolean;
     parking: Boolean;
     room_service: Boolean;
     price: number;
@@ -50,30 +53,34 @@ export interface PublishedReservation{
     promotion?: Promotion;
     promotion_id?: number;
     hotelier?: Hotelier;
-    hotelier_id: number; 
+    hotelier_id: number;
 }
+
 
 export interface Client{
     id: number;
-    name: string; 
+    name: string;
     username: string;
-    email: string; 
-    phone: string; 
+    email: string;
+    phone: string;
     password: string;
-    cpf: string; 
-    birthDate: string; 
+    cpf: string;
+    birthDate: string;
 }
+
 
 export interface PaymentMethod{
     id: number;
     name: string;
     numCard: string;
     cvv: number;
-    expiryDate: string; 
+    expiryDate: string;
     type: CardType;
     clientId: number;
     cpf: string;
 }
+
+
 
 
 const reservationCreateDto = z.object({
@@ -85,6 +92,7 @@ const reservationCreateDto = z.object({
     paymentMethodName: z.string(),
 });
 
+
 const reservationUpdateDto = z.object({
     num_rooms: z.number().min(1),
     checkin: z.string(),
@@ -95,12 +103,15 @@ const reservationUpdateDto = z.object({
 });
 
 
+
+
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
     private reservationService: ReservationService;
     constructor() {
         this.reservationService = new ReservationService();
     }
+
 
     public setupRoutes(router: Router) {
         // criar novas reservas
@@ -117,6 +128,7 @@ export default class ReserveController {
         router.get(this.prefix, (req, res) => this.getReservationsByClient(req, res));
     }
 
+
     private async createReservation(req: Request, res: Response) {        
         const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
         const publishedReservationId = parseInt(req.params.publishedReservationId);
@@ -124,7 +136,8 @@ export default class ReserveController {
         const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
         res.status(201).json({status: 201, message: 'Reserva realizada com sucesso!' });      
     }
-    
+   
+
 
     private async cancelReservation(req: Request, res: Response) {
         const {id} = req.params;
@@ -132,17 +145,19 @@ export default class ReserveController {
         res.status(200).json({status: 200, message: 'Reserva cancelada com sucesso.'});
     }
 
+
     private async cancelReservationByClient(req: Request, res: Response){
         const clientId  = parseInt(req.params.clientId);
         await this.reservationService.cancelReservationByClient(clientId);
         res.status(200).json({status: 200, message: 'Todas as reservas foram canceladas com sucesso.'});
     }
 
+
     private async updateReservation(req: Request, res: Response) {
         const id = parseInt(req.params.id);
         const publishedReservationId = parseInt(req.params.publishedReservationId);
         const { num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName } = req.body;
-    
+   
         // verificar se a reserva está disponível para as novas datas
         const availableRooms = await this.reservationService.doublecheckRoomAvailability(id, num_rooms, checkin, checkout, num_adults, num_children, publishedReservationId);
         if (!availableRooms) {
@@ -151,27 +166,17 @@ export default class ReserveController {
         await this.reservationService.updateReservation(id, num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName);
         res.status(200).json({status: 200, message: 'Reserva atualizada com sucesso!'});
     }
-    
+   
     private async getReservationById(req: Request, res: Response) {
         const { id } = req.params;
         const reservation = await this.reservationService.getReservationById(+id);
         res.status(200).json(reservation);  
     }
 
+
     private async getReservationsByClient(req: Request, res: Response) {
         const { clientId } = req.params;
         const reservations = await this.reservationService.getReservationsByClient(+clientId);
-        res.status(200).json(reservations);       
+        res.status(200).json(reservations);      
     }
 }
-
-
-
-
-
-
-
-
-
-
-
