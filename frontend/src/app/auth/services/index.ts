@@ -4,7 +4,11 @@ import { LoginResponse } from "../models/LoginModel";
 import { ResetTokenInputs } from "../forms/ResetForm";
 import { RecoveryFormInputs } from "../forms/RecoveryForm";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
-import { RegisterClientFormInputs } from "../forms/RegisterForm";
+import {
+  RegisterClientFormInputs,
+  RegisterClientFormInputsWithoutConfirmPassword,
+  RegisterHotelierFormInputs,
+} from "../forms/RegisterForm";
 
 export async function loginClient({
   username,
@@ -15,6 +19,8 @@ export async function loginClient({
     password,
   });
   localStorage.setItem("accessToken", response.data.token);
+  localStorage.setItem("userType", "client");
+  localStorage.setItem("userName", username);
   return response.data;
 }
 
@@ -41,9 +47,18 @@ export async function sendRecoveryEmailClient({
 }
 
 export async function registerClient(
-  data: RegisterClientFormInputs
+  data: RegisterClientFormInputsWithoutConfirmPassword
 ): Promise<void> {
-  const response = await apiService.post<void>("/auth/client/register", data);
+  const response = await apiService.post("/client/create", data);
+  console.log(response.data);
+  return response.data;
+}
+
+export async function registerHotelier(
+  data: RegisterHotelierFormInputs
+): Promise<void> {
+  const response = await apiService.post("/hotelier/create", data);
+  console.log(response.data);
   return response.data;
 }
 
@@ -59,6 +74,8 @@ export async function loginHotelier({
     }
   );
   localStorage.setItem("accessToken", response.data.token);
+  localStorage.setItem("userType", "hotelier");
+  localStorage.setItem("userName", username);
   return response.data;
 }
 
