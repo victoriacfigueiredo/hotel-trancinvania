@@ -148,6 +148,7 @@ export const ResetPasswordClient: React.FC = () => {
                       type="submit"
                       isLoading={resetPasswordMutation.isPending}
                       loadingText="Confirmando"
+                      onSubmit={handleSubmit(onSubmit)}
                     >
                       Confirmar
                     </Button>
@@ -156,12 +157,12 @@ export const ResetPasswordClient: React.FC = () => {
                       colorScheme="red"
                       type="button"
                       variant="outline"
-                      borderColor="red.500"
+                      borderColor="#A4161A"
                       color={"white"}
                       _hover={{
                         bg: "transparent",
-                        color: "red.500",
-                        //borderColor: "#FAC006",
+                        //color: "red.500",
+                        borderColor: "red.500",
                       }}
                       onClick={handleSendEmailAgainClick}
                     >
