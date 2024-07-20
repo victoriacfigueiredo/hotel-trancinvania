@@ -101,7 +101,7 @@ export const NavBar: React.FC = () => {
               onMouseLeave={onReservasMenuClose}
             >
               {!isLoggedIn || userType === "client" ? (
-                <MenuItem as={RouterLink} to="/reservation">
+                <MenuItem as={RouterLink} to="/reservations">
                   Realizar Reserva
                 </MenuItem>
               ) : null}
@@ -215,7 +215,7 @@ export const NavBar: React.FC = () => {
                 {!isLoggedIn || userType === "client" ? (
                   <Link
                     as={RouterLink}
-                    to="/reservation"
+                    to="/reservations"
                     display="block"
                     textDecoration="none"
                     color="#000000"

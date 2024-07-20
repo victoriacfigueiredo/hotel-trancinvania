@@ -72,6 +72,7 @@ model PublishedReservation {
   promotion_id            Int?
   hotelier                Hotelier? @relation(fields: [hotelier_id], references: [id])
   hotelier_id             Int
+  imageUrl                String?
   reservations            Reserve[]
   clientSavedReservations ClientSavedReservation[] 
   @@map("publishedReservation")

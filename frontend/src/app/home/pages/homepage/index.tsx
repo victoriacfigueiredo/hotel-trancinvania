@@ -126,7 +126,7 @@ export const HomePage = () => {
             title="Faça já sua reserva!"
             description="Descubra ofertas surpreenDENTES."
             imageSize={{ width: "144.5px", height: "133.9px" }}
-            link="/reservation"
+            link="/reservations"
           />
           <Card
             imageUrl={iconsUrls[2]}

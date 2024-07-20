@@ -20,7 +20,7 @@ const promotionCreateDto = z.object({
 export default class PromotionController {
 
   private prefix = '/reservation/:reservation_id/promotions';
-  private prefixAll = '/reservation/promotions';
+  private prefixAll = '/hotelier/:hotelier_id/reservation/promotions';
 
 
   private promotionService: PromotionService;
@@ -58,13 +58,15 @@ export default class PromotionController {
   }
 
   private async insertPromotionAll(req: Request, res: Response) {
+    const { hotelier_id } = req.params;
     const { discount, type, num_rooms } = req.body;
-    const id = await this.promotionService.insertPromotionAll( discount, type, num_rooms);
+    const id = await this.promotionService.insertPromotionAll(+hotelier_id, discount, type, num_rooms);
     res.status(201).json({ status: 201, message:`A promoção foi cadastrada em todas as reservas com sucesso!`});
   }
 
   private async deleteAllPromotions(req: Request, res: Response) {
-    await this.promotionService.deleteAllPromotions()
+    const { hotelier_id } = req.params;
+    await this.promotionService.deleteAllPromotions(+hotelier_id);
     res.status(200).json({ status: 200, message:'Todas as promoções foram deletadas com sucesso!'});
   }
 

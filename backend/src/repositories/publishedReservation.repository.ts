@@ -1,7 +1,8 @@
-import { PrismaClient, PublishedReservation } from "@prisma/client";
+import { PublishedReservation } from "../controllers/publishedReservation.controller";
 import prisma from "../database";
 import { HttpNotFoundError } from "../utils/errors/http.error";
 import { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
+import { Reserve } from "../controllers/reservation.controller";
 
 export default class PublishedReservationRepository {
     async updatePromotionIdReservation(reservation_id: number, promotion_id: number | null): Promise<void>{
@@ -19,12 +20,11 @@ export default class PublishedReservationRepository {
         });
     }
 
-    async updatePromotionIdAllReservations(promotion_id: number): Promise<void>{  
-        await prisma.publishedReservation.updateMany({
-            
+    
+    async updatePromotionIdAllReservations(hotelier_id: number, promotion_id: number): Promise<void>{  
+        await prisma.publishedReservation.updateMany({ where: {hotelier_id: hotelier_id},
             data: {
                 promotion_id: promotion_id,
-                
             },
         });
     }
@@ -89,14 +89,36 @@ export default class PublishedReservationRepository {
         return publishedReservations;
     }
 
-    async getPublishedReservationById(id: number){
-        const publishedReservation = await prisma.publishedReservation.findUnique({
-            where: {
-                id: id
-            }
-        })
+    async getPublishedReservationById(id: number): Promise<PublishedReservation> {
+        const reservation = await prisma.publishedReservation.findUnique({where: {id: id}});
+        return reservation as PublishedReservation;
+    }
 
-        return publishedReservation;
+    async insertPublishedReservation(params: PublishedReservation): Promise <number> {
+        const result = await prisma.publishedReservation.create({data: params});
+        return result.id;
+    }
+
+    async updatePublishedReservationById(id:number, params: PublishedReservation): Promise<void> {
+        await prisma.publishedReservation.update({where: {id:id}, data: params});
+    }
+
+    async deletePublishedReservationById(id:number){
+        await prisma.publishedReservation.delete({where:{id:id}});
+    }
+
+    async insertImageUrl(reservation_id: number, imageUrl): Promise<void>{
+        await prisma.publishedReservation.update({where: {id: reservation_id}, data: {imageUrl: imageUrl}});
+    }
+
+    async checkNoReservation(publishedReservationId: number): Promise <Reserve[] | null>{
+        const reservations = await prisma.reserve.findMany({where: {publishedReservationId: publishedReservationId}});
+        return reservations;
+    }
+
+    async checkReservationAlreadyExists(hotelier_id: number, name: string): Promise <PublishedReservation | null>{
+        const reservation = await prisma.publishedReservation.findFirst({where: {name: name, hotelier_id: hotelier_id}});
+        return reservation;
     }
 
     async getPublishedReservationsByFilters(params: IGetReservationsByFilters){

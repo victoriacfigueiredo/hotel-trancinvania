@@ -38,7 +38,16 @@ export default class PromotionRepository {
         });
     }
 
-    async deleteAllPromotions(): Promise<void> {
-        await prisma.promotion.deleteMany();
+    async deleteAllPromotions(hotelier_id: number): Promise<void> {
+        const reservations = await prisma.publishedReservation.findMany({where: {hotelier_id: hotelier_id}});
+        for (const reservation of reservations){
+            if(reservation.promotion_id){
+                await prisma.promotion.deleteMany({
+                    where: {
+                        id: reservation.promotion_id
+                    }
+                });
+            }
+        }
     }
 }
