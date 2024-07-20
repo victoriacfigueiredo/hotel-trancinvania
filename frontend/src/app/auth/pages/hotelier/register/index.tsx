@@ -26,7 +26,6 @@ import {
   ButtonGroup,
   Progress,
 } from "@chakra-ui/react";
-import InputMask from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +36,7 @@ import {
 } from "../../../forms/register-form";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
+import CustomInputMask from "./CustomInputMask";
 import "react-toastify/dist/ReactToastify.css";
 
 const tombstoneImage = "https://i.imgur.com/yLVjxc0.png";
@@ -319,8 +319,7 @@ const RegisterHotelier: React.FC = () => {
                             name="cep"
                             control={control}
                             render={({ field }) => (
-                              <Input
-                                as={InputMask}
+                              <CustomInputMask
                                 mask="99999-999"
                                 id="cep"
                                 placeholder="00000-000"
@@ -404,8 +403,7 @@ const RegisterHotelier: React.FC = () => {
                             name="cnpj"
                             control={control}
                             render={({ field }) => (
-                              <Input
-                                as={InputMask}
+                              <CustomInputMask
                                 mask="99.999.999/9999-99"
                                 id="cnpj"
                                 placeholder="00.000.000/0000-00"
