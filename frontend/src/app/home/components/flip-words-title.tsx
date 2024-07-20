@@ -16,7 +16,7 @@ export function FlipWordsTitle() {
       px={4}
     >
       <Heading
-        fontSize="90px"
+        fontSize="109px"
         mb={8}
         color={textColor}
         fontFamily="Trancinfont"

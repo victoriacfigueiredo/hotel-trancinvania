@@ -3,7 +3,11 @@ import ClientRepository from '../repositories/client.repository';
 import jwt from 'jsonwebtoken';
 import EmailService from './email.service';
 import { generateRecoveryEmailHtml } from '../utils/generateRecoveryEmailHtml';
-import { HttpConflictError, HttpBadRequestError, HttpNotFoundError } from '../utils/errors/http.error'
+import {
+    HttpConflictError,
+    HttpBadRequestError,
+    HttpNotFoundError,
+} from '../utils/errors/http.error';
 
 export default class ClientService {
     private clientRepository: ClientRepository;
@@ -19,7 +23,7 @@ export default class ClientService {
             data.username,
         );
         if (existingClient) {
-            throw new HttpConflictError({msg: 'E-mail ou nome de usuário já existe.'});
+            throw new HttpConflictError({ msg: 'E-mail ou nome de usuário já existe.' });
         }
 
         // Hash the password
@@ -44,7 +48,7 @@ export default class ClientService {
         );
         const dataClient = await this.clientRepository.findClientById(id);
         if (existingClient && existingClient.id !== id) {
-            throw new HttpConflictError({msg: 'E-mail ou nome de usuário já existe.'});
+            throw new HttpConflictError({ msg: 'E-mail ou nome de usuário já existe.' });
         }
 
         if (dataClient && data && data.password) {
@@ -54,14 +58,16 @@ export default class ClientService {
                 data.password.includes(cpfDigits) ||
                 data.password.includes(dataClient.birthDate)
             ) {
-                throw new HttpBadRequestError({msg: 'A senha não pode conter seu nome, CPF ou data de nascimento'});
+                throw new HttpBadRequestError({
+                    msg: 'A senha não pode conter seu nome, CPF ou data de nascimento',
+                });
             }
             data.password = await bcrypt.hash(data.password, 10);
         }
 
         const updatedClient = await this.clientRepository.updateClient(id, data);
         if (!updatedClient) {
-            throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
+            throw new HttpNotFoundError({ msg: 'Cliente não encontrado' });
         }
         return updatedClient;
     }
@@ -80,10 +86,12 @@ export default class ClientService {
     async generatePasswordResetToken(email: string) {
         const client = await this.clientRepository.findClientByEmail(email);
         if (!client) {
-            throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
+            throw new HttpNotFoundError({ msg: 'Cliente não encontrado' });
         }
 
-        const token = jwt.sign({ id: client.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const token = jwt.sign({ id: client.id, type: 'client' }, process.env.JWT_SECRET!, {
+            expiresIn: '1h',
+        });
         const html = generateRecoveryEmailHtml(token);
         await EmailService.sendEmail(email, 'Recupere sua Senha', html);
     }
@@ -93,7 +101,7 @@ export default class ClientService {
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
             const dataClient = await this.clientRepository.findClientById(decoded.id);
             if (!dataClient) {
-                throw new HttpNotFoundError({msg: 'Cliente não encontrado'});
+                throw new HttpNotFoundError({ msg: 'Cliente não encontrado' });
             }
             const cpfDigits = dataClient.cpf.replace(/[^\d]/g, '');
             if (

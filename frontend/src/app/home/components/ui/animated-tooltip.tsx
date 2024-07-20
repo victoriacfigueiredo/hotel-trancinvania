@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  Text,
-  Flex,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Avatar, AvatarGroup, Box, Text, Flex } from "@chakra-ui/react";
 import {
   motion,
   useTransform,
@@ -42,15 +35,14 @@ export const AnimatedTooltip = ({
     x.set(event.nativeEvent.offsetX - halfWidth);
   };
 
-  const tooltipBg = useColorModeValue("blackAlpha.700", "whiteAlpha.700");
-  const tooltipTextColor = useColorModeValue("white", "black");
+  const tooltipBg = "transparent";
+  const tooltipTextColor = "white";
 
   return (
     <Box display="flex" alignItems="center">
-      <AvatarGroup size="2xl">
+      <AvatarGroup size="xl" max={6}>
         {items.map((item) => (
           <Box
-            position="relative"
             key={item.id}
             onMouseEnter={() => setHoveredIndex(item.id)}
             onMouseLeave={() => setHoveredIndex(null)}
@@ -103,7 +95,11 @@ export const AnimatedTooltip = ({
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <Avatar name={item.name} src={item.image} />
+              <Avatar
+                name={item.name}
+                src={item.image}
+                size="xl" // Definindo o tamanho dos avatares individualmente
+              />
             </motion.div>
           </Box>
         ))}
