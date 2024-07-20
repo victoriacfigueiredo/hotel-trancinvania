@@ -11,6 +11,7 @@ import { BottomLeftTopRightImages } from "../../shared/components/spider-images"
 import { Global } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { NavBar } from "../../shared/components/nav-bar";
+import { Fonts } from "../../shared/theme/Fonts";
 
 // URLs das imagens
 const iconsUrls = [
@@ -45,7 +46,7 @@ export const Profile = () => {
 
         {/* Adicionando o título e os botões sobre a imagem */}
         <Box position="absolute" top="25%" left="20%" transform="translate(-50%, -50%)">
-          <Text fontSize="25px" fontFamily="Inter" fontWeight="300" mb={3} textAlign="center" color="#EAEAEA">
+          <Text fontSize="35px" fontFamily="Trancinfont" fontWeight="300" mb={3} textAlign="center" color="#EAEAEA">
             Meu Perfil
           </Text>
         </Box>
@@ -58,8 +59,9 @@ export const Profile = () => {
                 color="#EAEAEA"
                 _hover={{ bg: "#5e3a72" }}
                 borderRadius="11px"
-                mb={8}
-                w="250px"
+                mb={9}
+                w="300px"
+                h="50px"
                 justifyContent="space-between"
                 paddingRight="20px"
                 leftIcon={<Image src={iconsUrls[0]} boxSize="30px" />}
@@ -72,8 +74,9 @@ export const Profile = () => {
                 color="#EAEAEA"
                 _hover={{ bg: "#5e3a72" }}
                 borderRadius="11px"
-                mb={8}
-                w="250px"
+                mb={9}
+                w="300px"
+                h="50px"
                 justifyContent="space-between"
                 paddingRight="20px"
                 leftIcon={<Image src={iconsUrls[1]} boxSize="30px" />}
@@ -87,8 +90,9 @@ export const Profile = () => {
                   color="#EAEAEA"
                   _hover={{ bg: "#5e3a72" }}
                   borderRadius="11px"
-                  mb={8}
-                  w="250px"
+                  mb={9}
+                  w="300px"
+                  h="50px"
                   justifyContent="space-between"
                   paddingRight="20px"
                   leftIcon={<Image src={iconsUrls[2]} boxSize="30px" />}
@@ -103,8 +107,9 @@ export const Profile = () => {
                   color="#EAEAEA"
                   _hover={{ bg: "#5e3a72" }}
                   borderRadius="11px"
-                  mb={8}
-                  w="250px"
+                  mb={9}
+                  w="300px"
+                  h="50px"
                   justifyContent="space-between"
                   paddingRight="20px"
                   leftIcon={<Image src={iconsUrls[3]} boxSize="30px" />}
