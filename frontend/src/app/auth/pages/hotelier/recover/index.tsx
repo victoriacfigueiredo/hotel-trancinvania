@@ -16,14 +16,14 @@ import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  RecoveryFormInputs,
-  RecoverySchema,
-} from "../../../forms/RecoveryForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useSendRecoveryEmailHotelierMutation } from "../../../hooks";
+import {
+  RecoveryFormInputs,
+  RecoverySchema,
+} from "../../../forms/RecoveryForm";
 
 const keyImage = "https://i.imgur.com/5GmX6rc.png";
 const mummyImage = "https://i.imgur.com/zhv11La.png";
