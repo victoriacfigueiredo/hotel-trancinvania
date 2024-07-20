@@ -12,16 +12,16 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
 import { getPublishedReservationById, updatePublishedReservation, uploadImage } from '../../services';
 import { PublishedReservationModel } from '../../models/publishedReservation';
+import { useReservationContext } from '../../context';
 
 export const PublishedReservationUpdate = () => {
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
-    const { reservation_id } = useParams();
     const [name, setName] = useState('');
     const [rooms, setRooms] = useState('');
     const [people, setPeople] = useState('');
@@ -33,6 +33,7 @@ export const PublishedReservationUpdate = () => {
     const [breakfast, setBreakfast] = useState(false);
     const [parking, setParking] = useState(false);
     const [roomService, setRoomService] = useState(false);
+    const {selectedReservation} = useReservationContext();
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -53,9 +54,9 @@ export const PublishedReservationUpdate = () => {
 
     useEffect(() => {
         const fetchReservationData = async () => {
-            if (reservation_id) {
+            if (selectedReservation?.id) {
                 try {
-                    const response = await getPublishedReservationById(+reservation_id);
+                    const response = await getPublishedReservationById(selectedReservation.id);
                     setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
@@ -63,7 +64,7 @@ export const PublishedReservationUpdate = () => {
             }
         };
         fetchReservationData();
-    }, [reservation_id]);
+    }, [selectedReservation?.id]);
 
     useEffect(() => {
         if (reservationData) {
@@ -85,9 +86,9 @@ export const PublishedReservationUpdate = () => {
             toast.warning('Nenhum campo atualizado!');
         } else {
             try {
-                if(reservation_id){
+                if(selectedReservation?.id){
                         await updatePublishedReservation(
-                        +reservation_id,
+                        selectedReservation.id,
                         name !== '' ? name : reservationData.name,
                         rooms !== '' ? parseInt(rooms, 10) : reservationData.rooms,
                         people !== '' ? parseInt(people, 10) : reservationData.people,
@@ -101,11 +102,11 @@ export const PublishedReservationUpdate = () => {
                     if(image){
                         const formData = new FormData();
                         formData.append('image', image);
-                        await uploadImage(+reservation_id, formData);
+                        await uploadImage(selectedReservation?.id, formData);
                     } 
                     toast.success('Reserva atualizada com sucesso!');
                     setTimeout(() => {
-                        navigate('/publishedReservationList');
+                        navigate('/hotelier-reservations');
                     }, 3000);
                 }
             } catch (error) {
@@ -115,6 +116,10 @@ export const PublishedReservationUpdate = () => {
         }
     };
 
+    const handleGoBack = () => {
+        navigate(-1); // Navega para a página anterior
+    };
+    
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column" justifyContent="space-between">
             <NavBar />
@@ -180,7 +185,7 @@ export const PublishedReservationUpdate = () => {
                     <Flex justify="space-between" mt="15px">
                         <Button
                             leftIcon={<ArrowBackIcon />}
-                            onClick={() => navigate(`/publishedReservationDetails/${reservation_id}`)}
+                            onClick={handleGoBack}
                             border="1px solid white"
                             borderRadius="4px"
                             color="white"

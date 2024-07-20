@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogCloseButton,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
     Box,
     Button,
     Flex,
+    useDisclosure,
 } from '@chakra-ui/react';
 import maisImg from './mais.png';
 import morcegoImg from './bat.png';
@@ -14,10 +22,12 @@ import { deleteAllPromotions, getPromotionById } from '../../../Promotion/servic
 import { getAllPublishedReservation } from '../../services';
 import { PublishedReservationModel } from '../../models/publishedReservation';
 import { PromotionModel } from '../../../Promotion/models/promotion';
+import React from 'react';
+import { useReservationContext } from '../../context';
 
 
 export const AllPublishedReservation = () => {
-    const [reservations, setReservations] = useState<PublishedReservationModel[]>([]);
+    const { reservations, setReservations, setSelectedReservation} = useReservationContext();
     const [promotion, setPromotion] = useState<PromotionModel>({} as PromotionModel);
 
     useEffect(() => {
@@ -66,25 +76,29 @@ export const AllPublishedReservation = () => {
         });
     }, [reservations]);
 
-
+    const handleReservationClick = (reservation: PublishedReservationModel) => {
+        setSelectedReservation(reservation);
+        navigate(`/reservationDetails`);
+    };
+    
     return (
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column">
             <NavBar/>
             <Box p="50px" position="relative">
                     
                 <Flex gap="20px">
-                    <ButtonComponent label="Publicar Reserva" onClick={() => navigate('/publishedReservation')}/>
-                    <ButtonComponent label="Cadastrar Promoção" onClick={() => navigate('/promotions?action=createAll')}/>
-                    <ButtonComponent label="Deletar Promoções" onClick={handleDeletePromotion}/>
+                    <ButtonComponent id="publicReservationButton" label="Publicar Reserva" onClick={() => navigate('/publishedReservation')}/>
+                    <ButtonComponent id="cadastrar-promocao" label="Cadastrar Promoção" onClick={() => navigate('/promotions?action=createAll')}/>
+                    <ButtonDeleteComponent id="deletar-promocoes" label="Deletar Promoções" onClick={handleDeletePromotion}/>
                 </Flex>
                 
                 <Flex flexWrap="wrap" gap="75px" mt="50px">
-                    {reservations.filter(reservation => reservation.hotelier_id === 1).map(reservation => (
-                        <Box position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
+                    {reservations.filter(reservation => reservation.hotelier_id === 1).sort((a, b) => a.id - b.id).map(reservation => (
+                        <Box id={`${reservation.name}`} position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
                             {reservation.promotion_id && (
                                 <Flex alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" style={{ backgroundImage: `url(${morcegoImg})` }}> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
                             )}
-                            <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => navigate(`/publishedReservationDetails/${reservation.id}`)}>
+                            <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => handleReservationClick(reservation)}>
                                 <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
                                 <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.name}</Box>
                                     <Flex textAlign="start" fontSize="20px" color="#eaeaea">R$ {reservation.new_price.toFixed(0)} { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" ml="5px" mt="3px"> R$ {reservation.price}</Box>}</Flex>
@@ -100,10 +114,50 @@ export const AllPublishedReservation = () => {
     );
 }
 
-const ButtonComponent = ({label, onClick}) => {
+const ButtonComponent = ({id, label, onClick}) => {
     return (
-        <Button bg="#eaeaea" onClick={onClick}>
+        <Button id={id} bg="#eaeaea" onClick={onClick}>
             {label}
         </Button>
+    )
+}
+
+const ButtonDeleteComponent = ({id, label, onClick}) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef<HTMLButtonElement>(null);
+    return (
+        <Box>
+            <Button id={id} bg="#eaeaea" onClick={onOpen}>
+                {label}
+            </Button>
+            <AlertDialog 
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isOpen={isOpen}
+                isCentered
+            >
+                <AlertDialogOverlay />
+
+                <AlertDialogContent bg="#191919" color="#eaeaea" border="2px solid #eaeaea">
+                    <AlertDialogHeader>Tem certeza?</AlertDialogHeader>
+                    <AlertDialogCloseButton />
+                    <AlertDialogBody>
+                    Esta ação não pode ser desfeita e as promoções serão removidas permanentemente do sistema.
+                    </AlertDialogBody>
+                    <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={onClose}>
+                        Não
+                        </Button>
+                        <Button  ml={3} onClick={() => {
+                            onClick();
+                            onClose(); 
+                        }}>
+                        Sim
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </Box>
     )
 }
