@@ -98,6 +98,7 @@ export const SearchBar = () => {
       <Input
         placeholder="Destino"
         _placeholder={{ opacity: 1, color: 'black.500' }}
+        color={"black"}
         variant="outline"
         ml={2}
         height="70px"
@@ -117,6 +118,7 @@ export const SearchBar = () => {
         backgroundColor={"white"}
         color={"black"}
         borderRadius="0"
+        // defaultValue={(new Date()).toISOString().split('T')[0].split('-').reverse().join('/')}
         onChange={handleCheckin}
       />
       <Input
