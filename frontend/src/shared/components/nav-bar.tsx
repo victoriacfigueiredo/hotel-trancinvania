@@ -119,7 +119,7 @@ export const NavBar: React.FC = () => {
               onMouseEnter={onPerfilMenuOpen}
               onMouseLeave={onPerfilMenuClose}
             >
-              <MenuItem as={RouterLink} to="/perfil/profile">
+              <MenuItem as={RouterLink} to="/client/profile">
                 Meu Perfil
               </MenuItem>
               <MenuItem as={RouterLink} to="/client/login">
@@ -128,7 +128,7 @@ export const NavBar: React.FC = () => {
               <MenuItem as={RouterLink} to="/hotelier/login">
                 Sou Hoteleiro
               </MenuItem>
-              <MenuItem as={RouterLink} to="/perfil/pagamento">
+              <MenuItem as={RouterLink} to="/client/pagamento">
                 Pagamento
               </MenuItem>
             </MenuList>
@@ -221,7 +221,7 @@ export const NavBar: React.FC = () => {
               <Box pl={6}>
                 <Link
                   as={RouterLink}
-                  to="/perfil/profile"
+                  to="/client/profile"
                   display="block"
                   textDecoration="none"
                   color="#000000"
@@ -257,7 +257,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/perfil/pagamento"
+                  to="/client/pagamento"
                   display="block"
                   textDecoration="none"
                   color="#000000"

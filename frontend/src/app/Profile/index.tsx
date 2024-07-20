@@ -81,7 +81,7 @@ export const Profile = () => {
                 <Box flex="1" textAlign="left">Minhas Reservas</Box>
                 <ChevronRightIcon />
               </Button>
-              <Link to="/perfil/profile/whishlist" style={{ textDecoration: "none", width: "100%" }}>
+              <Link to="/client/profile/whishlist" style={{ textDecoration: "none", width: "100%" }}>
                 <Button
                   bg="#784A95"
                   color="#EAEAEA"
@@ -97,7 +97,7 @@ export const Profile = () => {
                   <ChevronRightIcon />
                 </Button>
               </Link>
-              <Link to="/perfil/profile/rate" style={{ textDecoration: "none", width: "100%" }}>
+              <Link to="/client/profile/rate" style={{ textDecoration: "none", width: "100%" }}>
                 <Button
                   bg="#784A95"
                   color="#EAEAEA"

@@ -11,8 +11,8 @@ import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reserv
 import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 import { HomePage } from "./app/home/pages/homepage";
 import { Profile } from "./app/Profile";
-import { Rate } from "./app/Rate";
-import { Whishlist } from "./app/Wishlist";
+import { Rate } from "./app/Rate/pages/myRates";
+import { Whishlist } from "./app/Wishlist/pages/myWhishlist";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
@@ -41,15 +41,15 @@ const router = createBrowserRouter([
     Component: LoginHotelier,
   },
   {
-    path: "/perfil/profile",
+    path: "client/profile",
     Component: Profile,
   },
   {
-    path: "/perfil/profile/rate",
+    path: "client/profile/rate",
     Component: Rate,
   },
   {
-    path: "/perfil/profile/whishlist",
+    path: "client/profile/whishlist",
     Component: Whishlist,
   },
   {
