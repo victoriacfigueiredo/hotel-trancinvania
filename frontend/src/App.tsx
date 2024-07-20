@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     Component: HotelierRegister,
   },*/
   {
-    path: '/promotions/:reservation_id',
+    path: '/promotions',
     Component: Promotion,
   },
   {
@@ -43,15 +43,15 @@ const router = createBrowserRouter([
     Component: PublishedReservation,
   },
   {
-    path: '/publishedReservationList',
+    path: '/hotelier-reservations',
     Component: AllPublishedReservation,
   },
   {
-    path: '/publishedReservationDetails/:reservation_id',
+    path: '/reservationDetails',
     Component: ReservationDetails,
   },
   {
-    path: '/publishedReservationUpdate/:reservation_id',
+    path: '/reservationUpdate',
     Component: PublishedReservationUpdate,
   },
   {
