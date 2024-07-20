@@ -68,14 +68,16 @@ const EditProfileClient: React.FC = () => {
     }
   }, [data, reset]);
 
-  const onSubmit = (formData: RegisterClientFormInputs) => {
-    // Handle form submission
-    toast.success(`Alterações salvas com sucesso!`, {
-      position: "top-right",
-      autoClose: 5000,
-    });
-    onClose();
-  };
+  const onSubmit = () =>
+    //formData: RegisterClientFormInputs
+    {
+      // Handle form submission
+      toast.success(`Alterações salvas com sucesso!`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      onClose();
+    };
 
   const openEditModal = (field: keyof RegisterClientFormInputs) => {
     setCurrentField(field);
@@ -84,8 +86,8 @@ const EditProfileClient: React.FC = () => {
 
   const renderEditableField = (
     label: string,
-    fieldName: keyof RegisterClientFormInputs,
-    isPassword = false
+    fieldName: keyof RegisterClientFormInputs
+    //isPassword = false
   ) => (
     <GridItem colSpan={1} key={fieldName}>
       <FormControl>
@@ -172,7 +174,7 @@ const EditProfileClient: React.FC = () => {
                   {renderLockedField("Nome", "name")}
                   {renderEditableField("E-mail", "email")}
                   {renderEditableField("Username", "username")}
-                  {renderEditableField("Senha", "password", true)}
+                  {renderEditableField("Senha", "password")}
                   {renderLockedField("CPF", "cpf")}
                   {renderLockedField("Número de Telefone", "phone")}
                   {renderLockedField("Data de Nascimento", "birthDate")}

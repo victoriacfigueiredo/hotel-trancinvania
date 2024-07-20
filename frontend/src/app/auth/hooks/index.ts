@@ -10,11 +10,9 @@ import {
   registerHotelier,
 } from "../services";
 import {
-  RegisterClientFormInputs,
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
 } from "../forms/RegisterForm";
-import RegisterHotelier from "../pages/hotelier/register";
 
 export function useLoginClientMutation() {
   return useMutation({

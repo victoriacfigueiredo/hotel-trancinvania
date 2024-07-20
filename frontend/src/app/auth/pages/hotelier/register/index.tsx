@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -15,7 +15,6 @@ import {
   Image,
   useSteps,
   Step,
-  StepDescription,
   StepIcon,
   StepIndicator,
   StepNumber,

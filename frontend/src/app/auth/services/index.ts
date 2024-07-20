@@ -5,7 +5,6 @@ import { ResetTokenInputs } from "../forms/ResetForm";
 import { RecoveryFormInputs } from "../forms/RecoveryForm";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
-  RegisterClientFormInputs,
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
 } from "../forms/RegisterForm";
