@@ -153,7 +153,7 @@ export default class PromotionService {
         try{
             if(!await this.publishedReservationRepository.promotionInReservation()){
                 throw new HttpNotFoundError({
-                    msg: 'Nenhuma promoção encontrada'
+                    msg: 'Não há promoção cadastrada'
                 });
             }
             await this.promotionRepository.deleteAllPromotions(hotelier_id);
