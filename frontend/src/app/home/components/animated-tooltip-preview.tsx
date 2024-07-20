@@ -4,13 +4,13 @@ const people = [
   {
     id: 1,
     name: "Amanda Cristina",
-    designation: "Salvar, gostar, compartilhar e avaliar reserva",
+    designation: "Salvar, Gostar, Compartilhar, Avaliar Reservas",
     image: "https://i.imgur.com/B3GoJFb.png",
   },
   {
     id: 2,
     name: "Bianca Duarte",
-    designation: "Cadastro, Login e tela Inicial",
+    designation: "Cadastro, Login e Tela Inicial",
     image: "https://i.imgur.com/GKQzbwx.png",
   },
   {

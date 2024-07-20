@@ -99,6 +99,7 @@ export const HomePage = () => {
       </Container>
 
       <Box
+        mt={30}
         ref={secondHalfRef}
         bg="#191919"
         color="#EAEAEA"
