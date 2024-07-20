@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
-import { LoginFormInputs, LoginSchema } from "../../../forms/LoginForm";
+import { LoginFormInputs, LoginSchema } from "../../../forms/login-form";
 import { useLoginClientMutation } from "../../../hooks";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";

@@ -1,13 +1,13 @@
 import apiService from "../../../shared/services/api-service";
-import { LoginFormInputs } from "../forms/LoginForm";
+import { LoginFormInputs } from "../forms/login-form";
 import { LoginResponse } from "../models/LoginModel";
-import { ResetTokenInputs } from "../forms/ResetForm";
+import { ResetTokenInputs } from "../forms/reset-form";
 import { RecoveryFormInputs } from "../forms/recovery-form";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
-} from "../forms/RegisterForm";
+} from "../forms/register-form";
 
 export async function loginClient({
   username,

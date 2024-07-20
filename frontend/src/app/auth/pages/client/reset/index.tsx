@@ -18,7 +18,7 @@ import { NavBar } from "../../../../../shared/components/nav-bar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { ResetTokenInputs, ResetTokenSchema } from "../../../forms/ResetForm";
+import { ResetTokenInputs, ResetTokenSchema } from "../../../forms/reset-form";
 import { useResetPasswordClientMutation } from "../../../hooks";
 import { toast } from "react-toastify";
 

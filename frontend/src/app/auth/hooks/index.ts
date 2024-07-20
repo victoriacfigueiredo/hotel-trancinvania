@@ -12,7 +12,7 @@ import {
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
-} from "../forms/RegisterForm";
+} from "../forms/register-form";
 
 export function useLoginClientMutation() {
   return useMutation({

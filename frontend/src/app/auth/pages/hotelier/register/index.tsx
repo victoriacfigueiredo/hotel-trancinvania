@@ -34,7 +34,7 @@ import { useRegisterHotelierMutation } from "../../../hooks";
 import {
   RegisterHotelierFormInputs,
   RegisterHotelierSchema,
-} from "../../../forms/RegisterForm";
+} from "../../../forms/register-form";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import "react-toastify/dist/ReactToastify.css";
