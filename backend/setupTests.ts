@@ -13,6 +13,6 @@ beforeEach(() => {
 
 export const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>
 
-jest.mock('@prisma/client', () => ({
-  PrismaClient: jest.fn().mockImplementation(() => prismaMock),
-}));
+// jest.mock('@prisma/client', () => ({
+//   PrismaClient: jest.fn().mockImplementation(() => prismaMock),
+// }));

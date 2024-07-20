@@ -37,7 +37,7 @@ export default class ReservationRepository {
                 }
             })
             if (!publishedReservation) {
-                throw new HttpNotFoundError({msg: 'Oferta de reserva n„o encontrada'});
+                throw new HttpNotFoundError({msg: 'Oferta de reserva n√£o encontrada'});
             }
 
             return publishedReservation as PublishedReservation;
@@ -53,7 +53,7 @@ export default class ReservationRepository {
                 }
             })
             if (!client) {
-                throw new HttpNotFoundError({msg: 'FaÁa login ou cadastre-se!'});
+                throw new HttpNotFoundError({msg: 'Fa√ßa login ou cadastre-se!'});
             }
 
             return client as Client;
@@ -69,7 +69,7 @@ export default class ReservationRepository {
                 }
             })
             if (!paymentMethod) {
-                throw new HttpNotFoundError({msg: 'Cadastre um mÈtodo de pagamento.'});
+                throw new HttpNotFoundError({msg: 'Cadastre um m√©todo de pagamento.'});
             }
 
             return paymentMethod as PaymentMethod[];
@@ -85,7 +85,7 @@ export default class ReservationRepository {
                 }
             })
             if (!reservation) {
-                throw new HttpNotFoundError({msg: 'Reserva n„o encontrada.'});
+                throw new HttpNotFoundError({msg: 'Reserva n√£o encontrada.'});
             }
 
             return reservation as Reserve;
@@ -102,7 +102,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new HttpNotFoundError({msg: 'VocÍ ainda n„o possui reservas.'});
+                throw new HttpNotFoundError({msg: 'Voc√™ ainda n√£o possui reservas.'});
             }
 
             return reservations as Reserve[];
@@ -134,7 +134,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o perÌodo especificado.'});
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o per√≠odo especificado.'});
             }
 
             return reservations as Reserve[];
@@ -160,7 +160,7 @@ export default class ReservationRepository {
             });
 
             if (!reservations) {
-                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o perÌodo especificado.'});
+                throw new HttpNotFoundError({msg: 'Nenhuma reserva encontrada para o per√≠odo especificado.'});
             }
 
             return reservations as Reserve[];

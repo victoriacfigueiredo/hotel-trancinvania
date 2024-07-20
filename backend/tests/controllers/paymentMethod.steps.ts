@@ -65,7 +65,7 @@ defineFeature(feature, (test) => {
         });
 
     const givenPaymentMethodExists = (given: DefineStepFunction) =>
-        given(/^o mÃ©todo de pagamento "(.*)" estÃ¡ cadastrado com o tipo "(.*)"$/, async (name, type) => {
+        given(/^o metodo de pagamento "(.*)" esta cadastrado com o tipo "(.*)"$/, async (name, type) => {
             const cliente = await createClient();
             clients.push(cliente);
             prismaMock.client.findUnique.mockResolvedValue(cliente);
@@ -78,7 +78,7 @@ defineFeature(feature, (test) => {
         });
         
     const givenPaymentMethodExistsDelete = (given: DefineStepFunction) =>
-      given(/^o mÃ©todo de pagamento "(.*)" estÃ¡ cadastrado$/, async (name) => {
+      given(/^o metodo de pagamento "(.*)" esta cadastrado$/, async (name) => {
           const cliente = await createClient();
           clients.push(cliente);
           prismaMock.client.findUnique.mockResolvedValue(cliente);
@@ -106,7 +106,7 @@ defineFeature(feature, (test) => {
         });
         
     const whenUpdatePaymentMethod = (when: DefineStepFunction) =>
-        when(/^altero o mÃ©todo de pagamento "(.*)" para o tipo "(.*)"$/, async (name, newType) => {
+        when(/^altero o metodo de pagamento "(.*)" para o tipo "(.*)"$/, async (name, newType) => {
            // console.log(paymentMethods[0])
             await setupDBTest.setupDataBaseForPayMethodsTest(clients[0],paymentMethods[0]);
             const paymentMethod = paymentMethods.find(method => method.name === name);
@@ -118,7 +118,7 @@ defineFeature(feature, (test) => {
         });
         
     const whenDeletePaymentMethod = (when: DefineStepFunction) =>
-      when(/^deleto o mÃ©todo de pagamento "(.*)"$/, async (name) => {
+      when(/^deleto o metodo de pagamento "(.*)"$/, async (name) => {
           await setupDBTest.setupDataBaseForPayMethodsTest(clients[0], paymentMethods[0]);
           const paymentMethod = paymentMethods.find(method => method.name === name);
           if (paymentMethod) {
@@ -135,21 +135,21 @@ defineFeature(feature, (test) => {
         });
 
     const thenSeePaymentMethodOnList = (then: DefineStepFunction) =>
-        then(/^vejo "(.*)" na lista de mÃ©todos de pagamento$/, async (name) => {
+        then(/^vejo "(.*)" na lista de metodos de pagamento$/, async (name) => {
             prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
             const res = await request.get('/client/paymentMethods');
             expect(res.body.some((method: PaymentMethod) => method.name === name)).toBe(true);
         });
 
     const thenSeeUpdatedPaymentMethodOnList = (then: DefineStepFunction) =>
-        then(/^vejo "(.*)" com o tipo "(.*)" na lista de mÃ©todos de pagamento$/, async (name, type) => {
+        then(/^vejo "(.*)" com o tipo "(.*)" na lista de metodos de pagamento$/, async (name, type) => {
             prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
             const res = await request.get('/client/paymentMethods');
             expect(res.body.some((method: PaymentMethod) => method.name === name && method.type === type)).toBe(true);
         });
 
     const thenDoNotSeePaymentMethodOnList = (and: DefineStepFunction) =>
-      and(/^nÃ£o vejo "(.*)" na lista de mÃ©todos de pagamento$/, async (name) => {
+      and(/^nao vejo "(.*)" na lista de metodos de pagamento$/, async (name) => {
           prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
           const res = await request.get('/client/paymentMethods');
           expect(res.body.some((method: PaymentMethod) => method.name === name)).toBe(false);
@@ -157,7 +157,7 @@ defineFeature(feature, (test) => {
     
 
     const givenPaymentMethodExistsWithData = (given: DefineStepFunction) =>
-      given(/^o mÃ©todo de pagamento "(.*)" estÃ¡ cadastrado com numCard "(.*)", cvv "(.*)", validade "(.*)", tipo "(.*)", cpf "(.*)"$/, async (name, numCard, cvv, validade, tipo, cpf) => {
+      given(/^o metodo de pagamento "(.*)" esta cadastrado com numCard "(.*)", cvv "(.*)", validade "(.*)", tipo "(.*)", cpf "(.*)"$/, async (name, numCard, cvv, validade, tipo, cpf) => {
           const cliente = await createClient();
           clients.push(cliente);
           prismaMock.client.findUnique.mockResolvedValue(cliente);
@@ -190,7 +190,7 @@ defineFeature(feature, (test) => {
       thenDoNotSeePaymentMethodOnList(and);
     });
 
-    test('Tentativa de Cadastro de MÃ©todo de pagamento jÃ¡ cadastrado', ({ given, when, then }) => {
+    test('Tentativa de Cadastro de Metodo de pagamento ja cadastrado', ({ given, when, then }) => {
       givenPaymentMethodExistsWithData(given);
       whenCreateNewPaymentMethod(when);
       thenSeeSuccessMessage(then);
