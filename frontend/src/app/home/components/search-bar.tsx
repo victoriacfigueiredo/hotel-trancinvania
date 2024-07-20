@@ -2,8 +2,8 @@ import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { Flex, Heading, IconButton, Input, Popover, PopoverBody, PopoverContent, PopoverTrigger, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { ISearch } from "../services";
 import { toast, ToastContainer } from "react-toastify";
+import { ISearch } from "../models/SearchModels";
 
 export const SearchBar = () => {
 
@@ -94,41 +94,53 @@ export const SearchBar = () => {
   }
 
   return (
-    <Flex justify="center" align="center" mb={8}>
+    <Flex justify="center" align="center" mb={8} fontFamily="Inter">
       <Input
         placeholder="Destino"
+        _placeholder={{ opacity: 1, color: 'black.500' }}
         variant="outline"
-        mx={2}
+        ml={2}
         height="70px"
         width="130px"
+        backgroundColor={"white"}
+        borderRadius="0"
+        borderLeftRadius="30"
         onChange={handleDestino}
       />
       <Input
         placeholder="Check-in"
+        _placeholder={{ opacity: 1, color: 'black.500' }}
         type="date"
         variant="outline"
-        mx={2}
         height="70px"
         width="180px"
+        backgroundColor={"white"}
+        color={"black"}
+        borderRadius="0"
         onChange={handleCheckin}
       />
       <Input
         placeholder="Check-out"
+        _placeholder={{ opacity: 1, color: 'black.500' }}
         type="date"
         variant="outline"
-        mx={2}
         height="70px"
         width="180px"
+        backgroundColor={"white"}
+        color={"black"}
+        borderRadius="0"
         onChange={handleCheckout}
       />
       <Popover>
         <PopoverTrigger>
           <Input
-          placeholder="Quem"
+          placeholder="Detalhes"
+          _placeholder={{ opacity: 1, color: 'black.500' }}
           variant="outline"
-          mx={2}
           height="70px"
           width="130px"
+          backgroundColor={"white"}
+          borderRadius="0"
         />  
         </PopoverTrigger>
         <PopoverContent>
@@ -208,12 +220,15 @@ export const SearchBar = () => {
       <IconButton
         aria-label="Search"
         icon={<FaSearch />}
-        mx={2}
         height="70px"
         width="70px"
-        bg="#A4161A"
+        bg="white"
         colorScheme="red"
+        color="red"
         onClick={() => (handleSearch())}
+        borderRadius="0"
+        borderRightRadius="30"
+        _hover={{color: "white", bgColor:"red"}}
       />
       <ToastContainer theme="dark"/>
     </Flex>

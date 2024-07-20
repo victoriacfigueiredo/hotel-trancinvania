@@ -3,8 +3,8 @@ import { NavBar } from "../../../../shared/components/nav-bar"
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPublishedReservationsByFilters } from "../../services";
-import { ISearch } from "../../../home/services";
 import { toast } from "react-toastify";
+import { ISearch } from "../../../home/models/SearchModels";
 
 
 export const SearchPage = () => {
@@ -80,27 +80,27 @@ export const SearchPage = () => {
 
             <Box mt={12} p={0} minH="500px" position="relative">
                 <Box position="relative" zIndex="1">
-                <Heading as='h2' size='2xl' noOfLines={1} m={3}>
-                    Resultados de Busca
-                    <Flex flexWrap="wrap" gap="75px" mt="30px">
-                    {reservations.map(reservation => (
-                            <Box position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
-                                {reservation.promotion_id && (
-                                    <Flex alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" /**style={{ backgroundImage: `url(${morcegoImg})` }}**/> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
-                                )}
-                                <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => navigate(`/publishedReservationDetails/${reservation.id}`)}>
-                                    <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
-                                    <Flex justify="center" align="center">
-                                        <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.name}</Box>
-                                        <Spacer />
-                                        <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.rating}</Box>
-                                    </Flex>
-                                    <Flex textAlign="start" fontSize="20px" color="#eaeaea">R$ {reservation.new_price.toFixed(0)} { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" ml="5px" mt="3px"> R$ {reservation.price}</Box>} a diária</Flex>
-                                </Box>
-                            </Box>
-                    ))}
-                </Flex>
+                <Heading as='h2' size='2xl' noOfLines={1} m={3} fontFamily="trancinfont" letterSpacing={"-0.07rem"}>
+                    resultados de Busca
                 </Heading>
+                <Flex flexWrap="wrap" gap="75px" mt="30px">
+                {reservations.map(reservation => (
+                    <Box position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
+                        {reservation.promotion_id && (
+                            <Flex alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" /**style={{ backgroundImage: `url(${morcegoImg})` }}**/> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
+                        )}
+                        <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => navigate(`/publishedReservationDetails/${reservation.id}`)}>
+                            <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
+                            <Flex justify="center" align="center">
+                                <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.name}</Box>
+                                <Spacer />
+                                <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.rating}</Box>
+                            </Flex>
+                            <Flex textAlign="start" fontSize="20px" color="#eaeaea">R$ {reservation.new_price.toFixed(0)} { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" ml="5px" mt="3px"> R$ {reservation.price}</Box>} a diária</Flex>
+                        </Box>
+                    </Box>
+                ))}
+                </Flex>
                 </Box>
             </Box>
 
