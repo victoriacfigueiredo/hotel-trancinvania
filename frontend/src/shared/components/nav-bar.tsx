@@ -150,7 +150,7 @@ export const NavBar: React.FC = () => {
                 </>
               )}
               {isLoggedIn && userType === "hotelier" && (
-                <MenuItem as={RouterLink} to="/perfil/meus-dados">
+                <MenuItem as={RouterLink} to="/hotelier/profile">
                   Meus Dados
                 </MenuItem>
               )}
@@ -294,7 +294,7 @@ export const NavBar: React.FC = () => {
                 {isLoggedIn && userType === "hotelier" && (
                   <Link
                     as={RouterLink}
-                    to="/perfil/meus-dados"
+                    to="/hotelier/profile"
                     display="block"
                     textDecoration="none"
                     color="#000000"
