@@ -119,7 +119,7 @@ export const NavBar: React.FC = () => {
               onMouseEnter={onPerfilMenuOpen}
               onMouseLeave={onPerfilMenuClose}
             >
-              <MenuItem as={RouterLink} to="/perfil/meu-perfil">
+              <MenuItem as={RouterLink} to="/perfil/profile">
                 Meu Perfil
               </MenuItem>
               <MenuItem as={RouterLink} to="/client/login">
