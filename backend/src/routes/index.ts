@@ -42,6 +42,7 @@ router.get('/', (req, res) => {
 });
 
 
+
 reservationController.setupRoutes(router);
 promotionController.setupRoutes(router);
 clientController.setupRoutes(router);

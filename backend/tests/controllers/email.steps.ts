@@ -50,6 +50,7 @@ const createPublishedReservation = {
         new_price: 100.00,
         promotion_id: null,
         hotelier_id: 1,
+        imageUrl: null,
 }
 
 const createReservation = async (publishedReservationId: number) => {
@@ -60,7 +61,7 @@ const createReservation = async (publishedReservationId: number) => {
         checkout: '2024-07-20',
         num_adults: 2,
         num_children: 1,
-        paymentMethodName: 'nubank',
+        paymentMethodName: '1234 5678 9101 1121',
         price: 200.00,
         clientId: 1,
         publishedReservationId: publishedReservationId,

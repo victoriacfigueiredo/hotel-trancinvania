@@ -49,6 +49,7 @@ defineFeature(feature, (test) => {
             new_price: price,
             promotion_id: null,
             hotelier_id: 1,
+            imageUrl: null
         }
     }
 
@@ -67,6 +68,7 @@ defineFeature(feature, (test) => {
             new_price: price,
             promotion_id: promotion_id,
             hotelier_id: 1,
+            imageUrl: null,
         }
     }
 
@@ -147,7 +149,7 @@ defineFeature(feature, (test) => {
         when(/^uma requisição DELETE é enviada para "(.*)"$/, async(url) => {
             prismaMock.promotion.findMany.mockResolvedValue(promotions);
             prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
-            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
+            await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation, promotions);
             response = await request.delete(url);
         })
 
@@ -155,16 +157,18 @@ defineFeature(feature, (test) => {
         when(/^uma requisição DELETE é enviada para "(.*)"$/, async(url) => {
             prismaMock.promotion.findMany.mockResolvedValue(promotions);
             prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
+            const new_url = `/hotelier/${hoteliers[0].id}/reservation/promotions`
             await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation, promotions);
-            response = await request.delete(url);
+            response = await request.delete(new_url);
         })
 
     const whenUnlimitedPromotionPostAllReservations = (when: DefineStepFunction) => // rever
         when (/^uma requisição POST é enviada para "(.*)" com o desconto de "(.*)%" e promoção "(.*)"$/, async(url, discount, type) => {
             prismaMock.promotion.findMany.mockResolvedValue(promotions);
             prismaMock.publishedReservation.findMany.mockResolvedValue(publishedReservation);
+            const new_url = `/hotelier/${hoteliers[0].id}/reservation/promotions`
             await setupDBTest.setupDatabaseforPromotionTests(hoteliers[0], publishedReservation);
-            response = await request.post(url).send({discount: parseInt(discount, 10), type});
+            response = await request.post(new_url).send({discount: parseInt(discount, 10), type});
         });
 
     const givenPublishedReservation = (given: DefineStepFunction) =>
@@ -210,7 +214,7 @@ defineFeature(feature, (test) => {
     test('Deletar a promoção da reserva', ({ given, when, then, and }) => {
         givenHotelierExist(given);
         givenPublishedPromotion(and);
-        whenPromotionDeleteAll(when);
+        whenPromotionDelete(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
@@ -246,7 +250,7 @@ defineFeature(feature, (test) => {
     test('Deletar todas as promoções com nenhuma promoção cadastrada', ({ given, when, then, and }) => {
         givenHotelierExist(given);
         givenNoPromotion(and);
-        whenPromotionDelete(when);
+        whenPromotionDeleteAll(when);
         thenStatusIsReturned(then);
         thenReturnedMessage(and);
     });
