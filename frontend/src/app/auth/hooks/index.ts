@@ -1,8 +1,63 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginClient } from "../services";
+import {
+  loginClient,
+  loginHotelier,
+  resetPasswordHotelier,
+  sendRecoveryEmailHotelier,
+  resetPasswordClient,
+  sendRecoveryEmailClient,
+  registerClient,
+  registerHotelier,
+} from "../services";
+import {
+  RegisterClientFormInputsWithoutConfirmPassword,
+  RegisterHotelierFormInputs,
+} from "../forms/register-form";
 
 export function useLoginClientMutation() {
   return useMutation({
     mutationFn: loginClient,
+  });
+}
+export function useResetPasswordClientMutation() {
+  return useMutation({
+    mutationFn: resetPasswordClient,
+  });
+}
+
+export function useSendRecoveryEmailClientMutation() {
+  return useMutation({
+    mutationFn: sendRecoveryEmailClient,
+  });
+}
+
+export function useRegisterClientMutation() {
+  return useMutation({
+    mutationFn: (data: RegisterClientFormInputsWithoutConfirmPassword) =>
+      registerClient(data),
+  });
+}
+
+export function useLoginHotelierMutation() {
+  return useMutation({
+    mutationFn: loginHotelier,
+  });
+}
+
+export function useResetPasswordHotelierMutation() {
+  return useMutation({
+    mutationFn: resetPasswordHotelier,
+  });
+}
+
+export function useSendRecoveryEmailHotelierMutation() {
+  return useMutation({
+    mutationFn: sendRecoveryEmailHotelier,
+  });
+}
+
+export function useRegisterHotelierMutation() {
+  return useMutation({
+    mutationFn: (data: RegisterHotelierFormInputs) => registerHotelier(data),
   });
 }

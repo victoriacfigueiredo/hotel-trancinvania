@@ -1,4 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import CreateReservation from "./app/reservation/pages/CreateReservation"
+import PayReservation from "./app/reservation/pages/PayReservation"
+import MyReservations from "./app/reservation/pages/MyReservations"
+import SelectReservation from "./app/reservation/pages/SelectReservation"
+import EditReservation from "./app/reservation/pages/EditReservation"
+import EditPay from "./app/reservation/pages/EditPay"
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
@@ -6,8 +12,17 @@ import { ReservationDetails } from "./app/PublishedReservation/pages/Reservation
 import { HomePage } from "./app/home/pages/homepage";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
+import RecoverPasswordHotelier from "./app/auth/pages/hotelier/recover";
+import RecoverPasswordClient from "./app/auth/pages/client/recover";
+import ResetPasswordClient from "./app/auth/pages/client/reset";
+import ResetPasswordHotelier from "./app/auth/pages/hotelier/reset";
+import RegisterClient from "./app/auth/pages/client/register";
+import EditProfileClient from "./app/auth/pages/client/profile";
+import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
+import { SearchPage } from "./app/search/pages/search";
+
 
 const router = createBrowserRouter([
   {
@@ -19,17 +34,65 @@ const router = createBrowserRouter([
     Component: LoginClient,
   },
   {
+    path: "client/password/recover",
+    Component: RecoverPasswordClient,
+  },
+  {
+    path: "client/password/reset",
+    Component: ResetPasswordClient,
+  },
+  {
+    path: "/client/register",
+    Component: RegisterClient,
+  },
+  {
+    path: "client/profile/edit",
+    Component: EditProfileClient,
+  },
+  {
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
-    /*{
-    path: "/register/client",
-    Component: ClientRegister,
-  },*/
-  /*{
-    path: "/register/hotelier",
-    Component: HotelierRegister,
-  },*/
+  {
+    path: "hotelier/password/recover",
+    Component: RecoverPasswordHotelier,
+  },
+  {
+    path: "hotelier/password/reset",
+    Component: ResetPasswordHotelier,
+  },
+  {
+    path: "/hotelier/register",
+    Component: RegisterHotelier,
+  },
+  {
+    path: "/create-reservation",
+    Component: CreateReservation,
+  },
+  {
+    path: "/pay-reservation",
+    Component: PayReservation,
+  },
+  {
+    path: "/my-reservations",
+    Component: MyReservations,
+  },
+  {
+    path: "/select-reservation",
+    Component: SelectReservation,
+  },
+  {
+    path: "/edit-reservation",
+    Component: EditReservation,
+  },
+  {
+    path: "/edit-pay",
+    Component: EditPay,
+  },
+  {
+    path: "/search",
+    Component: SearchPage,
+  },
   {
     path: '/promotions',
     Component: Promotion,

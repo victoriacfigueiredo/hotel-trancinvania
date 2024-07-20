@@ -1,3 +1,4 @@
+
 import { Image } from "@chakra-ui/react";
 import Net from "../assets/net.png";
 import Spider from "../assets/spider.png";
@@ -30,3 +31,4 @@ export const BottomLeftTopRightImages: React.FC = () => {
     </>
   );
 };
+

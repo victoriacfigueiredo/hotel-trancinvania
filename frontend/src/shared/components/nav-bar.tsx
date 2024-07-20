@@ -18,13 +18,9 @@ import {
   MenuItem,
   Button,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
-//import logoImg from '../../app/Promotion/pages/logo.png';
 import LogoHotel from "../assets/logo_hotel.png";
-
-//const hotelLogoUrl = "https://i.imgur.com/sZnZjMW.png";
-//const hotelLogoUrlExp = "https://i.imgur.com/QcX5CZ7.png";
 
 export const NavBar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,10 +35,28 @@ export const NavBar: React.FC = () => {
     onClose: onPerfilMenuClose,
   } = useDisclosure();
 
+  const username = localStorage.getItem("userName");
+  const userType = localStorage.getItem("userType");
+  const isLoggedIn = !!localStorage.getItem("accessToken");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("userName");
+
+    if (userType === "hotelier") {
+      navigate("/");
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <Box bg="#EAEAEA" color="#000000" height="90px">
       <Flex justify="space-between" align="center" p={4} height="100%">
-        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="80px" />
+        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="70px" />
+
         {/* Desktop Menu */}
         <Flex
           align="center"
@@ -86,15 +100,21 @@ export const NavBar: React.FC = () => {
               onMouseEnter={onReservasMenuOpen}
               onMouseLeave={onReservasMenuClose}
             >
-              <MenuItem as={RouterLink} to="/reservations">
-                Realizar Reserva
-              </MenuItem>
-              <MenuItem as={RouterLink} to="/publishedReservation">
-                Publicar Reservas
-              </MenuItem>
-              <MenuItem as={RouterLink} to="/hotelier-reservations">
-                Gerenciar Reservas
-              </MenuItem>
+              {!isLoggedIn || userType === "client" ? (
+                <MenuItem as={RouterLink} to="/reservations">
+                  Realizar Reserva
+                </MenuItem>
+              ) : null}
+              {userType === "hotelier" && (
+                <>
+                  <MenuItem as={RouterLink} to="/publishedReservation">
+                    Publicar Reservas
+                  </MenuItem>
+                  <MenuItem as={RouterLink} to="/hotelier-reservations">
+                    Gerenciar Reservas
+                  </MenuItem>
+                </>
+              )}
             </MenuList>
           </Menu>
 
@@ -113,24 +133,42 @@ export const NavBar: React.FC = () => {
               display="flex"
               alignItems="center"
             >
-              <Text>Perfil</Text>
+              <Text>{username || "Conta"}</Text>
             </MenuButton>
             <MenuList
               onMouseEnter={onPerfilMenuOpen}
               onMouseLeave={onPerfilMenuClose}
             >
-              <MenuItem as={RouterLink} to="/perfil/meu-perfil">
-                Meu Perfil
-              </MenuItem>
-              <MenuItem as={RouterLink} to="/client/login">
-                Sou Cliente
-              </MenuItem>
-              <MenuItem as={RouterLink} to="/hotelier/login">
-                Sou Hoteleiro
-              </MenuItem>
-              <MenuItem as={RouterLink} to="/perfil/pagamento">
-                Pagamento
-              </MenuItem>
+              {isLoggedIn && userType === "client" && (
+                <>
+                  <MenuItem as={RouterLink} to="/client/profile">
+                    Meu Perfil
+                  </MenuItem>
+                  <MenuItem as={RouterLink} to="/perfil/pagamento">
+                    Pagamento
+                  </MenuItem>
+                </>
+              )}
+              {isLoggedIn && userType === "hotelier" && (
+                <MenuItem as={RouterLink} to="/perfil/meus-dados">
+                  Meus Dados
+                </MenuItem>
+              )}
+              {!isLoggedIn && (
+                <>
+                  <MenuItem as={RouterLink} to="/client/login">
+                    Sou Cliente
+                  </MenuItem>
+                  <MenuItem as={RouterLink} to="/hotelier/login">
+                    Sou Hoteleiro
+                  </MenuItem>
+                </>
+              )}
+              {isLoggedIn && (
+                <MenuItem onClick={handleLogout} fontWeight={"700"}>
+                  Logout
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Flex>
@@ -174,99 +212,144 @@ export const NavBar: React.FC = () => {
                 Reservas
               </Text>
               <Box pl={6}>
-                <Link
-                  as={RouterLink}
-                  to="/reservations"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Realizar Reserva
-                </Link>
-                <Link
-                  as={RouterLink}
-                  to="/publishedReservation"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Publicar Reservas
-                </Link>
-                <Link
-                  as={RouterLink}
-                  to="/hotelier-reservations"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Gerenciar Reservas
-                </Link>
+                {!isLoggedIn || userType === "client" ? (
+                  <Link
+                    as={RouterLink}
+                    to="/reservations"
+                    display="block"
+                    textDecoration="none"
+                    color="#000000"
+                    fontSize="20px"
+                    mb={2}
+                    onClick={onClose}
+                  >
+                    Realizar Reserva
+                  </Link>
+                ) : null}
+                {userType === "hotelier" && (
+                  <>
+                    <Link
+                      as={RouterLink}
+                      to="/publishedReservation"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Publicar Reservas
+                    </Link>
+                    <Link
+                      as={RouterLink}
+                      to="/hotelier-reservations"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Gerenciar Reservas
+                    </Link>
+                  </>
+                )}
               </Box>
             </Box>
 
             <Box mb={4}>
               <Text fontSize="24px" fontWeight="700" color="#000000" mb={2}>
                 <FaUser style={{ marginRight: "6px", display: "inline" }} />
-                Perfil
+                {username || "Conta"}
               </Text>
               <Box pl={6}>
-                <Link
-                  as={RouterLink}
-                  to="/perfil/meu-perfil"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Meu Perfil
-                </Link>
-                <Link
-                  as={RouterLink}
-                  to="/client/login"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Sou Cliente
-                </Link>
-                <Link
-                  as={RouterLink}
-                  to="/hotelier/login"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Sou Hoteleiro
-                </Link>
-                <Link
-                  as={RouterLink}
-                  to="/perfil/pagamento"
-                  display="block"
-                  textDecoration="none"
-                  color="#000000"
-                  fontSize="20px"
-                  mb={2}
-                  onClick={onClose}
-                >
-                  Pagamento
-                </Link>
+                {isLoggedIn && userType === "client" && (
+                  <>
+                    <Link
+                      as={RouterLink}
+                      to="/client/profile"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Meu Perfil
+                    </Link>
+                    <Link
+                      as={RouterLink}
+                      to="/perfil/pagamento"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Pagamento
+                    </Link>
+                  </>
+                )}
+                {isLoggedIn && userType === "hotelier" && (
+                  <Link
+                    as={RouterLink}
+                    to="/perfil/meus-dados"
+                    display="block"
+                    textDecoration="none"
+                    color="#000000"
+                    fontSize="20px"
+                    mb={2}
+                    onClick={onClose}
+                  >
+                    Meus Dados
+                  </Link>
+                )}
+                {!isLoggedIn && (
+                  <>
+                    <Link
+                      as={RouterLink}
+                      to="/client/login"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Sou Cliente
+                    </Link>
+                    <Link
+                      as={RouterLink}
+                      to="/hotelier/login"
+                      display="block"
+                      textDecoration="none"
+                      color="#000000"
+                      fontSize="20px"
+                      mb={2}
+                      onClick={onClose}
+                    >
+                      Sou Hoteleiro
+                    </Link>
+                  </>
+                )}
+                {isLoggedIn && (
+                  <Link
+                    as={RouterLink}
+                    to="#"
+                    display="block"
+                    textDecoration="none"
+                    color="#000000"
+                    fontSize="20px"
+                    mb={2}
+                    onClick={() => {
+                      handleLogout();
+                      onClose();
+                    }}
+                  >
+                    Logout
+                  </Link>
+                )}
               </Box>
             </Box>
           </DrawerBody>
@@ -275,4 +358,3 @@ export const NavBar: React.FC = () => {
     </Box>
   );
 };
-

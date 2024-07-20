@@ -165,10 +165,7 @@ export default class PublishedReservationController{
         res.status(200).json({status: 200, message: 'Reserva deletada com sucesso'});
     }
 
-    private async getPublishedReservationsByFilters(req: Request, res: Response) {
-        const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
-        const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
-
+    private async filterReservationsByCity(reservations: PublishedReservation[], city: string){
         let reservationsInCity = [] as any[];
 
         for(let i = 0; i < reservations.length; i++){
@@ -185,7 +182,16 @@ export default class PublishedReservationController{
             if(hotelier.city == city){
                 reservationsInCity.push({...reservations[i], city: hotelier.city});
             }
-        }   
+        }
+
+        return reservationsInCity;
+    }
+
+    private async getPublishedReservationsByFilters(req: Request, res: Response) {
+        const {num_rooms, city, num_adults, num_children, checkin, checkout} = req.body;
+        const reservations = await this.publishedReservationService.getReservationsByFilters({num_rooms, city, num_adults, num_children,});
+
+        let reservationsInCity = await this.filterReservationsByCity(reservations, city);
 
         let availableReservations = [] as any[];
 
