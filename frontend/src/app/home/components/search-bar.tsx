@@ -99,8 +99,8 @@ export const SearchBar = () => {
         placeholder="Destino"
         variant="outline"
         mx={2}
-        height="80px"
-        width="180px"
+        height="70px"
+        width="130px"
         onChange={handleDestino}
       />
       <Input
@@ -108,7 +108,7 @@ export const SearchBar = () => {
         type="date"
         variant="outline"
         mx={2}
-        height="80px"
+        height="70px"
         width="180px"
         onChange={handleCheckin}
       />
@@ -117,7 +117,7 @@ export const SearchBar = () => {
         type="date"
         variant="outline"
         mx={2}
-        height="80px"
+        height="70px"
         width="180px"
         onChange={handleCheckout}
       />
@@ -127,8 +127,8 @@ export const SearchBar = () => {
           placeholder="Quem"
           variant="outline"
           mx={2}
-          height="80px"
-          width="180px"
+          height="70px"
+          width="130px"
         />  
         </PopoverTrigger>
         <PopoverContent>
@@ -209,8 +209,10 @@ export const SearchBar = () => {
         aria-label="Search"
         icon={<FaSearch />}
         mx={2}
-        height="80px"
-        width="80px"
+        height="70px"
+        width="70px"
+        bg="#A4161A"
+        colorScheme="red"
         onClick={() => (handleSearch())}
       />
       <ToastContainer theme="dark"/>

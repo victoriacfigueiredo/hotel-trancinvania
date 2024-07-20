@@ -72,6 +72,7 @@ export default class PublishedReservationService {
             }
             const params = this.preparePublishedReservationParams(reservation.hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, reservation.promotion_id);
             await this.publishedReservationRepository.updatePublishedReservationById(id, params);
+            await this.publishedReservationRepository.updatePriceAllReservations();
         }catch(error: any){
             if (error instanceof HttpError){
                 throw error;
