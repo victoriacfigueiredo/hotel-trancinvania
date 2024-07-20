@@ -1,70 +1,59 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../database';
 
 export default class HotelierRepository {
-  private prisma: PrismaClient;
+    async createHotelier(data: any) {
+        return await prisma.hotelier.create({
+            data: data,
+        });
+    }
 
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+    async findHotelierByUsername(username: string) {
+        return await prisma.hotelier.findFirst({
+            where: { username: username },
+        });
+    }
 
-  async createHotelier(data: any) {
-    return await this.prisma.hotelier.create({
-      data,
-    });
-  }
+    async findHotelierByEmail(email: string) {
+        return await prisma.hotelier.findFirst({
+            where: { email: email },
+        });
+    }
 
-  async findHotelierByUsername(username: string) {
-    return await this.prisma.hotelier.findFirst({
-      where: { username: username },
-    });
-  }
+    async findHotelierByEmailOrUsername(email: string, username: string) {
+        return await prisma.hotelier.findFirst({
+            where: {
+                OR: [{ email: email }, { username: username }],
+            },
+        });
+    }
 
-  async findHotelierByEmail(email: string) {
-    return await this.prisma.hotelier.findFirst({
-      where: { email: email },
-    });
-  }
+    async findHotelierById(id: number) {
+        return await prisma.hotelier.findUnique({
+            where: { id: id },
+        });
+    }
 
-  async findHotelierByEmailOrUsername(email: string, username: string) {
-    return await this.prisma.hotelier.findFirst({
-      where: {
-        OR: [
-          { email: email },
-          { username: username },
-        ],
-      },
-    });
-  }
+    async ListAll() {
+        return await prisma.hotelier.findMany();
+    }
 
+    async updateHotelier(id: number, data: any) {
+        return await prisma.hotelier.update({
+            where: { id: id },
+            data,
+        });
+    }
 
-async findHotelierById(id: number) {
-    return await this.prisma.hotelier.findUnique({
-        where: { id: id },
-    });
-}
+    async deleteHotelier(id: number) {
+        return await prisma.hotelier.delete({
+            where: { id: id },
+        });
+    }
 
-async ListAll() {
-    return await this.prisma.hotelier.findMany();
-}
-
-async updateHotelier(id: number, data: any) {
-    return await this.prisma.hotelier.update({
-        where: { id: id },
-        data,
-    });
-}
-
-async deleteHotelier(id: number) {
-    return await this.prisma.hotelier.delete({
-        where: { id: id },
-    });
-}
-
-async updateHotelierPassword(id: number, hashedPassword: string) {
-  return await this.prisma.hotelier.update({
-    where: { id },
-    data: { password: hashedPassword },
-  });
-}
-
+    async updateHotelierPassword(id: number, hashedPassword: string) {
+        return await prisma.hotelier.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+    }
 }
