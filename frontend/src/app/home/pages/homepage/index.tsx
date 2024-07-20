@@ -21,7 +21,7 @@ const iconsUrls = [
   "https://i.imgur.com/ikLfv60.png",
   "https://i.imgur.com/NXxtrYx.png",
 ];
-const logoUrl = "https://www.cin.ufpe.br/~imprensa/marcacinpng/TMB";
+const logoUrl = "https://i.imgur.com/Ag82NHs.png";
 const draculaUrl = "https://i.imgur.com/RP7qAvr.png";
 const mavisUrl = "https://i.imgur.com/VvUqQfb.png";
 
