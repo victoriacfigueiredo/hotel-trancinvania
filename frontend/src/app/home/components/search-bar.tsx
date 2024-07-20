@@ -3,7 +3,7 @@ import { Flex, Heading, IconButton, Input, Popover, PopoverBody, PopoverContent,
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
-import { ISearch } from "../models/SearchModels";
+import { ISearch } from "../../search/models";
 
 export const SearchBar = () => {
 
@@ -94,11 +94,12 @@ export const SearchBar = () => {
   }
 
   return (
-    <Flex justify="center" align="center" mb={8} fontFamily="Inter">
+    <Flex justify="center" align="center" mb={8} fontFamily="Inter" width="800px">
       <Input
         placeholder="Destino"
         _placeholder={{ opacity: 1, color: 'black.500' }}
         color={"black"}
+        textAlign="center"
         variant="outline"
         ml={2}
         height="70px"
@@ -141,6 +142,7 @@ export const SearchBar = () => {
           variant="outline"
           height="70px"
           width="130px"
+          textAlign={"center"}
           backgroundColor={"white"}
           borderRadius="0"
         />  

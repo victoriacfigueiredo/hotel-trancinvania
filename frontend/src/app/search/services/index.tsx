@@ -1,5 +1,5 @@
 import apiService from "../../../shared/services/api-service";
-import { ISearch } from "../../home/models/SearchModels";
+import { ISearch } from "../models";
 import { PromotionModel } from "../../Promotion/models/promotion";
 import { RatingModel } from "../models";
 

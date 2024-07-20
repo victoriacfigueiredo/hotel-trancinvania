@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, HStack, Spacer, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { IPublishedReservations, ISearch } from "../../home/models/SearchModels";
+import { IPublishedReservations, ISearch } from "../../search/models";
 import { getPromotionById, getPublishedReservationsByFilters, getRatingById } from "../services";
 import { toast } from "react-toastify";
 import { StarIcon } from "@chakra-ui/icons";
