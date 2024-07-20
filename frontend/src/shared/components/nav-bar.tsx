@@ -92,7 +92,7 @@ export const NavBar: React.FC = () => {
               <MenuItem as={RouterLink} to="/publishedReservation">
                 Publicar Reservas
               </MenuItem>
-              <MenuItem as={RouterLink} to="/publishedReservationList">
+              <MenuItem as={RouterLink} to="/hotelier-reservations">
                 Gerenciar Reservas
               </MenuItem>
             </MenuList>
@@ -200,7 +200,7 @@ export const NavBar: React.FC = () => {
                 </Link>
                 <Link
                   as={RouterLink}
-                  to="/publishedReservationList"
+                  to="/hotelier-reservations"
                   display="block"
                   textDecoration="none"
                   color="#000000"
