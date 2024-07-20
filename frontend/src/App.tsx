@@ -7,6 +7,8 @@ import RecoverPasswordClient from "./app/auth/pages/client/recover";
 import ResetPasswordClient from "./app/auth/pages/client/reset";
 import ResetPasswordHotelier from "./app/auth/pages/hotelier/reset";
 import RegisterClient from "./app/auth/pages/client/register";
+import EditProfileClient from "./app/auth/pages/client/profile";
+import RegisterHotelier from "./app/auth/pages/hotelier/register";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
     Component: RegisterClient,
   },
   {
+    path: "client/profile/edit",
+    Component: EditProfileClient,
+  },
+  {
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
@@ -40,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "hotelier/password/reset",
     Component: ResetPasswordHotelier,
+  },
+  {
+    path: "/hotelier/register",
+    Component: RegisterHotelier,
   },
 ]);
 
