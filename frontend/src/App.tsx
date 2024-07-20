@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import CreateReservation from "./app/reservation/pages/CreateReservation"
-import PayReservation from "./app/reservation/pages/PayReservation"
-import MyReservations from "./app/reservation/pages/MyReservations"
-import SelectReservation from "./app/reservation/pages/SelectReservation"
-import EditReservation from "./app/reservation/pages/EditReservation"
-import EditPay from "./app/reservation/pages/EditPay"
+import CreateReservation from "./app/reservation/pages/CreateReservation";
+import PayReservation from "./app/reservation/pages/PayReservation";
+import MyReservations from "./app/reservation/pages/MyReservations";
+import SelectReservation from "./app/reservation/pages/SelectReservation";
+import EditReservation from "./app/reservation/pages/EditReservation";
+import EditPay from "./app/reservation/pages/EditPay";
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
@@ -22,7 +22,7 @@ import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
-
+import EditProfileHotelier from "./app/auth/pages/hotelier/profile";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +66,10 @@ const router = createBrowserRouter([
     Component: RegisterHotelier,
   },
   {
+    path: "/hotelier/profile",
+    Component: EditProfileHotelier,
+  },
+  {
     path: "/create-reservation",
     Component: CreateReservation,
   },
@@ -94,33 +98,33 @@ const router = createBrowserRouter([
     Component: SearchPage,
   },
   {
-    path: '/promotions/:reservation_id',
+    path: "/promotions/:reservation_id",
     Component: Promotion,
   },
   {
-    path: '/promotions',
+    path: "/promotions",
     Component: Promotion,
   },
   {
-    path: '/publishedReservation',
+    path: "/publishedReservation",
     Component: PublishedReservation,
   },
   {
-    path: '/publishedReservationList',
+    path: "/publishedReservationList",
     Component: AllPublishedReservation,
   },
   {
-    path: '/publishedReservationDetails/:reservation_id',
+    path: "/publishedReservationDetails/:reservation_id",
     Component: ReservationDetails,
   },
   {
-    path: '/publishedReservationUpdate/:reservation_id',
+    path: "/publishedReservationUpdate/:reservation_id",
     Component: PublishedReservationUpdate,
   },
   {
-    path: '/reservations',
+    path: "/reservations",
     Component: AllPublishedReservationClient,
-  }
+  },
 ]);
 
 export default function App() {

@@ -46,7 +46,7 @@ const LoginClient: React.FC = () => {
       await loginClientMutation.mutateAsync(data);
       toast.success(`Login bem-sucedido! Bem-vindo, ${data.username}!`);
       setTimeout(() => {
-        navigate("/reservation");
+        navigate("/reservations");
       }, 3000);
     } catch (error) {
       toast.error("Falha ao fazer login. Tente novamente.");
