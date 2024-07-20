@@ -2,7 +2,7 @@ import apiService from "../../../shared/services/api-service";
 import { LoginFormInputs } from "../forms/LoginForm";
 import { LoginResponse } from "../models/LoginModel";
 import { ResetTokenInputs } from "../forms/ResetForm";
-import { RecoveryFormInputs } from "../forms/RecoveryForm";
+import { RecoveryFormInputs } from "../forms/recovery-form";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,

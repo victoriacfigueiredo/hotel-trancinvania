@@ -23,7 +23,7 @@ import { NavBar } from "../../../../../shared/components/nav-bar";
 import {
   RecoveryFormInputs,
   RecoverySchema,
-} from "../../../forms/RecoveryForm";
+} from "../../../forms/recovery-form";
 
 const keyImage = "https://i.imgur.com/5GmX6rc.png";
 const mummyImage = "https://i.imgur.com/zhv11La.png";
