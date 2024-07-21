@@ -1,77 +1,58 @@
-import React, { useState, ForwardedRef } from 'react';
-import { useNavigate, useParams} from 'react-router-dom';
-import {JustSpider} from '../../components/just-spider'
-import { JustNet } from '../../components/just-net';
+import React, { useState, useEffect, ForwardedRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { JustSpider } from "../../components/just-spider";
+import { JustNet} from "../../components/just-net";
 import {
-    Box,
-    Text,
-    Button,
-    Icon,
-    ButtonGroup,
-    Stack,
-    HStack,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    FormControl,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputRightElement,
-  } from '@chakra-ui/react';
-import {
-    FaArrowLeft,
-    FaArrowRight,
-    FaCalendarAlt,
-    FaCheck
-  } from 'react-icons/fa';
+  Box, Text, Button, Icon, ButtonGroup, Stack, HStack, NumberInput,
+  NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
+  FormControl, FormLabel, Input, InputGroup, InputRightElement
+} from '@chakra-ui/react';
+import { FaArrowLeft, FaArrowRight, FaCalendarAlt, FaCheck } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  Step,
-  StepSeparator,
-  Stepper,
-  useSteps,
-} from '@chakra-ui/react';
-import Select, { SingleValue} from 'react-select';
+import { Step, StepSeparator, Stepper, useSteps } from '@chakra-ui/react';
+import Select, { SingleValue } from 'react-select';
+import { getReservationById, updateReservation } from '../../services';
+import { getPublishedReservationById } from '../../../PublishedReservation/services';
+import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
+import { ReserveModel } from '../../models/reserve';
+import { useClientData } from "../../../auth/hooks/useUserData";
+
 
 interface OptionType {
   value: string;
   label: string;
 }
 
-  // Custom DatePicker Input
 interface CustomDateInputProps {
-    value?: string;
-    onClick?: () => void;
+  value?: string;
+  onClick?: () => void;
 }
 
 const CustomDateInput = React.forwardRef(
-    (props: CustomDateInputProps, ref: ForwardedRef<HTMLInputElement>) => (
-      <InputGroup>
-        <InputRightElement pointerEvents="none">
-          <Icon as={FaCalendarAlt} color="#EAEAEA" />
-        </InputRightElement>
-        <Input
-          bg="#6A0572"
-          color="#EAEAEA"
-          textAlign="center"
-          border="1px solid #EAEAEA"
-          fontSize= "sm"
-          value={props.value}
-          onClick={props.onClick}
-          ref={ref}
-          width="146px"
-          height="50px"
-          placeholder=""
-        />
-      </InputGroup>
-    ),
+  (props: CustomDateInputProps, ref: ForwardedRef<HTMLInputElement>) => (
+    <InputGroup>
+      <InputRightElement pointerEvents="none">
+        <Icon as={FaCalendarAlt} color="#EAEAEA" />
+      </InputRightElement>
+      <Input
+        bg="#6A0572"
+        color="#EAEAEA"
+        textAlign="center"
+        border="1px solid #EAEAEA"
+        fontSize="sm"
+        value={props.value}
+        onClick={props.onClick}
+        ref={ref}
+        width="146px"
+        height="50px"
+        placeholder=""
+      />
+    </InputGroup>
+  ),
 );
 
 const steps = [
@@ -79,9 +60,10 @@ const steps = [
   { title: 'Pagamento', description: 'Detalhes do pagamento' },
 ];
 
-
 const EditReservation: React.FC = () => {
   const { reserve_id } = useParams<{ reserve_id: string }>();
+  const [reservation, setReservation] = useState<ReserveModel | null>(null);
+  const [publishedReservation, setPublishedReservation] = useState<PublishedReservationModel | null>(null);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [quartos, setQuartos] = useState(1);
@@ -89,39 +71,103 @@ const EditReservation: React.FC = () => {
   const [criancas, setCriancas] = useState(0);
   const { activeStep, setActiveStep } = useSteps({ index: 0 });
   const [selectedPayment, setSelectedPayment] = useState<SingleValue<OptionType>>(null);
-
-  const navigate = useNavigate();
-  const handleDataInput = async () => {
-      if (checkInDate === null || checkOutDate === null) {
-        toast.warning('Preencha todos os campos!');
-      }
-      else {
-        setActiveStep(1);
-      }
-  }; 
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { data } = useClientData();
   
-    const handleGoBack = async() => {
-      setActiveStep(0);
+  const client_id = Number(data?.id);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchReservation = async () => {
+      try {
+        const reservationResponse = await getReservationById(Number(reserve_id));
+        setReservation(reservationResponse);
+
+        const publishedReservationResponse = await getPublishedReservationById(reservationResponse.publishedReservationId);
+        setPublishedReservation(publishedReservationResponse);
+      } catch (error) {
+        const err = error as { response: { data: { message: string } } };
+        toast.error(`${err.response.data.message}`);
+      }
+    };
+
+    if (reserve_id && client_id) {
+      fetchReservation();
+    }
+  }, [reserve_id, client_id]);
+
+  useEffect(() => {
+    const calculateDays = (startDate: Date | null, endDate: Date | null) => {
+      if (!startDate || !endDate) return 0;
+      const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    };
+
+    if (publishedReservation) {
+      const days = calculateDays(checkInDate, checkOutDate);
+      const price = days * quartos * publishedReservation.new_price;
+      setTotalPrice(price);
+    }
+  }, [checkInDate, checkOutDate, quartos, publishedReservation?.new_price]);
+
+  const handleDataInput = async () => {
+    if(!publishedReservation){
+      return;
+    } 
+    if (checkInDate === null || checkOutDate === null) {
+      toast.warning('Preencha todos os campos!');
+    }
+    else if(adultos + 0.5*criancas > publishedReservation.people){
+      toast.warning('A capacidade do quarto foi excedida');
+    }
+    else if(checkInDate >= checkOutDate){
+      toast.warning('A data de check-in deve preceder a data de check-out');
+    }
+    else {
+      setActiveStep(1);
+    }
+  };
+
+  const handleGoBack = async () => {
+    setActiveStep(0);
+  };
+
+  const handlePayment = async () => {
+    if (!selectedPayment || selectedPayment.value === 'nothing') {
+      toast.warning("Preencha todos os campos!");
+      return;
     }
 
-    const handlePayment = async () => {
-      if (!selectedPayment || selectedPayment.value === 'nothing') {
-        toast.warning("Preencha todos os campos!");
-        return;
+    try {
+      if (publishedReservation && reservation) {
+        const checkInDateString = checkInDate?.toISOString().split('T')[0] ?? ''; // Converte a data para string no formato yyyy-mm-dd
+        const checkOutDateString = checkOutDate?.toISOString().split('T')[0] ?? '';
+        try{          
+          await updateReservation(client_id, publishedReservation.id, reservation.id, quartos, checkInDateString, checkOutDateString, adultos, criancas, selectedPayment.value);
+          toast.success("Reserva atualizada com sucesso!", {
+            autoClose: 3000, // 3000ms = 3 seconds
+            onClose: () => {
+              navigate(`/my-reservations`);
+            },
+          });
+        }catch(error){
+          const err = error as { response: { data: { message: string } } };
+          toast.warning(`${err.response.data.message}`);
+        }
+        //await updateReservation(client_id, publishedReservation.id, reservation.id, quartos, checkInDateString, checkOutDateString, adultos, criancas, selectedPayment.value);
       }
-      toast.success("Reserva atualizada com sucesso!", {
-        autoClose: 3000, // 3000ms = 3 seconds
-        onClose: () => {
-          navigate(`/my-reservations`)
-        },
-      });
-    };
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      toast.warning(`${err.response.data.message}`);
+    }
+  };
 
     const options: OptionType[] = [
       { value: 'nothing', label: '' },
-      { value: 'visa', label: 'Visa' },
-      { value: 'mastercard', label: 'Mastercard' },
-      { value: 'nubank', label: 'Nubank' }
+      { value: '1', label: '1' },
+      { value: '2', label: '2' },
+      { value: '3', label: '3' }
     ];
   
   
@@ -315,7 +361,7 @@ const EditReservation: React.FC = () => {
                   </Text>
                   <Stack spacing={4} mt="30px" align="center" width="80%">
                     <Text color="#EAEAEA" fontSize="2xl" textAlign="center">
-                      Valor total: R$ 3600,00
+                      Valor total: R$ {totalPrice.toFixed(2)}
                     </Text>
                     <FormControl id="paymentMethod" isRequired>
                       <FormLabel color="#EAEAEA">Método de Pagamento</FormLabel>

@@ -1,6 +1,8 @@
+
 import prisma from "../database";
 
 export default class ClientRepository {
+
 
     async createClient(data: any) {
         return await prisma.client.create({

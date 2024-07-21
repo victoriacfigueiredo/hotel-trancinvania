@@ -48,6 +48,9 @@ import {
   useSteps,
 } from '@chakra-ui/react';
 import Select, { SingleValue} from 'react-select';
+import { useClientData } from "../../../auth/hooks/useUserData"
+import { createReservation } from '../../services';
+
 
 
 interface OptionType {
@@ -103,6 +106,7 @@ const CreateReservation: React.FC = () => {
   const { activeStep, setActiveStep } = useSteps({ index: 0 });
   const [selectedPayment, setSelectedPayment] = useState<SingleValue<OptionType>>(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const { data } = useClientData();
 
   const navigate = useNavigate();
 
@@ -137,8 +141,11 @@ useEffect(() => {
     if (checkInDate === null || checkOutDate === null) {
       toast.warning('Preencha todos os campos!');
     }
-    if(adultos + 0.5*criancas > reservationData.people){
+    else if(adultos + 0.5*criancas > reservationData.people){
       toast.warning('A capacidade do quarto foi excedida');
+    }
+    else if(checkInDate >= checkOutDate){
+      toast.warning('A data de check-in deve preceder a data de check-out');
     }
     else {
       setActiveStep(1);
@@ -150,24 +157,40 @@ useEffect(() => {
   }
 
   const handlePayment = async () => {
+    const clientId = Number(data?.id);
+    const publishedReservationId = reservationData.id;
     if (!selectedPayment || selectedPayment.value === 'nothing') {
       toast.warning("Preencha todos os campos!");
       return;
     }
-    toast.success("Reserva realizada com sucesso!", {
-      autoClose: 3000, // 3000ms = 3 seconds
-      onClose: () => {
-        navigate(`/my-reservations`)
-      },
-    });
+    if (checkInDate === null || checkOutDate === null) {
+      toast.warning("Preencha as datas de check-in e check-out!");
+      return;
+    }
+    //console.log(`${data?.id}`);    
+    const checkInDateString = checkInDate?.toISOString().split('T')[0]; // Converte a data para string no formato yyyy-mm-dd
+    const checkOutDateString = checkOutDate?.toISOString().split('T')[0];
+    try{
+      await createReservation(clientId, publishedReservationId, quartos, checkInDateString, checkOutDateString, adultos, criancas, selectedPayment.value)
+      toast.success("Reserva realizada com sucesso!", {
+        autoClose: 3000, // 3000ms = 3 seconds
+        onClose: () => {
+          navigate(`/my-reservations`)
+        },
+      });
+    }
+    catch(error){
+      const err = error as { response: { data: { message: string } } };
+                toast.warning(`${err.response.data.message}`);
+    }
   };
 
 
   const options: OptionType[] = [
     { value: 'nothing', label: '' },
-    { value: 'visa', label: 'Visa' },
-    { value: 'mastercard', label: 'Mastercard' },
-    { value: 'nubank', label: 'Nubank' }
+    { value: '1', label: '1' },
+    { value: '2', label: '2' },
+    { value: '3', label: '3' }
   ];
 
 

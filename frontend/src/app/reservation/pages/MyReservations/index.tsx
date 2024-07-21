@@ -7,17 +7,22 @@ import { getPublishedReservationById } from '../../../PublishedReservation/servi
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { getReservationsByClient } from '../../services';
 import { ReserveModel } from '../../models/reserve';
+import { useClientData } from "../../../auth/hooks/useUserData"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyReservations: React.FC = () => {
   const [reservations, setReservations] = useState<ReserveModel[]>([]);
   const [publishedReservations, setPublishedReservations] = useState<{ [key: number]: PublishedReservationModel }>({});
-  const clientId = 1;
+  const { data } = useClientData();
+  const client_id = Number(data?.id);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const response = await getReservationsByClient(clientId);
+        console.log(`${client_id}`);
+        const response = await getReservationsByClient(Number(client_id));
         setReservations(response);
 
         const publishedReservationsData: { [key: number]: PublishedReservationModel } = {};
@@ -27,12 +32,13 @@ const MyReservations: React.FC = () => {
         }
         setPublishedReservations(publishedReservationsData);
       } catch (error) {
-        console.error('Erro ao obter as reservas:', error);
+        const err = error as { response: { data: { message: string } } };
+        toast.error(`${err.response.data.message}`);
       }
     };
 
     fetchReservations();
-  }, [clientId]);
+  },[client_id]);
 
   const getStatus = (checkin: string, checkout: string) => {
     const currentDate = new Date();
@@ -86,6 +92,7 @@ const MyReservations: React.FC = () => {
           })}
         </Flex>
       </Box>
+      <ToastContainer/>
     </Box>
   );
 }
