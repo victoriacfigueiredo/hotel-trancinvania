@@ -23,14 +23,14 @@ Scenario: Tentativa de cadastro da promoção com algum campo não preenchido
     Then eu vejo um toast de erro com a mensagem "Preencha todos os campos"
     And eu continuo na página "/promotions"
 
-# Scenario: Tentativa de cadastro da promoção com desconto menor que 5% ou maior que 60%
-#     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
-#     And eu estou na página "/promotions" da reserva do "Quarto-Outono" com o valor da diária por "1000" 
-#     When eu preencho o campo "desconto" com "70"
-#     And eu seleciono a promoção "Ilimitada"
-#     And eu seleciono "confirmar"
-#     Then eu vejo um toast de erro com a mensagem "O desconto deve estar entre 5% e 60%"
-#     And eu continuo na página "/promotions"
+Scenario: Tentativa de cadastro da promoção com desconto menor que 5% ou maior que 60%
+    Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
+    And eu estou na página "/promotions" da reserva do "Quarto-Outono" com o valor da diária por "1000" 
+    When eu preencho o campo "desconto" com "70"
+    And eu seleciono a promoção "Ilimitada"
+    And eu seleciono "confirmar"
+    Then eu vejo um toast de erro com a mensagem "O desconto deve estar entre 5% e 60%"
+    And eu continuo na página "/promotions"
 
 Scenario: Edição na promoção de uma reserva
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  

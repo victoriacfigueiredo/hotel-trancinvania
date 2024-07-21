@@ -126,20 +126,20 @@ export const Promotion = () => {
                         Dados da Promoção
                     </Text>
                         <Flex flexDirection="column" mt="20px">
-                            <LabelComponent id="desconto" value="Desconto" type="number" input={discount} onChange={handleDiscountChange} placeholder={"%"}/>
+                            <LabelComponent dataCy="desconto" id="desconto" value="Desconto" type="number" input={discount} onChange={handleDiscountChange} placeholder={"%"}/>
                             
                             {(actionType === "createSingle" || actionType === "update") && (
                                 <Box>
                                     <FormControl mb="15px">
                                     <FormLabel htmlFor="type" color="white" mb="8px">Promoção</FormLabel>
-                                        <Select id="type" placeholder="" isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
+                                        <Select data-cy="type" id="type" placeholder="" isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
                                             <option value='nothig' style={{ backgroundColor: '#6A0572' }}></option>
                                             <option value='ilimitada' style={{ backgroundColor: '#6A0572' }}>Ilimitada</option>
                                             <option value='limiteQuarto' style={{ backgroundColor: '#6A0572' }}>Limite de Quarto</option>
                                         </Select>
                                     </FormControl>
                                     {promoType === 'limiteQuarto' && (
-                                        <LabelComponent id="quantidade-de-quartos" value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} placeholder={""}/>
+                                        <LabelComponent dataCy="quantidade-de-quartos" id="quantidade-de-quartos" value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} placeholder={""}/>
                                     )}
                                     <Box mb="25px">
                                         <FormLabel htmlFor="valor" color="white" mb="8px">Valor</FormLabel>
@@ -155,7 +155,7 @@ export const Promotion = () => {
                                 <Button leftIcon={<ArrowBackIcon />} onClick={handleGoBack} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="0" mr="10px" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
                                     Voltar
                                 </Button>
-                                <Button id="confirmar" rightIcon={<CheckIcon />} onClick={handleConfirmRegister} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px"  flex="1" ml="10px" mr="0" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
+                                <Button data-cy="confirmar" id="confirmar" rightIcon={<CheckIcon />} onClick={handleConfirmRegister} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px"  flex="1" ml="10px" mr="0" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
                                     Confirmar
                                 </Button>
                             </Flex>
