@@ -38,3 +38,5 @@ lib/
 #docker
 
 docker/
+
+src/images/
