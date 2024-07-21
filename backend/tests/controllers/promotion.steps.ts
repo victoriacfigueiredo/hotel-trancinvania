@@ -93,7 +93,7 @@ defineFeature(feature, (test) => {
     });
 
     const givenHotelierExist = (given: DefineStepFunction) => 
-        given(/^existe um usuário "(.*)" do hotel "(.*)" logado com o e-mail "(.*)" e a senha "(.*)"$/, async(user, hotel, email, password) => {
+        given(/^existe um usuário "(.*)" do hotel "(.*)" logado com o username "(.*)" e a senha "(.*)"$/, async(user, hotel, email, password) => {
             expect(user).toBe('Hoteleiro');
             const hotelier = await createHotelier(hotel, email, password);
             hoteliers.push(hotelier);
