@@ -62,7 +62,20 @@ const RegisterHotelier: React.FC = () => {
 
   const onSubmit = async (data: RegisterHotelierFormInputs) => {
     try {
-      await registerHotelierMutation.mutateAsync(data);
+      const newData = {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        password: data.password,
+        hotel: data.hotel,
+        cnpj: data.cnpj,
+        address: data.address,
+        n_address: data.n_address,
+        city: data.city,
+        UF: data.UF,
+        cep: data.cep.replace(/\D/g, ""),
+      };
+      await registerHotelierMutation.mutateAsync(newData);
       toast({
         title: "Cadastro bem-sucedido!",
         description: `Bem-vindo, ${data.username}!`,

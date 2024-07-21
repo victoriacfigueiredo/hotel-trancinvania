@@ -63,8 +63,8 @@ export const RegisterHotelierSchema = z
     hotel: z.string().min(1, { message: "Nome do Hotel é obrigatório" }),
     cep: z
       .string()
-      .min(8, { message: "CEP é obrigatório e deve ter 8 dígitos" })
-      .max(8, { message: "CEP deve ter 8 dígitos" }),
+      .min(9, { message: "CEP é obrigatório e deve ter 8 dígitos" })
+      .max(9, { message: "CEP deve ter 8 dígitos" }),
     address: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }),
     city: z.string().min(1, { message: "Cidade é obrigatória" }),
     n_address: z
