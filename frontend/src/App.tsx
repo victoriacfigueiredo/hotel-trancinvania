@@ -1,10 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateReservation from "./app/reservation/pages/CreateReservation"
-import PayReservation from "./app/reservation/pages/PayReservation"
 import MyReservations from "./app/reservation/pages/MyReservations"
 import SelectReservation from "./app/reservation/pages/SelectReservation"
 import EditReservation from "./app/reservation/pages/EditReservation"
-import EditPay from "./app/reservation/pages/EditPay"
+import SeeReservation from "./app/reservation/pages/SeeReservation"
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
@@ -14,6 +13,7 @@ import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
+
 
 
 const router = createBrowserRouter([
@@ -30,28 +30,24 @@ const router = createBrowserRouter([
     Component: LoginHotelier,
   },
   {
-    path: "/create-reservation",
+    path: "/create-reservation/:reservation_id",
     Component: CreateReservation,
-  },
-  {
-    path: "/pay-reservation",
-    Component: PayReservation,
   },
   {
     path: "/my-reservations",
     Component: MyReservations,
   },
   {
-    path: "/select-reservation",
+    path: "/select-reservation/:reservation_id",
     Component: SelectReservation,
   },
   {
-    path: "/edit-reservation",
+    path: "/edit-reservation/:reserve_id",
     Component: EditReservation,
   },
   {
-    path: "/edit-pay",
-    Component: EditPay,
+    path: "/see-reservation/:reserve_id",
+    Component: SeeReservation,
   },
     /*{
     path: "/register/client",
