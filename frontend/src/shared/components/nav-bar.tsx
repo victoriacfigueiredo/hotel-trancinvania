@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Flex,
@@ -20,7 +21,9 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
+import { useQueryClient } from "@tanstack/react-query";
 import LogoHotel from "../assets/logo_hotel.png";
+import { useNavbarUserData } from "../../app/auth/hooks/useNavbar";
 
 export const NavBar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,21 +38,15 @@ export const NavBar: React.FC = () => {
     onClose: onPerfilMenuClose,
   } = useDisclosure();
 
-  const username = localStorage.getItem("userName");
-  const userType = localStorage.getItem("userType");
-  const isLoggedIn = !!localStorage.getItem("accessToken");
+  const { data: userData, isLoading, isError } = useNavbarUserData();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userType");
-    localStorage.removeItem("userName");
-
-    if (userType === "hotelier") {
-      navigate("/");
-    } else {
-      navigate("/");
-    }
+    queryClient.clear(); // Clear all query cache
+    navigate("/");
   };
 
   return (
@@ -100,12 +97,12 @@ export const NavBar: React.FC = () => {
               onMouseEnter={onReservasMenuOpen}
               onMouseLeave={onReservasMenuClose}
             >
-              {!isLoggedIn || userType === "client" ? (
+              {(!userData || userData.userType === "client") && (
                 <MenuItem as={RouterLink} to="/reservations">
                   Realizar Reserva
                 </MenuItem>
-              ) : null}
-              {userType === "hotelier" && (
+              )}
+              {userData?.userType === "hotelier" && (
                 <>
                   <MenuItem as={RouterLink} to="/publishedReservation">
                     Publicar Reservas
@@ -133,28 +130,40 @@ export const NavBar: React.FC = () => {
               display="flex"
               alignItems="center"
             >
-              <Text>{username || "Conta"}</Text>
+              <Text>
+                {isLoading
+                  ? "Loading..."
+                  : isError
+                  ? "Error"
+                  : userData?.username || "Conta"}
+              </Text>
             </MenuButton>
             <MenuList
               onMouseEnter={onPerfilMenuOpen}
               onMouseLeave={onPerfilMenuClose}
             >
-              {isLoggedIn && userType === "client" && (
+              {userData ? (
                 <>
-                  <MenuItem as={RouterLink} to="/client/profile">
-                    Meu Perfil
-                  </MenuItem>
-                  <MenuItem as={RouterLink} to="/perfil/pagamento">
-                    Pagamento
+                  {userData.userType === "client" && (
+                    <>
+                      <MenuItem as={RouterLink} to="/client/profile">
+                        Meu Perfil
+                      </MenuItem>
+                      <MenuItem as={RouterLink} to="/perfil/pagamento">
+                        Pagamento
+                      </MenuItem>
+                    </>
+                  )}
+                  {userData.userType === "hotelier" && (
+                    <MenuItem as={RouterLink} to="/hotelier/profile">
+                      Meus Dados
+                    </MenuItem>
+                  )}
+                  <MenuItem onClick={handleLogout} fontWeight={"700"}>
+                    Logout
                   </MenuItem>
                 </>
-              )}
-              {isLoggedIn && userType === "hotelier" && (
-                <MenuItem as={RouterLink} to="/hotelier/profile">
-                  Meus Dados
-                </MenuItem>
-              )}
-              {!isLoggedIn && (
+              ) : (
                 <>
                   <MenuItem as={RouterLink} to="/client/login">
                     Sou Cliente
@@ -163,11 +172,6 @@ export const NavBar: React.FC = () => {
                     Sou Hoteleiro
                   </MenuItem>
                 </>
-              )}
-              {isLoggedIn && (
-                <MenuItem onClick={handleLogout} fontWeight={"700"}>
-                  Logout
-                </MenuItem>
               )}
             </MenuList>
           </Menu>
@@ -212,7 +216,7 @@ export const NavBar: React.FC = () => {
                 Reservas
               </Text>
               <Box pl={6}>
-                {!isLoggedIn || userType === "client" ? (
+                {(!userData || userData.userType === "client") && (
                   <Link
                     as={RouterLink}
                     to="/reservations"
@@ -225,8 +229,8 @@ export const NavBar: React.FC = () => {
                   >
                     Realizar Reserva
                   </Link>
-                ) : null}
-                {userType === "hotelier" && (
+                )}
+                {userData?.userType === "hotelier" && (
                   <>
                     <Link
                       as={RouterLink}
@@ -260,52 +264,74 @@ export const NavBar: React.FC = () => {
             <Box mb={4}>
               <Text fontSize="24px" fontWeight="700" color="#000000" mb={2}>
                 <FaUser style={{ marginRight: "6px", display: "inline" }} />
-                {username || "Conta"}
+                {isLoading
+                  ? "Loading..."
+                  : isError
+                  ? "Error"
+                  : userData?.username || "Conta"}
               </Text>
               <Box pl={6}>
-                {isLoggedIn && userType === "client" && (
+                {userData ? (
                   <>
+                    {userData.userType === "client" && (
+                      <>
+                        <Link
+                          as={RouterLink}
+                          to="/client/profile"
+                          display="block"
+                          textDecoration="none"
+                          color="#000000"
+                          fontSize="20px"
+                          mb={2}
+                          onClick={onClose}
+                        >
+                          Meu Perfil
+                        </Link>
+                        <Link
+                          as={RouterLink}
+                          to="/perfil/pagamento"
+                          display="block"
+                          textDecoration="none"
+                          color="#000000"
+                          fontSize="20px"
+                          mb={2}
+                          onClick={onClose}
+                        >
+                          Pagamento
+                        </Link>
+                      </>
+                    )}
+                    {userData.userType === "hotelier" && (
+                      <Link
+                        as={RouterLink}
+                        to="/hotelier/profile"
+                        display="block"
+                        textDecoration="none"
+                        color="#000000"
+                        fontSize="20px"
+                        mb={2}
+                        onClick={onClose}
+                      >
+                        Meus Dados
+                      </Link>
+                    )}
                     <Link
                       as={RouterLink}
-                      to="/client/profile"
+                      to="#"
                       display="block"
                       textDecoration="none"
                       color="#000000"
                       fontSize="20px"
                       mb={2}
-                      onClick={onClose}
+                      onClick={() => {
+                        handleLogout();
+                        onClose();
+                      }}
                     >
-                      Meu Perfil
-                    </Link>
-                    <Link
-                      as={RouterLink}
-                      to="/perfil/pagamento"
-                      display="block"
-                      textDecoration="none"
-                      color="#000000"
-                      fontSize="20px"
-                      mb={2}
-                      onClick={onClose}
-                    >
-                      Pagamento
+                      Logout
                     </Link>
                   </>
-                )}
-                {isLoggedIn && userType === "hotelier" && (
-                  <Link
-                    as={RouterLink}
-                    to="/hotelier/profile"
-                    display="block"
-                    textDecoration="none"
-                    color="#000000"
-                    fontSize="20px"
-                    mb={2}
-                    onClick={onClose}
-                  >
-                    Meus Dados
-                  </Link>
-                )}
-                {!isLoggedIn && (
+                ) : (
                   <>
                     <Link
                       as={RouterLink}
@@ -332,23 +358,6 @@ export const NavBar: React.FC = () => {
                       Sou Hoteleiro
                     </Link>
                   </>
-                )}
-                {isLoggedIn && (
-                  <Link
-                    as={RouterLink}
-                    to="#"
-                    display="block"
-                    textDecoration="none"
-                    color="#000000"
-                    fontSize="20px"
-                    mb={2}
-                    onClick={() => {
-                      handleLogout();
-                      onClose();
-                    }}
-                  >
-                    Logout
-                  </Link>
                 )}
               </Box>
             </Box>
