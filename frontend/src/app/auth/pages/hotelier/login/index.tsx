@@ -97,6 +97,7 @@ const LoginHotelier: React.FC = () => {
                     <FormControl isInvalid={!!errors.username} maxWidth="400px">
                       <FormLabel htmlFor="username">Username</FormLabel>
                       <Input
+                        data-cy="username"
                         id="username"
                         placeholder="Username"
                         {...register("username")}
@@ -108,6 +109,7 @@ const LoginHotelier: React.FC = () => {
                     <FormControl isInvalid={!!errors.password} maxWidth="400px">
                       <FormLabel htmlFor="password">Senha</FormLabel>
                       <Input
+                        data-cy="password"
                         id="password"
                         alignSelf={"center"}
                         type="password"
@@ -121,6 +123,7 @@ const LoginHotelier: React.FC = () => {
                   </VStack>
                   <ButtonGroup spacing={4}>
                     <Button
+                      data-cy="login-button"
                       id="login-button"
                       type="submit"
                       colorScheme="red"

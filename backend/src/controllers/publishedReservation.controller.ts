@@ -118,7 +118,7 @@ export default class PublishedReservationController{
         const { reservation_id } = req.params;
         const file = req.file;
         if (!file) {
-            throw new Error('Arquivo não encontrado');
+            throw new Error('Arquivo nï¿½o encontrado');
         }
         const imageUrl = `/images/${file.filename}`;
         await this.publishedReservationService.insertImageUrl(+reservation_id, imageUrl);
@@ -155,7 +155,7 @@ export default class PublishedReservationController{
 
         const reservation = await this.publishedReservationService.getPublishedReservationById(+id);
         if (!reservation) {
-            return res.status(404).json({ error: 'Reserva não encontrada' });
+            return res.status(404).json({ error: 'Reserva nï¿½o encontrada' });
         }
 
         if (reservation.imageUrl) {
@@ -176,7 +176,7 @@ export default class PublishedReservationController{
             });
 
             if(!hotelier){
-                throw new Error("Hoteleiro não encontrado");
+                throw new Error("Hoteleiro nï¿½o encontrado");
             }
 
             if(hotelier.city == city){

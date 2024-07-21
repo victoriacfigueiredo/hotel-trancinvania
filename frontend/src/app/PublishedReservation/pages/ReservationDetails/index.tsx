@@ -109,7 +109,7 @@ export const ReservationDetails = () => {
                     </Text>
                     {reservationData.promotion_id ? (
                             <Text color="#EAEAEA" fontSize="xl" textAlign="center">
-                                 R$ {new_price.toFixed(2)} a diária <Badge id="promotion" variant="solid" fontSize="15px" colorScheme="red" >({promotionData.discount}% OFF)</Badge>
+                                 R$ {new_price.toFixed(2)} a diária <Badge data-cy="promotion" id="promotion" variant="solid" fontSize="15px" colorScheme="red" >({promotionData.discount}% OFF)</Badge>
                             </Text>
                         ) : (
                             <Text color="#EAEAEA" fontSize="xl" textAlign="center">
@@ -130,12 +130,12 @@ export const ReservationDetails = () => {
                             <Box boxSize="12px"></Box>
                             <DataComponent value={`${reservationData.people} Pessoas`} icon={FaPerson}/>
                         </Box>
-                        <ButtonComponent id="updateReservationButton" label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate(`/reservationUpdate`)}/>
-                        <ButtonDeleteComponent id="deleteReservationButton" label="Deletar Reserva" icon = {<DeleteIcon/>} onClick={handleDeleteReservation}/>
-                        <ButtonComponent id="cadastrar-promocao" label="Cadastrar Promoção" icon={<AddIcon/>} onClick={() => navigate(`/promotions?action=createSingle`)}/>
-                        <ButtonComponent id="editar-promocao" label="Editar Promoção" icon={<EditIcon />} onClick={() => navigate(`/promotions?action=update`)}/>
-                        <ButtonDeleteComponent id="deletar-promocao" label="Deletar Promoção" icon={<DeleteIcon />} onClick={handleDeletePromotion}/>
-                        <ButtonComponent id="goBackButton" label="Voltar" icon = {<ArrowBackIcon />} onClick={handleGoBack}/>
+                        <ButtonComponent dataCy="update" id="updateReservationButton" label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate(`/reservationUpdate`)}/>
+                        <ButtonDeleteComponent dataCy="delete" id="deleteReservationButton" label="Deletar Reserva" icon = {<DeleteIcon/>} onClick={handleDeleteReservation}/>
+                        <ButtonComponent dataCy="cadastrar-promocao" id="cadastrar-promocao" label="Cadastrar Promoção" icon={<AddIcon/>} onClick={() => navigate(`/promotions?action=createSingle`)}/>
+                        <ButtonComponent dataCy="editar-promocao" id="editar-promocao" label="Editar Promoção" icon={<EditIcon />} onClick={() => navigate(`/promotions?action=update`)}/>
+                        <ButtonDeleteComponent dataCy="deletar-promocao" id="deletar-promocao" label="Deletar Promoção" icon={<DeleteIcon />} onClick={handleDeletePromotion}/>
+                        <ButtonComponent dataCy="voltar" id="goBackButton" label="Voltar" icon = {<ArrowBackIcon />} onClick={handleGoBack}/>
                     </Flex>    
                 </Flex>
                 <TeiaImg />
@@ -144,21 +144,21 @@ export const ReservationDetails = () => {
     </Box>)
 }
 
-const ButtonComponent = ({id, label, icon, onClick}) => {
+const ButtonComponent = ({id, label, icon, onClick, dataCy}) => {
     return (
-        <Button id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onClick} _hover={{color: "#191919", bg: "#eaeaea"}}>
+        <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onClick} _hover={{color: "#191919", bg: "#eaeaea"}}>
             {label}
         </Button>
             
     )
 }
 
-const ButtonDeleteComponent = ({id, label, icon, onClick}) => {
+const ButtonDeleteComponent = ({id, label, icon, onClick, dataCy}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     return (
         <Box>
-            <Button id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onOpen} _hover={{color: "#191919", bg: "#eaeaea"}}>
+            <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onOpen} _hover={{color: "#191919", bg: "#eaeaea"}}>
                 {label}
             </Button>
             <AlertDialog 
@@ -180,7 +180,7 @@ const ButtonDeleteComponent = ({id, label, icon, onClick}) => {
                         <Button ref={cancelRef} onClick={onClose}>
                         Não
                         </Button>
-                        <Button id="yes-button" ml={3} onClick={() => {
+                        <Button data-cy="yes-button" id="yes-button" ml={3} onClick={() => {
                             onClick();
                             onClose(); 
                         }}>
