@@ -7,6 +7,7 @@ import {
   Text,
   Container,
 } from "@chakra-ui/react";
+import { useRef } from "react";
 import { NavBar } from "../../../../shared/components/nav-bar";
 import { SearchBar } from "../../components/search-bar";
 import { AnimatedTooltipPreview } from "../../components/animated-tooltip-preview";
@@ -20,11 +21,19 @@ const iconsUrls = [
   "https://i.imgur.com/ikLfv60.png",
   "https://i.imgur.com/NXxtrYx.png",
 ];
-const logoUrl = "https://www.cin.ufpe.br/~imprensa/marcacinpng/TMB";
+const logoUrl = "https://i.imgur.com/Ag82NHs.png";
 const draculaUrl = "https://i.imgur.com/RP7qAvr.png";
 const mavisUrl = "https://i.imgur.com/VvUqQfb.png";
 
 export const HomePage = () => {
+  const secondHalfRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSecondHalf = () => {
+    if (secondHalfRef.current) {
+      secondHalfRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Box
       bg="#191919"
@@ -41,17 +50,17 @@ export const HomePage = () => {
           alt="Drácula"
           position="absolute"
           bottom="0"
-          left="-450px" // Ajuste conforme necessário
+          left="-360px" // Ajuste conforme necessário
           width="auto"
           height="500px"
           display={{ base: "none", md: "block" }}
         />
         <Box textAlign="center" position="relative" zIndex="1">
-          <Text fontSize="25px" fontFamily="Inter" fontWeight="200" mb={1}>
+          <Text fontSize="25px" fontFamily="Inter" fontWeight="200" mb={-6}>
             O melhor gerenciador de hotéis do submundo.
           </Text>
           <FlipWordsTitle />
-          <Box mt={1} mb={1}>
+          <Box mt={6} mb={1}>
             <SearchBar />
           </Box>
           <Button
@@ -71,7 +80,8 @@ export const HomePage = () => {
             borderRadius="13px"
             px={12}
             bg="transparent"
-            mt={1}
+            mt={3}
+            onClick={scrollToSecondHalf} // Adicionando evento de clique
           >
             Saiba mais
           </Button>
@@ -81,14 +91,21 @@ export const HomePage = () => {
           alt="Mavis"
           position="absolute"
           bottom="0"
-          right="-450px" // Ajuste conforme necessário
+          right="-300px" // Ajuste conforme necessário
           width="auto"
           height="500px"
           display={{ base: "none", md: "block" }}
         />
       </Container>
 
-      <Box bg="#191919" color="#EAEAEA" p={8} fontFamily="Inter">
+      <Box
+        mt={30}
+        ref={secondHalfRef}
+        bg="#191919"
+        color="#EAEAEA"
+        p={8}
+        fontFamily="Inter"
+      >
         <Flex
           justify="center"
           align="center"
@@ -101,25 +118,29 @@ export const HomePage = () => {
             imageUrl={iconsUrls[0]}
             title="Cadastre-se"
             description="Comece a planejar sua estadia hoje mesmo."
-            imageSize={{ width: "172.7px", height: "120px" }} // Tamanho específico para o ícone
+            imageSize={{ width: "172.7px", height: "120px" }}
+            link="/client/register"
           />
           <Card
             imageUrl={iconsUrls[1]}
             title="Faça já sua reserva!"
             description="Descubra ofertas surpreenDENTES."
-            imageSize={{ width: "144.5px", height: "133.9px" }} // Tamanho específico para o ícone
+            imageSize={{ width: "144.5px", height: "133.9px" }}
+            link="/reservations"
           />
           <Card
             imageUrl={iconsUrls[2]}
             title="Anuncie sua propriedade"
             description="Atraia humanos e monstros."
-            imageSize={{ width: "136.2px", height: "128.9px" }} // Tamanho específico para o ícone
+            imageSize={{ width: "136.2px", height: "128.9px" }}
+            link="/hotelier/register"
           />
           <Card
             imageUrl={iconsUrls[3]}
             title="Pague com BloodCard"
             description="Cadastre seus melhores cartões aqui."
-            imageSize={{ width: "88.6px", height: "128.9px" }} // Tamanho específico para o ícone
+            imageSize={{ width: "88.6px", height: "128.9px" }}
+            link="/payment"
           />
         </Flex>
         <Box textAlign="center" mb={100} mt={151}>
@@ -134,7 +155,7 @@ export const HomePage = () => {
                 src={logoUrl}
                 alt="CIn UFPE Logo"
                 width="291.8px"
-                height="129.6px"
+                height="auto"
               />
             </Box>
           </Flex>

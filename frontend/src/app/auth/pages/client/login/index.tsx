@@ -12,15 +12,17 @@ import {
   Input,
   Link,
   Text,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
-import { LoginFormInputs, LoginSchema } from "../../../forms/LoginForm";
+import { LoginFormInputs, LoginSchema } from "../../../forms/login-form";
 import { useLoginClientMutation } from "../../../hooks";
+import { useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const moonImage = "https://i.imgur.com/QxLtz78.png";
 //const barImage = "https://i.imgur.com/JamSVlX.png";
@@ -29,6 +31,7 @@ const ghostFrontImage = "https://i.imgur.com/RF0q2DH.png";
 const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
 const LoginClient: React.FC = () => {
+  const navigate = useNavigate();
   const loginClientMutation = useLoginClientMutation();
   const {
     register,
@@ -37,21 +40,26 @@ const LoginClient: React.FC = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(LoginSchema),
   });
-  const toast = useToast();
 
   const onSubmit = async (data: LoginFormInputs) => {
-    await loginClientMutation.mutateAsync(data);
-    toast({
-      title: "Login bem-sucedido!",
-      description: `Bem-vindo, ${data.username}!`,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      await loginClientMutation.mutateAsync(data);
+      toast.success(`Login bem-sucedido! Bem-vindo, ${data.username}!`);
+      setTimeout(() => {
+        navigate("/reservation");
+      }, 3000);
+    } catch (error) {
+      toast.error("Falha ao fazer login. Tente novamente.");
+    }
+  };
+
+  const handleForgotPasswordClick = () => {
+    navigate("/client/password/recover");
   };
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -60,7 +68,7 @@ const LoginClient: React.FC = () => {
             src={ghostFrontImage}
             alt="Fantasma de Frente"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             left="-290px" // Adjust this value to position the ghost correctly
             width="auto"
             height="200px"
@@ -72,11 +80,15 @@ const LoginClient: React.FC = () => {
                 <Image
                   src={moonImage}
                   alt="Login Icon"
-                  width="79.5px"
-                  height="69.8px"
+                  width="auto"
+                  height="75px"
                   mr={3}
                 />
-                <Text fontFamily="Trancinfont" fontSize="5xl">
+                <Text
+                  fontFamily="Trancinfont"
+                  fontSize="6xl"
+                  letterSpacing={"-0.07em"}
+                >
                   LOGIN CLIENTE
                 </Text>
               </HStack>
@@ -112,20 +124,22 @@ const LoginClient: React.FC = () => {
                     <Button
                       type="submit"
                       colorScheme="red"
-                      fontWeight={200}
+                      fontWeight={400}
                       isLoading={loginClientMutation.isPending}
+                      bg="#A4161A"
                     >
                       Entrar
                     </Button>
                     <Button
                       variant="outline"
-                      borderColor="red.500"
-                      fontWeight={200}
+                      borderColor="#A4161A"
+                      fontWeight={400}
                       color={"white"}
                       _hover={{
-                        bg: "red.500",
+                        bg: "#A4161A",
                         color: "white",
                       }}
+                      onClick={handleForgotPasswordClick}
                     >
                       Esqueci a Senha
                     </Button>
@@ -136,7 +150,11 @@ const LoginClient: React.FC = () => {
                 <Text>
                   Ainda não possui conta? <br />
                   Cadastre-se como{" "}
-                  <Link color="#0097B2" fontWeight={800}>
+                  <Link
+                    color="#0097B2"
+                    fontWeight={800}
+                    href="/client/register"
+                  >
                     Cliente
                   </Link>
                   , para fazer reservas incríveis.
@@ -152,7 +170,7 @@ const LoginClient: React.FC = () => {
             src={ghostSideImage}
             alt="Fantasma de Lado"
             position="absolute"
-            bottom="0"
+            bottom="30px"
             right="-230px" // Adjust this value to position the ghost correctly
             width="230px"
             height="auto"
