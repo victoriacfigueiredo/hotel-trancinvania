@@ -46,6 +46,7 @@ export default class ReservationRepository {
         }
     }
     async getClientById(clientId: number): Promise<Client>{
+        //console.log(`Fetching client with ID: ${clientId}`);
         try {
             const client = await prisma.client.findUnique({
                 where: {
@@ -53,7 +54,7 @@ export default class ReservationRepository {
                 }
             })
             if (!client) {
-                throw new HttpNotFoundError({msg: 'Faça login ou cadastre-se!'});
+                throw new HttpNotFoundError({msg: 'Faça login ou cadastre-se'});
             }
 
             return client as Client;
@@ -94,6 +95,7 @@ export default class ReservationRepository {
         }
     }
     async getReservationsByClient(clientId: number): Promise<Reserve[]> {
+        //console.log(`hii: ${clientId}`);
         try {
             const reservations = await prisma.reserve.findMany({
                 where: {

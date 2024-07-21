@@ -130,6 +130,16 @@ export default class ReserveController {
         const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
         const publishedReservationId = parseInt(req.params.publishedReservationId);
         const clientId = parseInt(req.params.clientId);
+        // console.log(`Received parameters:`, {
+        //     num_rooms,
+        //     checkin,
+        //     checkout,
+        //     num_adults,
+        //     num_children,
+        //     paymentMethodName,
+        //     publishedReservationId,
+        //     clientId
+        // });
         const {id} = await this.reservationService.createReservation(num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName, publishedReservationId, clientId)
         res.status(201).json({status: 201, message: 'Reserva realizada com sucesso!' });      
     }
