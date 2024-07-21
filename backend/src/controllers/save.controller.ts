@@ -23,7 +23,6 @@ export default class SaveController {
     public setupRoutes(router: Router) {
         router.post(this.prefix, validateData(saveReservationDto), (req, res) => this.saveReservation(req, res));
         router.get(this.prefix + '/publishedReservation/:id', (req, res) => this.getSavedReservationByClientId(req, res));
-        router.get(this.prefix + '/client/:id', (req, res) => this.getClientsbyReservationId(req, res));
         router.delete(this.prefix + '/:client_id/:reservation_id', (req, res) => this.deleteSavedReservationById(req, res));
     }
 
@@ -37,12 +36,6 @@ export default class SaveController {
     private async getSavedReservationByClientId(req: Request, res: Response) {
         const { id } = req.params;
         const savedList = await this.saveService.getSavedReservationByClientId(Number(id));
-        res.status(200).json(savedList);
-    }
-
-    private async getClientsbyReservationId(req: Request, res: Response) {
-        const { id } = req.params;
-        const savedList = await this.saveService.getClientsbyReservationId(Number(id));
         res.status(200).json(savedList);
     }
 

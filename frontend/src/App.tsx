@@ -9,6 +9,9 @@ import { PublishedReservation } from "./app/PublishedReservation/pages/Register"
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
 import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 import { HomePage } from "./app/home/pages/homepage";
+import { Profile } from "./app/Profile";
+import { Rate } from "./app/Rate/pages/myRates";
+import { Whishlist } from "./app/Wishlist/pages/myWhishlist";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import RecoverPasswordHotelier from "./app/auth/pages/hotelier/recover";
@@ -64,6 +67,18 @@ const router = createBrowserRouter([
   {
     path: "/hotelier/register",
     Component: RegisterHotelier,
+  },
+  {
+    path: "/client/profile",
+    Component: Profile,
+  },
+  {
+    path: "/client/profile/rate",
+    Component: Rate,
+  },
+  {
+    path: "/client/profile/whishlist",
+    Component: Whishlist,
   },
   {
     path: "/create-reservation/:reservation_id",
