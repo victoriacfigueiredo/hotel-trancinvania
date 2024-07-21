@@ -2,13 +2,13 @@ import React from 'react';
 import { Box, Text } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
-import { Fonts } from "../../../../shared/theme/Fonts";
+//import { Fonts } from "../../../../shared/theme/Fonts";
 
-const reservas = [
+/*const reservas = [
   { status: "Reserva Concluída", statusColor: "red",},
   { status: "Reserva em Andamento", statusColor: "yellow"},
   { status: "Reserva Futura", statusColor: "blue" }
-];
+];*/
 
 export const Rate: React.FC = () => {
   return (

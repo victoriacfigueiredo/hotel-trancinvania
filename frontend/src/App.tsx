@@ -69,15 +69,15 @@ const router = createBrowserRouter([
     Component: RegisterHotelier,
   },
   {
-    path: "client/profile",
+    path: "/client/profile",
     Component: Profile,
   },
   {
-    path: "client/profile/rate",
+    path: "/client/profile/rate",
     Component: Rate,
   },
   {
-    path: "client/profile/whishlist",
+    path: "/client/profile/whishlist",
     Component: Whishlist,
   },
   {

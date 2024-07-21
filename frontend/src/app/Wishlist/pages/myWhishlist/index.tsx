@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -11,25 +11,17 @@ import {
 } from "@chakra-ui/react";
 import { Fonts } from "../../../../shared/theme/Fonts";
 import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
-//import { JustNet } from "../../../reservation/components/just-net";
 import { Global } from "@emotion/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
 import { ToastContainer, toast } from 'react-toastify';
 import { getSavedReservationByClientId, deleteSavedReservationById } from "../../services";
 import { useClientData } from "../../../auth/hooks/useUserData";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'; // Verifique a importação
 
-// Definindo a interface para os dados da reserva
-interface Reservation {
-  id: number;
-  image?: string;
-  name?: string;
-}
-
-export const Whishlist: React.FC = () => {
+export const Whishlist = () => {
   const { data } = useClientData();
   const clientId = Number(data?.id);
-  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [reservations, setReservations] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -37,11 +29,12 @@ export const Whishlist: React.FC = () => {
         toast.error('ID do cliente não encontrado.');
         return;
       }
-
+      
       try {
         const Reservationdata = await getSavedReservationByClientId(clientId);
         setReservations(Reservationdata);
       } catch (error) {
+        console.error('Erro ao obter as reservas salvas:', error);
         toast.error('Erro ao obter as reservas salvas.');
       }
     };
@@ -60,6 +53,7 @@ export const Whishlist: React.FC = () => {
       setReservations(prev => prev.filter(reservation => reservation.id !== reservationId));
       toast.success('Reserva apagada com sucesso!');
     } catch (error) {
+      console.error('Erro ao deletar a reserva:', error);
       toast.error('Erro ao deletar a reserva.');
     }
   };

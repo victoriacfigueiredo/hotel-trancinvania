@@ -11,7 +11,7 @@ import { BottomLeftTopRightImages } from "../../shared/components/spider-images"
 import { Global } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { NavBar } from "../../shared/components/nav-bar";
-import { Fonts } from "../../shared/theme/Fonts";
+//import { Fonts } from "../../shared/theme/Fonts";
 
 // URLs das imagens
 const iconsUrls = [
@@ -45,7 +45,7 @@ export const Profile = () => {
         
 
         {/* Adicionando o título e os botões sobre a imagem */}
-        <Box position="absolute" top="25%" left="20%" transform="translate(-50%, -50%)">
+        <Box position="absolute" top="25%" left="50%" transform="translate(-50%, -50%)">
           <Text fontSize="35px" fontFamily="Trancinfont" fontWeight="300" mb={3} textAlign="center" color="#EAEAEA">
             Meu Perfil
           </Text>
