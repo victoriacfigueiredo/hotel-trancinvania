@@ -51,6 +51,7 @@ CREATE TABLE "publishedReservation" (
     "new_price" DOUBLE PRECISION NOT NULL,
     "promotion_id" INTEGER,
     "hotelier_id" INTEGER NOT NULL,
+    "imageUrl" TEXT,
 
     CONSTRAINT "publishedReservation_pkey" PRIMARY KEY ("id")
 );

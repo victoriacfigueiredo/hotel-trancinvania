@@ -91,7 +91,7 @@ And um método de pagamento com id "1" e com nome "1234567891010112" está regis
 And está na página "Minhas reservas"
 And existe a oferta com nome "Quarto Zumbi Digital" com id "1", com quartos "20", pessoas "3" e preço "1000"
 And existe a reserva com id "1", com quartos "1", checkin "2024-06-20", checkout "2024-06-22", adultos "2", crianças "0", pagamento "1234567891010112", preço "2000", id da reserva "1", id do cliente "1" e id do pagamento "1"
-When uma requisição DELETE é enviada para "/client/1/publishedReservation/1/reserve/1" 
+When uma requisição DELETE é enviada para "/reserve/1" 
 Then o status da resposta deve ser "200"
 And é retornada a mensagem "Reserva cancelada com sucesso."
 
