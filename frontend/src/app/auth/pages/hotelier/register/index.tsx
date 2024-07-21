@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -25,7 +25,11 @@ import {
   ButtonGroup,
   Progress,
   useToast,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +50,8 @@ const witchImage = "https://i.imgur.com/2GXn2sj.png";
 const steps = [{ title: "Seus Dados" }, { title: "Dados do Hotel" }];
 
 const RegisterHotelier: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClick = () => setShowPassword(!showPassword);
   const { activeStep, setActiveStep } = useSteps();
   const navigate = useNavigate();
   const registerHotelierMutation = useRegisterHotelierMutation();
@@ -246,13 +252,28 @@ const RegisterHotelier: React.FC = () => {
                       <GridItem colSpan={1}>
                         <FormControl isInvalid={!!errors.password}>
                           <FormLabel htmlFor="password">Senha</FormLabel>
-                          <Input
-                            id="password"
-                            type="password"
-                            placeholder="Digite sua senha"
-                            {...register("password")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
+                          <InputGroup>
+                            <Input
+                              id="password"
+                              alignSelf={"center"}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Digite sua senha"
+                              {...register("password")}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <IconButton
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                                icon={
+                                  showPassword ? <ViewOffIcon /> : <ViewIcon />
+                                }
+                                aria-label={""}
+                                variant="
+                             unstyled"
+                              />
+                            </InputRightElement>
+                          </InputGroup>
                           {errors.password && (
                             <Text color="red.500">
                               {errors.password.message}
@@ -265,13 +286,29 @@ const RegisterHotelier: React.FC = () => {
                           <FormLabel htmlFor="confirmPassword">
                             Confirmação de Senha
                           </FormLabel>
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Digite a senha novamente"
-                            {...register("confirmPassword")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
+                          <InputGroup>
+                            <Input
+                              id="confirmPassword"
+                              alignSelf={"center"}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Digite a senha novamente"
+                              {...register("confirmPassword")}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <IconButton
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                                icon={
+                                  showPassword ? <ViewOffIcon /> : <ViewIcon />
+                                }
+                                aria-label={""}
+                                variant="
+                             unstyled"
+                              />
+                            </InputRightElement>
+                          </InputGroup>
+
                           {errors.confirmPassword && (
                             <Text color="red.500">
                               {errors.confirmPassword.message}

@@ -19,7 +19,7 @@ export const RegisterClientSchema = z
       .string()
       .regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, { message: "Telefone inválido" }),
     birthDate: z.string(),
-    confirmPassword: passwordValidation,
+    confirmPassword: z.string(),
   })
   .refine(
     (data) => {
@@ -75,7 +75,7 @@ export const RegisterHotelierSchema = z
     cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, {
       message: "CNPJ Inválido",
     }),
-    confirmPassword: passwordValidation,
+    confirmPassword: z.string(),
   })
   .refine(
     (data) => {
