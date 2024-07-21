@@ -168,50 +168,6 @@ defineFeature(feature, (test) => {
         });
     })
 
-    test('busca bem sucedida, sem encontrar reservas', ({given, when, then, and}) => {
-        given(/^o banco de reservas publicadas não possui uma reserva publicada com local "(.*)", quantidade de pessoas "(.*)" e quantidade de quartos "(.*)"$/, 
-            async (local, num_people, num_rooms) => {
-                let mockReserva = {
-                    ...mockPublishedReservation,
-                    people: parseInt(num_people),
-                    rooms: parseInt(num_rooms)
-                }
-                prismaMock.publishedReservation.create.mockResolvedValue({id: 1, ...mockPublishedReservation});
-                
-                mockHotelier = {
-                    ...mockHotelier,
-                    city: local
-                }
-                prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
-                console.log('cheguei no given');
-            }
-        );
-
-        when(/^uma requisição POST for enviada para "(.*)" com o corpo da requisição sendo um JSON com campo city preenchido com "(.*)", campo num_adults preenchido com "(.*)", campo num_children preenchido com "(.*)", campo num_rooms preenchido com "(.*)", checkin com "(.*)" e checkout com "(.*)"$/, 
-            async (url, city, num_adults, num_children, num_rooms, checkin, checkout) => {
-                response = await request.post(url).send({
-                    city,
-                    num_adults: parseInt(num_adults),
-                    num_children: parseInt(num_children),
-                    num_rooms: parseInt(num_rooms),
-                    checkin,
-                    checkout
-                });
-                console.log('cheguei no when');
-            }
-        );
-
-        then(/^a busca deve ter código "(.*)"$/, async (numCode) => {
-            expect(response.status).toBe(parseInt(numCode));   
-            console.log('cheguei no then');
-        })
-
-        and(/^o JSON da resposta deve estar vazio$/, async (city, num_people, num_rooms) => {
-            expect(response.body.length).toEqual(0);
-            console.log('cheguei no and');
-        });
-    })
-
     test('busca mal sucedida (Numero de quartos nao preenchido)', ({given, when, then, and}) => {
         given(/^o banco de reservas publicadas possui uma reserva publicada com local "(.*)", quantidade de pessoas "(.*)" e quantidade de quartos "(.*)"$/, 
             async (local, num_people, num_rooms) => {
@@ -377,4 +333,48 @@ defineFeature(feature, (test) => {
 
         });
     });
+
+    test('busca bem sucedida, sem encontrar reservas', ({given, when, then, and}) => {
+        given(/^o banco de reservas publicadas não possui uma reserva publicada com local "(.*)", quantidade de pessoas "(.*)" e quantidade de quartos "(.*)"$/, 
+            async (local, num_people, num_rooms) => {
+                let mockReserva = {
+                    ...mockPublishedReservation,
+                    people: parseInt(num_people),
+                    rooms: parseInt(num_rooms)
+                }
+                prismaMock.publishedReservation.create.mockResolvedValue({id: 1, ...mockPublishedReservation});
+                
+                mockHotelier = {
+                    ...mockHotelier,
+                    city: local
+                }
+                prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
+                //console.log('cheguei no given');
+            }
+        );
+
+        when(/^uma requisição POST for enviada para "(.*)" com o corpo da requisição sendo um JSON com campo city preenchido com "(.*)", campo num_adults preenchido com "(.*)", campo num_children preenchido com "(.*)", campo num_rooms preenchido com "(.*)", checkin com "(.*)" e checkout com "(.*)"$/, 
+            async (url, city, num_adults, num_children, num_rooms, checkin, checkout) => {
+                response = await request.post(url).send({
+                    city,
+                    num_adults: parseInt(num_adults),
+                    num_children: parseInt(num_children),
+                    num_rooms: parseInt(num_rooms),
+                    checkin,
+                    checkout
+                });
+                //console.log(response.body);
+            }
+        );
+
+        then(/^a busca deve ter código "(.*)"$/, async (numCode) => {
+            expect(response.status).toBe(parseInt(numCode));   
+            //console.log(response.status);
+        })
+
+        and(/^o JSON da resposta deve estar vazio$/, async (city, num_people, num_rooms) => {
+            //console.log(response.body.length);
+            expect(response.body.length).toEqual(0);
+        });
+    })
 })
