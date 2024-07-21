@@ -38,12 +38,12 @@ import {
   UpdateClientSchema,
 } from "../../../forms/update-form";
 import { queryClient } from "../../../../../shared/config/query-client";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 const wineGlassImage = "https://i.imgur.com/9y30n2W.png";
 
 const EditProfileClient: React.FC = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const updateClientMutation = useUpdateClientMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentField, setCurrentField] =

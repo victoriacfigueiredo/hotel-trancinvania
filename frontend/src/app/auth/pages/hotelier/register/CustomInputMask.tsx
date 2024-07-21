@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import InputMask, { Props as InputMaskProps } from "react-input-mask";
 import { Input, InputProps } from "@chakra-ui/react";
 

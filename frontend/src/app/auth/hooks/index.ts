@@ -12,12 +12,9 @@ import {
 } from "../services";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
-  RegisterHotelierFormInputs,
   RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
 import { UpdateClientFormInputs } from "../forms/update-form";
-import { queryAllByAltText } from "@testing-library/react";
-import { queryClient } from "../../../shared/config/query-client";
 
 export function useLoginClientMutation() {
   return useMutation({

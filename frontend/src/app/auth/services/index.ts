@@ -6,7 +6,6 @@ import { RecoveryFormInputs } from "../forms/recovery-form";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
-  RegisterHotelierFormInputs,
   RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
 import { UpdateClientFormInputs } from "../forms/update-form";
