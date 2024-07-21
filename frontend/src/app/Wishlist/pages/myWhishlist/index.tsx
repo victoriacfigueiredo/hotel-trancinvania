@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Fonts } from "../../../../shared/theme/Fonts";
 import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+//import { JustNet } from "../../../reservation/components/just-net";
 import { Global } from "@emotion/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
 import { ToastContainer, toast } from 'react-toastify';
@@ -28,8 +29,6 @@ interface Reservation {
 export const Whishlist: React.FC = () => {
   const { data } = useClientData();
   const clientId = Number(data?.id);
-
-
   const [reservations, setReservations] = useState<Reservation[]>([]);
 
   useEffect(() => {
@@ -88,19 +87,19 @@ export const Whishlist: React.FC = () => {
             Lista de Desejos
           </Heading>
         </Box>
-        <Box display="flex" justifyContent="center" alignItems="center" mt={8}>
+        <Box display="flex" justifyContent="left" alignItems="left" mt={8} overflowY="auto" maxH="70vh">
           {reservations.length === 0 ? (
             <Text color="#EAEAEA" textAlign="center">Nenhuma reserva salva encontrada.</Text>
           ) : (
-            <Wrap spacing="30px" justify="center">
+            <Wrap spacing="20px" justify="center">
               {reservations.map(reservation => (
                 <WrapItem key={reservation.id}>
-                  <Box border="none" borderRadius="8px" overflow="hidden" bg="#282828" width="300px">
+                  <Box border="none" borderRadius="4px" overflow="hidden" bg="#282828" width="250px">
                     <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-                      <Image src={reservation.image || "https://via.placeholder.com/300"} alt={`Hotel ${reservation.id}`} width="100%" height="100%" objectFit="cover" />
+                      <Image src={reservation.image || "https://via.placeholder.com/200"} alt={`Hotel ${reservation.id}`} width="100%" height="100%" objectFit="cover" />
                     </Box>
                     <Box p={4}>
-                      <Text fontSize="lg" mb={4} textAlign="left">{reservation.name || `Hotel ${reservation.id}`}</Text>
+                      <Text fontSize="md" mb={4} textAlign="left">{reservation.name || `Hotel ${reservation.id}`}</Text>
                       <Flex justifyContent="center" gap={4}>
                         <Button
                           variant="ghost"
@@ -109,7 +108,7 @@ export const Whishlist: React.FC = () => {
                           onClick={() => handleDelete(reservation.id)}
                           aria-label="Delete"
                         >
-                          <DeleteIcon boxSize="20px" />
+                          <DeleteIcon boxSize="16px" />
                         </Button>
                         <Link to={`/select-reservation/${reservation.id}`}>
                           <Button
@@ -118,7 +117,7 @@ export const Whishlist: React.FC = () => {
                             _hover={{ bg: "#5e3a72" }}
                             aria-label="Go to reservation"
                           >
-                            <ArrowForwardIcon boxSize="20px" />
+                            <ArrowForwardIcon boxSize="16px" />
                           </Button>
                         </Link>
                       </Flex>
