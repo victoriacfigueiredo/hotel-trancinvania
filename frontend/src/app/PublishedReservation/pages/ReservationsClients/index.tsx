@@ -60,7 +60,7 @@ export const AllPublishedReservationClient = () => {
             <Box p="50px" position="relative">
                 <Box fontFamily="Trancinfont" mt="-25px" fontSize="50px" textAlign="center" color="#eaeaea">Faça já a sua reserva!</Box>
                     <Flex flexWrap="wrap" gap="75px" mt="30px">
-                        {reservations.map(reservation => (
+                        {reservations.sort((a, b) => a.id - b.id).map(reservation => (
                             <Box position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
                                 {reservation.promotion_id && (
                                     <Flex alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" style={{ backgroundImage: `url(${morcegoImg})` }}> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
