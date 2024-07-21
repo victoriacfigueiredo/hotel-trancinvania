@@ -38,8 +38,8 @@ export default class PublishedReservationRepository {
         }
     }
 
-    async promotionInReservation() : Promise <number | null> {
-        const reservations = await prisma.publishedReservation.findMany();
+    async promotionInReservation(hotelier_id: number) : Promise <number | null> {
+        const reservations = await prisma.publishedReservation.findMany({where: {hotelier_id: hotelier_id}});
         const allNullPromotionIds = reservations.every(reservation => reservation.promotion_id === null);
         
         if (allNullPromotionIds) {
@@ -47,8 +47,8 @@ export default class PublishedReservationRepository {
         }else{
             return 1;
         }
-
     }
+
     async getPromotionIdByReservationId(reservation_id: number): Promise<number | null>{
         const reservation = await prisma.publishedReservation.findUnique({
             where: {
@@ -133,7 +133,7 @@ export default class PublishedReservationRepository {
         });
 
         if (!reservations) {
-            throw new Error('Nenhuma reserva encontrada para o perÃ­odo especificado');
+            throw new Error('Nenhuma reserva encontrada para o período especificado');
         }
 
         return reservations as PublishedReservation[];

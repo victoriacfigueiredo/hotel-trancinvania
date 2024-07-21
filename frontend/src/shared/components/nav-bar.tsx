@@ -53,9 +53,9 @@ export const NavBar: React.FC = () => {
   };
 
   return (
-    <Box bg="#EAEAEA" color="#000000" height="90px">
+    <Box bg="#EAEAEA" color="#000000" height="80px">
       <Flex justify="space-between" align="center" p={4} height="100%">
-        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="70px" />
+        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="60px" />
 
         {/* Desktop Menu */}
         <Flex

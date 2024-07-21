@@ -17,6 +17,7 @@ import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
 import { createPublishedReservation, uploadImage } from '../../services';
+import { useHotelierData } from '../../../auth/hooks/useUserData';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -30,7 +31,9 @@ export const PublishedReservation = () => {
     const [breakfast, setBreakfast] = useState(false);
     const [parking, setParking] = useState(false);
     const [roomService, setRoomService] = useState(false);
+    const { data } = useHotelierData();
 
+    
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         const imagePreview = file ? URL.createObjectURL(file) : ''
@@ -54,13 +57,14 @@ export const PublishedReservation = () => {
     };
 
     const handlePublicReservation = async() => {
+        const hotelier = data?.id;
         if(!image){
             toast.warning('Selecione uma imagem!');
         }else if(name === '' || rooms === '' || people === '' || price === ''){
             toast.warning('Preencha todos os campos!');
         }else{
             try{
-                const data = await createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const data = await createPublishedReservation(Number(hotelier), name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
                 const formData = new FormData();
                 formData.append('image', image);
                 await uploadImage(+data.id, formData);

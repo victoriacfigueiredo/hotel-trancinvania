@@ -21,7 +21,7 @@ import { createPromotion, createPromotionAll, updatePromotion } from '../service
 import { getPublishedReservationById } from '../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../PublishedReservation/models/publishedReservation';
 import { useReservationContext } from '../../PublishedReservation/context';
-
+import { useHotelierData } from '../../auth/hooks/useUserData';
 
 export const Promotion = () => {
     //const { reservation_id } = useParams();
@@ -31,6 +31,7 @@ export const Promotion = () => {
     const [discount, setDiscount] = useState('');
     const [numRooms, setNumRooms] = useState('');
     const [actionType, setActionType] = useState('');
+    const { data } = useHotelierData();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -51,7 +52,7 @@ export const Promotion = () => {
             }
         };
         fetchReservationData();
-    },[location, selectedReservation?.id]);
+    },[]);
 
     const handlePromoTypeChange = (event) => {
         setPromoType(event.target.value);
@@ -91,12 +92,12 @@ export const Promotion = () => {
                     }
                     toast.success('Promoção atualizada com sucesso!');
                 }else if (actionType === 'createAll') {
-                    await createPromotionAll(1, {discount: parseInt(discount, 10), type: PromotionType.ILIMITADA} );
+                    await createPromotionAll(Number(data?.id), {discount: parseInt(discount, 10), type: PromotionType.ILIMITADA} );
                     toast.success('Promoção cadastrada com sucesso!');
                 }
                 setTimeout(() => {
                     navigate('/hotelier-reservations');
-                }, 3000); 
+                }, 2000); 
             }catch(error){
                 const err = error as { response: { data: { message: string } } };
                 toast.error(`${err.response.data.message}`);
@@ -138,7 +139,7 @@ export const Promotion = () => {
                                         </Select>
                                     </FormControl>
                                     {promoType === 'limiteQuarto' && (
-                                        <LabelComponent id="quantidade de quartos" value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} placeholder={""}/>
+                                        <LabelComponent id="quantidade-de-quartos" value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} placeholder={""}/>
                                     )}
                                     <Box mb="25px">
                                         <FormLabel htmlFor="valor" color="white" mb="8px">Valor</FormLabel>
@@ -161,7 +162,7 @@ export const Promotion = () => {
                         </Flex>
                     </Box>
             </Box>
-                <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
+                <ToastContainer position="top-right" theme='dark' autoClose={2000}/>
         </Box>);
     }
 

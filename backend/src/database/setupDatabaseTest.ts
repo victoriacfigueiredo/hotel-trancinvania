@@ -93,4 +93,11 @@ export default class SetupDatabaseTest{
         reservation['paymentMethodId'] = pay.id;
         await prisma.reserve.create({data: reservation});
     }
+
+    async setupDataBaseForPayMethodsTest(client : Prisma.ClientCreateInput, payMethod? : Prisma.PaymentMethodCreateInput){
+        await prisma.client.create({data: client});
+        if(payMethod){
+            await prisma.paymentMethod.create({data: payMethod});
+        }
+    }
 }

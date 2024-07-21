@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { PublishedReservationModel } from '../models/publishedReservation';
 
 interface ReservationContextType {
@@ -14,6 +14,19 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
     const [reservations, setReservations] = useState<PublishedReservationModel[]>([]);
     const [selectedReservation, setSelectedReservation] = useState<PublishedReservationModel | null>(null);
 
+    useEffect(() => {
+        const storedReservation = localStorage.getItem('selectedReservation');
+        if (storedReservation) {
+            setSelectedReservation(JSON.parse(storedReservation));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (selectedReservation) {
+            localStorage.setItem('selectedReservation', JSON.stringify(selectedReservation));
+        }
+    }, [selectedReservation]);
+    
     return (
         <ReservationContext.Provider value={{ reservations, setReservations, selectedReservation, setSelectedReservation }}>
             {children}
