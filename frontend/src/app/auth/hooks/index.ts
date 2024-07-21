@@ -8,11 +8,16 @@ import {
   sendRecoveryEmailClient,
   registerClient,
   registerHotelier,
+  updateClientData,
 } from "../services";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
+  RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
+import { UpdateClientFormInputs } from "../forms/update-form";
+import { queryAllByAltText } from "@testing-library/react";
+import { queryClient } from "../../../shared/config/query-client";
 
 export function useLoginClientMutation() {
   return useMutation({
@@ -58,6 +63,15 @@ export function useSendRecoveryEmailHotelierMutation() {
 
 export function useRegisterHotelierMutation() {
   return useMutation({
-    mutationFn: (data: RegisterHotelierFormInputs) => registerHotelier(data),
+    mutationFn: (data: RegisterHotelierFormInputsWithoutConfirmPassword) =>
+      registerHotelier(data),
+  });
+}
+
+//mutation para atualizar dados do cliente
+export function useUpdateClientMutation() {
+  return useMutation({
+    mutationFn: ({ data, id }: { data: UpdateClientFormInputs; id: string }) =>
+      updateClientData(data, id),
   });
 }

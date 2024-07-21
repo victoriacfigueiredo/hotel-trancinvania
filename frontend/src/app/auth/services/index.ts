@@ -7,7 +7,9 @@ import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputs,
+  RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
+import { UpdateClientFormInputs } from "../forms/update-form";
 
 export async function loginClient({
   username,
@@ -53,8 +55,17 @@ export async function registerClient(
   return response.data;
 }
 
+//Atualizar dados do cliente
+export async function updateClientData(
+  data: UpdateClientFormInputs,
+  id: string
+): Promise<void> {
+  const response = await apiService.patch(`/client/update/${id}`, data);
+  console.log(response.data);
+  return response.data;
+}
 export async function registerHotelier(
-  data: RegisterHotelierFormInputs
+  data: RegisterHotelierFormInputsWithoutConfirmPassword
 ): Promise<void> {
   const response = await apiService.post("/hotelier/create", data);
   console.log(response.data);
