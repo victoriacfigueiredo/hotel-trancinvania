@@ -1,14 +1,35 @@
 import React from 'react';
 import { JustSpider } from '../../components/just-spider';
-import { Box, Text, Icon, HStack, Button, VStack } from '@chakra-ui/react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
 import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaPerson } from 'react-icons/fa6';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, useState } from 'react';
+import { getPublishedReservationById } from '../../../PublishedReservation/services'
+import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation'
 
 const SelectReservation: React.FC = () => {
-    const reserve = async () => {
-        window.location.href = "http://localhost:3000/create-reservation";
-    };
+    const { reservation_id } = useParams();
+    const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
+   
+    useEffect(() => {
+      const fetchReservationData = async () => {
+          if(reservation_id){
+              try {
+                  const response = await getPublishedReservationById(+reservation_id) ?? '';
+                  setReservationData(response);
+              } catch (error) {
+                  console.error('Erro ao obter os dados da reserva:', error);
+              }
+          }
+      };
+
+      fetchReservationData();
+  }, [reservation_id]);
+
+  const navigate = useNavigate();
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
       <NavBar />
@@ -30,6 +51,9 @@ const SelectReservation: React.FC = () => {
             height="300px"
             bg="#6A0572"
             zIndex="1"
+            backgroundSize="cover" 
+            backgroundPosition="center" 
+            style={{backgroundImage: `url(http://localhost:5001${reservationData.imageUrl})`}}
           />
           <Box
             position="absolute"
@@ -47,42 +71,21 @@ const SelectReservation: React.FC = () => {
             fontWeight="bold"
             textAlign="center"
           >
-            Zumbi Digital
+            {reservationData.name}
           </Text>
-          <Text color="#EAEAEA" fontSize="xl" textAlign="center">
-            R$ 1200,00 a diária
+          <Text color="#EAEAEA" fontSize="xl" textAlign="center" display="flex" alignItems="center" justifyContent="center">
+            R$ {reservationData.new_price}.00 a diária
+            <Divider orientation="vertical" borderColor="#EAEAEA" height="20px" mx = {2}/>
+            <Icon as={FaPerson} color="#EAEAEA" />
+            {reservationData.people} hóspedes
           </Text>
+
           <HStack mt="10px" justify="center" spacing={4}>
-            <HStack spacing={1}>
-              <Icon as={FaWifi} color="#EAEAEA" />
-              <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
-                Wi-Fi
-              </Text>
-            </HStack>
-            <HStack spacing={1}>
-              <Icon as={FaConciergeBell} color="#EAEAEA" />
-              <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
-                Serviço de Quarto
-              </Text>
-            </HStack>
-            <HStack spacing={1}>
-              <Icon as={FaCoffee} color="#EAEAEA" />
-              <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
-                Café da Manhã
-              </Text>
-            </HStack>
-            <HStack spacing={1}>
-              <Icon as={FaSnowflake} color="#EAEAEA" />
-              <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
-                Ar-condicionado
-              </Text>
-            </HStack>
-            <HStack spacing={1}>
-              <Icon as={FaCar} color="#EAEAEA" />
-              <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
-                Estacionamento
-              </Text>
-            </HStack>
+                        {reservationData.wifi &&  <ServicesComponent value="Wi-Fi" icon={FaWifi}/>}
+                        {reservationData.room_service &&  <ServicesComponent value="Serviço de Quarto" icon={FaConciergeBell}/>}
+                        {reservationData.breakfast &&  <ServicesComponent value="Café da Manhã" icon={FaCoffee}/>}
+                        {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake}/>}
+                        {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
           </HStack>
         </Box>
 
@@ -101,7 +104,7 @@ const SelectReservation: React.FC = () => {
             border="1px solid #EAEAEA"
             _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
             leftIcon={<Icon as={FaCheck} />}
-            onClick={reserve}
+            onClick={() => navigate(`/create-reservation/${reservationData.id}`)}
           >
             Realizar Reserva
           </Button>
@@ -135,6 +138,7 @@ const SelectReservation: React.FC = () => {
             border="1px solid #EAEAEA"
             _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
             leftIcon={<Icon as={FaArrowLeft} />}
+            onClick={() => navigate(`/reservations`)}
           >
             Voltar
           </Button>
@@ -144,5 +148,17 @@ const SelectReservation: React.FC = () => {
     </Box>
   );
 };
+
+const ServicesComponent = ({icon, value}) => {
+  return (
+      <HStack spacing={1}>
+          <Icon as={icon} color="#EAEAEA" />
+          <Text color="#EAEAEA" fontSize="sm" whiteSpace="nowrap">
+              {value}
+          </Text>
+      </HStack>
+  )
+}
+
 
 export default SelectReservation;

@@ -102,16 +102,14 @@ const reservationUpdateDto = z.object({
     paymentMethodName: z.string(),
 });
 
-
-
-
 export default class ReserveController {
     private prefix = '/client/:clientId/publishedReservation/:publishedReservationId/reserve';
+    private prefix2 = '/client/:clientId/reserve';
+    private prefix3 = '/reserve';
     private reservationService: ReservationService;
     constructor() {
         this.reservationService = new ReservationService();
     }
-
 
     public setupRoutes(router: Router) {
         // criar novas reservas
@@ -119,15 +117,14 @@ export default class ReserveController {
         // editar reserva
         router.put(this.prefix + '/:id', validateData(reservationUpdateDto), (req, res) => this.updateReservation(req, res));
         // cancelar reserva
-        router.delete(this.prefix + '/:id', (req, res) => this.cancelReservation(req, res));
+        router.delete(this.prefix3 + '/:id', (req, res) => this.cancelReservation(req, res));
         //cancelar todas as reservas de um cliente
-        router.delete(this.prefix, (req, res) => this.cancelReservationByClient(req, res));
+        router.delete(this.prefix2, (req, res) => this.cancelReservationByClient(req, res));
         // pegar os dados de uma reserva
-        router.get(this.prefix + '/:id', (req, res) => this.getReservationById(req, res));
+        router.get(this.prefix3 + '/:id', (req, res) => this.getReservationById(req, res));
         // pegar todas as reservas de um cliente (minhas reservas)
-        router.get(this.prefix, (req, res) => this.getReservationsByClient(req, res));
+        router.get(this.prefix2, (req, res) => this.getReservationsByClient(req, res));
     }
-
 
     private async createReservation(req: Request, res: Response) {        
         const {num_rooms, checkin, checkout, num_adults, num_children, paymentMethodName} = req.body;
@@ -137,21 +134,17 @@ export default class ReserveController {
         res.status(201).json({status: 201, message: 'Reserva realizada com sucesso!' });      
     }
    
-
-
     private async cancelReservation(req: Request, res: Response) {
         const {id} = req.params;
         await this.reservationService.cancelReservation(+id);
         res.status(200).json({status: 200, message: 'Reserva cancelada com sucesso.'});
     }
 
-
     private async cancelReservationByClient(req: Request, res: Response){
         const clientId  = parseInt(req.params.clientId);
         await this.reservationService.cancelReservationByClient(clientId);
         res.status(200).json({status: 200, message: 'Todas as reservas foram canceladas com sucesso.'});
     }
-
 
     private async updateReservation(req: Request, res: Response) {
         const id = parseInt(req.params.id);
