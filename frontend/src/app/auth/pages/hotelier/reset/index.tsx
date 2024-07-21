@@ -20,7 +20,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ResetTokenInputs, ResetTokenSchema } from "../../../forms/reset-form";
 import { useResetPasswordHotelierMutation } from "../../../hooks";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const wizardImage = "https://i.imgur.com/En0qPaO.png";
 const booImage = "https://i.imgur.com/1oLAmzY.png";
@@ -54,10 +55,15 @@ export const ResetPasswordHotelier: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
-        <Flex position="relative" alignItems="flex-end">
+        <Flex
+          position="relative"
+          alignItems="flex-end"
+          ml={{ base: "0", lg: "-10%" }}
+        >
           <Container maxW="container.md" position="relative" zIndex={1}>
             <Flex direction="column" align="center" justify="center">
               <HStack alignItems={"flex-start"} mb={5}>
