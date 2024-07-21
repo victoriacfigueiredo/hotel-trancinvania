@@ -38,12 +38,12 @@ import {
   UpdateClientSchema,
 } from "../../../forms/update-form";
 import { queryClient } from "../../../../../shared/config/query-client";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const wineGlassImage = "https://i.imgur.com/9y30n2W.png";
 
 const EditProfileClient: React.FC = () => {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const updateClientMutation = useUpdateClientMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentField, setCurrentField] =
@@ -73,6 +73,13 @@ const EditProfileClient: React.FC = () => {
     }
   }, [data, reset]);
 
+  useEffect(() => {
+    if (localStorage.getItem("navigateToProfile")) {
+      localStorage.removeItem("navigateToProfile"); // Remove o sinal
+      navigate("/client/profile"); // Realiza a navegação
+    }
+  }, [navigate]);
+
   const onSubmit = async (formData: UpdateClientFormInputs) => {
     try {
       const newData = {
@@ -81,7 +88,7 @@ const EditProfileClient: React.FC = () => {
         password: formData.password,
       };
       if (newData.password === "") {
-        // delete passowrd property from newData
+        // deleta a senha se estiver vazia
         delete newData.password;
       }
       if (!data) {
@@ -94,12 +101,16 @@ const EditProfileClient: React.FC = () => {
             queryKey: ["navbarUserData", data.id],
           });
         });
-      // Handle form submission
+      // Exibe mensagem de sucesso e recarrega a página
       toast.success(`Alterações salvas com sucesso!`, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
       });
-      //navigate("/reservations");
+      setTimeout(() => {
+        // Define o sinal no localStorage e recarrega a página
+        localStorage.setItem("navigateToProfile", "true");
+        window.location.reload();
+      }, 3000);
     } catch (error: any) {
       toast.error(`Erro ao salvar alterações!`, {
         position: "top-right",
@@ -173,7 +184,7 @@ const EditProfileClient: React.FC = () => {
 */
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={5000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -264,12 +275,7 @@ const EditProfileClient: React.FC = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="red"
-              bg="#A4161A"
-              mr={3}
-              onClick={handleSubmit(onSubmit)}
-            >
+            <Button colorScheme="red" bg="#A4161A" mr={3} onClick={onClose}>
               Salvar
             </Button>
             <Button variant="ghost" onClick={onClose}>
