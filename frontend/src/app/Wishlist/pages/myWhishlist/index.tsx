@@ -87,7 +87,7 @@ export const Whishlist: React.FC = () => {
             Lista de Desejos
           </Heading>
         </Box>
-        <Box display="flex" justifyContent="left" alignItems="left" mt={8} overflowY="auto" maxH="70vh">
+        <Box display="flex" justifyContent="center" alignItems="left" mt={8} overflowY="auto" maxH="70vh">
           {reservations.length === 0 ? (
             <Text color="#EAEAEA" textAlign="center">Nenhuma reserva salva encontrada.</Text>
           ) : (

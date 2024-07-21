@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { JustSpider } from '../../components/just-spider';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
@@ -6,14 +6,18 @@ import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaC
 import { FaPerson } from 'react-icons/fa6';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, useState } from 'react';
 import { saveReservation } from '../../../Wishlist/services';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { SaveModel } from '../../../Wishlist/models';
-import { ToastContainer, toast } from 'react-toastify'; // Adicione esta linha
+import { ToastContainer, toast } from 'react-toastify'; 
+import { useClientData } from '../../../auth/hooks/useUserData';
 
 const SelectReservation: React.FC = () => {
-    const { reservation_id } = useParams<{ reservation_id: string }>();
+    const { data } = useClientData();
+    const clientId = Number(data?.id);
+    const { reservation_id } = useParams();
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
 
     useEffect(() => {
@@ -40,7 +44,7 @@ const SelectReservation: React.FC = () => {
         }
 
         const saveData: SaveModel = {
-            client_id: 4, // Substitua pelo ID do cliente correto. Talvez você precise obter isso de outro lugar.
+            client_id: clientId, 
             reservation_id: reservationData.id
         };
 
@@ -181,6 +185,6 @@ const ServicesComponent: React.FC<{ icon: any; value: string }> = ({ icon, value
             </Text>
         </HStack>
     );
-};
+}
 
 export default SelectReservation;

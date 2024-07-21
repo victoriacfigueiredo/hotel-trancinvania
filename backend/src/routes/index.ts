@@ -9,6 +9,7 @@ import SaveController from '../controllers/save.controller';
 import RateController from '../controllers/rate.controller';
 import PublishedReservationController from '../controllers/publishedReservation.controller';
 
+import PaymentMethodController from '../controllers/paymentMethod.controller';
 // import { di } from '../di';
 // import TestController from '../controllers/test.controller';
 // import TestService from '../services/test.service';
@@ -34,6 +35,7 @@ const hotelierController = new HotelierController();
 const saveController = new SaveController();
 const rateController = new RateController();
 const publishedReservationController = new PublishedReservationController();
+const paymentMethodController = new PaymentMethodController()
 
 router.get('/', (req, res) => {
   return res.status(200).json({ message: 'Hello World!' });
@@ -49,5 +51,6 @@ router.use('/auth', AuthController);
 saveController.setupRoutes(router);
 rateController.setupRoutes(router);
 publishedReservationController.setupRoutes(router);
+paymentMethodController.setupRoutes(router)
 
 export default router;

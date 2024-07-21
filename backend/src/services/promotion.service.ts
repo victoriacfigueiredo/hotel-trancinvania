@@ -151,7 +151,7 @@ export default class PromotionService {
 
     async deleteAllPromotions(hotelier_id: number): Promise<void> {
         try{
-            if(!await this.publishedReservationRepository.promotionInReservation()){
+            if(!await this.publishedReservationRepository.promotionInReservation(hotelier_id)){
                 throw new HttpNotFoundError({
                     msg: 'Não há promoção cadastrada'
                 });

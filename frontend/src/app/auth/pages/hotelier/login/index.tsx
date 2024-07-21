@@ -46,8 +46,8 @@ const LoginHotelier: React.FC = () => {
       await loginHotelierMutation.mutateAsync(data);
       toast.success(`Login bem-sucedido! Bem-vindo, ${data.username}!`);
       setTimeout(() => {
-        navigate("/publishedReservationList");
-      }, 3000);
+        navigate("/hotelier-reservations");
+      }, 2000);
     } catch (error) {
       toast.error("Falha ao fazer login. Tente novamente.");
     }
@@ -58,7 +58,7 @@ const LoginHotelier: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={2000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -121,6 +121,7 @@ const LoginHotelier: React.FC = () => {
                   </VStack>
                   <ButtonGroup spacing={4}>
                     <Button
+                      id="login-button"
                       type="submit"
                       colorScheme="red"
                       fontWeight={400}
