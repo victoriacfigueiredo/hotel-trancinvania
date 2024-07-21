@@ -55,9 +55,9 @@ const RegisterClient: React.FC = () => {
         password: data.password,
       };
       await registerClientMutation.mutateAsync(newData);
-      toast.success(`Cadastro bem-sucedido! Bem-vindo, ${data.username}!`, {
+      toast.success(`Cadastro bem-sucedido! Obrigado, ${data.username}!`, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
       });
       setTimeout(() => {
         navigate("/client/login");
@@ -73,7 +73,7 @@ const RegisterClient: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={5000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
