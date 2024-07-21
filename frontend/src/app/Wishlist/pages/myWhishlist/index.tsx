@@ -16,15 +16,21 @@ import { NavBar } from "../../../../shared/components/nav-bar";
 import { ToastContainer, toast } from 'react-toastify';
 import { getSavedReservationByClientId, deleteSavedReservationById } from "../../services";
 import { useClientData } from "../../../auth/hooks/useUserData";
+import { Link } from "react-router-dom";
 
+// Definindo a interface para os dados da reserva
+interface Reservation {
+  id: number;
+  image?: string;
+  name?: string;
+}
 
-export const Whishlist = () => {
-  /*const { data } = useClientData();
+export const Whishlist: React.FC = () => {
+  const { data } = useClientData();
   const clientId = Number(data?.id);
 
-  */const clientId = 4;
 
-  const [reservations, setReservations] = useState<any[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -32,12 +38,11 @@ export const Whishlist = () => {
         toast.error('ID do cliente não encontrado.');
         return;
       }
-      
+
       try {
         const Reservationdata = await getSavedReservationByClientId(clientId);
         setReservations(Reservationdata);
       } catch (error) {
-        console.error('Erro ao obter as reservas salvas:', error);
         toast.error('Erro ao obter as reservas salvas.');
       }
     };
@@ -56,7 +61,6 @@ export const Whishlist = () => {
       setReservations(prev => prev.filter(reservation => reservation.id !== reservationId));
       toast.success('Reserva apagada com sucesso!');
     } catch (error) {
-      console.error('Erro ao deletar a reserva:', error);
       toast.error('Erro ao deletar a reserva.');
     }
   };
@@ -79,15 +83,11 @@ export const Whishlist = () => {
         position="relative"
       >
         <NavBar />
-
-        {/* Adicionando o título */}
         <Box display="flex" justifyContent="center" mt={4} position="relative">
           <Heading as="h1" size="lg" textAlign="center" color="#EAEAEA" mb={4} fontFamily="Trancinfont">
             Lista de Desejos
           </Heading>
         </Box>
-
-        {/* Conteúdo principal */}
         <Box display="flex" justifyContent="center" alignItems="center" mt={8}>
           {reservations.length === 0 ? (
             <Text color="#EAEAEA" textAlign="center">Nenhuma reserva salva encontrada.</Text>
@@ -103,7 +103,7 @@ export const Whishlist = () => {
                       <Text fontSize="lg" mb={4} textAlign="left">{reservation.name || `Hotel ${reservation.id}`}</Text>
                       <Flex justifyContent="center" gap={4}>
                         <Button
-                          variant="ghost" // Removido o contorno
+                          variant="ghost"
                           color="#EAEAEA"
                           _hover={{ bg: "#5e3a72" }}
                           onClick={() => handleDelete(reservation.id)}
@@ -111,15 +111,16 @@ export const Whishlist = () => {
                         >
                           <DeleteIcon boxSize="20px" />
                         </Button>
-                        <Button
-                          variant="ghost" // Removido o contorno
-                          color="#EAEAEA"
-                          _hover={{ bg: "#5e3a72" }}
-                          onClick={() => {/* Função para seta para a esquerda */}}
-                          aria-label="Back"
-                        >
-                          <ArrowForwardIcon boxSize="20px" />
-                        </Button>
+                        <Link to={`/select-reservation/${reservation.id}`}>
+                          <Button
+                            variant="ghost"
+                            color="#EAEAEA"
+                            _hover={{ bg: "#5e3a72" }}
+                            aria-label="Go to reservation"
+                          >
+                            <ArrowForwardIcon boxSize="20px" />
+                          </Button>
+                        </Link>
                       </Flex>
                     </Box>
                   </Box>
