@@ -131,7 +131,7 @@ const EditProfileHotelier: React.FC = () => {
     label: string,
     fieldName: keyof UpdateHotelierFormInputs
   ) => (
-    <GridItem colSpan={1} key={fieldName}>
+    <GridItem colSpan={{ base: 2, md: 1 }} key={fieldName}>
       <FormControl>
         <FormLabel htmlFor={fieldName}>{label}</FormLabel>
         <HStack>
@@ -155,7 +155,7 @@ const EditProfileHotelier: React.FC = () => {
     label: string,
     fieldName: keyof UpdateHotelierFormInputs
   ) => (
-    <GridItem colSpan={1} key={fieldName}>
+    <GridItem colSpan={{ base: 2, md: 1 }} key={fieldName}>
       <FormControl>
         <FormLabel htmlFor={fieldName}>{label}</FormLabel>
         <HStack>
@@ -219,20 +219,20 @@ const EditProfileHotelier: React.FC = () => {
                   {renderEditableField("Senha", "password")}
                   {renderLockedField("CNPJ", "cnpj")}
                   {renderLockedField("Hotel", "hotel")}
-                  <GridItem colSpan={1}>
-                    <SimpleGrid columns={2} spacing={6}>
+                  <GridItem colSpan={{ base: 2, md: 1 }}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                       {renderLockedField("CEP", "cep")}
                       {renderLockedField("UF", "UF")}
                     </SimpleGrid>
                   </GridItem>
-                  <GridItem colSpan={1}>
-                    <SimpleGrid columns={2} spacing={6}>
+                  <GridItem colSpan={{ base: 2, md: 1 }}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                       {renderLockedField("Cidade", "city")}
                       {renderLockedField("Número", "n_address")}
                     </SimpleGrid>
                   </GridItem>
                   <GridItem colSpan={2}>
-                    <SimpleGrid columns={2} spacing={6}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                       {renderLockedField("Endereço", "address")}
                       <ButtonGroup
                         spacing={4}
