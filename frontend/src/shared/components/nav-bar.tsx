@@ -24,6 +24,7 @@ import { FaSpider, FaBed, FaUser, FaBars } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
 import LogoHotel from "../assets/logo_hotel.png";
 import { useNavbarUserData } from "../../app/auth/hooks/useNavbar";
+import { sessionManager } from "../config/session-manager";
 
 export const NavBar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,8 +44,7 @@ export const NavBar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userType");
+    sessionManager.logout();
     queryClient.clear(); // Clear all query cache
     navigate("/");
   };

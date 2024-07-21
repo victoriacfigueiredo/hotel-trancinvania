@@ -9,6 +9,7 @@ import {
   RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
 import { UpdateClientFormInputs } from "../forms/update-form";
+import { sessionManager } from "../../../shared/config/session-manager";
 
 export async function loginClient({
   username,
@@ -18,9 +19,8 @@ export async function loginClient({
     username,
     password,
   });
-  localStorage.setItem("accessToken", response.data.token);
-  localStorage.setItem("userType", "client");
-  localStorage.setItem("userName", username);
+  sessionManager.setToken(response.data.token);
+  sessionManager.setUserType("client");
   return response.data;
 }
 
@@ -54,7 +54,6 @@ export async function registerClient(
   return response.data;
 }
 
-//Atualizar dados do cliente
 export async function updateClientData(
   data: UpdateClientFormInputs,
   id: string
@@ -63,6 +62,7 @@ export async function updateClientData(
   console.log(response.data);
   return response.data;
 }
+
 export async function registerHotelier(
   data: RegisterHotelierFormInputsWithoutConfirmPassword
 ): Promise<void> {
@@ -82,9 +82,8 @@ export async function loginHotelier({
       password,
     }
   );
-  localStorage.setItem("accessToken", response.data.token);
-  localStorage.setItem("userType", "hotelier");
-  localStorage.setItem("userName", username);
+  sessionManager.setToken(response.data.token);
+  sessionManager.setUserType("hotelier");
   return response.data;
 }
 
@@ -108,4 +107,8 @@ export async function sendRecoveryEmailHotelier({
     }
   );
   return response.data;
+}
+
+export function logout(): void {
+  sessionManager.logout();
 }

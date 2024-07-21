@@ -23,6 +23,8 @@ import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Upd
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
 import EditProfileHotelier from "./app/auth/pages/hotelier/profile";
+import { AuthWrapper } from "./shared/components/auth-wrapper";
+import NotFoundPage from "./app/home/pages/notfound";
 
 const router = createBrowserRouter([
   {
@@ -30,15 +32,19 @@ const router = createBrowserRouter([
     Component: HomePage,
   },
   {
+    path: "*",
+    element: <NotFoundPage />,
+  },
+  {
     path: "/client/login",
     Component: LoginClient,
   },
   {
-    path: "client/password/recover",
+    path: "/client/password/recover",
     Component: RecoverPasswordClient,
   },
   {
-    path: "client/password/reset",
+    path: "/client/password/reset",
     Component: ResetPasswordClient,
   },
   {
@@ -46,19 +52,23 @@ const router = createBrowserRouter([
     Component: RegisterClient,
   },
   {
-    path: "client/profile/edit",
-    Component: EditProfileClient,
+    path: "/client/profile/edit",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <EditProfileClient />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
   {
-    path: "hotelier/password/recover",
+    path: "/hotelier/password/recover",
     Component: RecoverPasswordHotelier,
   },
   {
-    path: "hotelier/password/reset",
+    path: "/hotelier/password/reset",
     Component: ResetPasswordHotelier,
   },
   {
@@ -66,8 +76,12 @@ const router = createBrowserRouter([
     Component: RegisterHotelier,
   },
   {
-    path: "/hotelier/profile",
-    Component: EditProfileHotelier,
+    path: "/hotelier/profile/edit",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <EditProfileHotelier />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/create-reservation",

@@ -1,11 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { jwtDecode } from "jwt-decode";
 import apiService from "../../../shared/services/api-service";
 import { isAxiosError } from "axios";
-
-interface JwtPayload {
-  id: string;
-}
+import { sessionManager } from "../../../shared/config/session-manager";
 
 interface NavbarUserData {
   username: string;
@@ -14,7 +10,7 @@ interface NavbarUserData {
 
 const fetchNavbarUserData = async (
   userType: string,
-  id: string
+  id: number
 ): Promise<NavbarUserData | null> => {
   try {
     const response = await apiService.get(`/${userType}/read/${id}`);
@@ -25,6 +21,7 @@ const fetchNavbarUserData = async (
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 401) {
       // Token is invalid or expired, treat as logged out
+      sessionManager.logout();
       return null;
     }
     console.error(`Error fetching ${userType} data for navbar:`, error);
@@ -36,24 +33,22 @@ export const useNavbarUserData = (): UseQueryResult<
   NavbarUserData | null,
   unknown
 > => {
-  const token = localStorage.getItem("accessToken");
-  const userType = localStorage.getItem("userType");
-
-  const enabled = !!token && !!userType;
+  const isAuthenticated = sessionManager.isAuthenticated();
+  const userType = sessionManager.getUserType();
+  const userId = sessionManager.getUserId();
 
   return useQuery({
-    queryKey: ["navbarUserData", token],
+    queryKey: ["navbarUserData", userId],
     queryFn: async () => {
-      if (!enabled) return null;
+      if (!isAuthenticated || !userType || userId === null) return null;
       try {
-        const { id } = jwtDecode<JwtPayload>(token!);
-        return await fetchNavbarUserData(userType!, id);
+        return await fetchNavbarUserData(userType, userId);
       } catch (error) {
-        console.error("Error decoding token or fetching user data:", error);
+        console.error("Error fetching user data:", error);
         return null;
       }
     },
-    enabled: enabled,
+    enabled: isAuthenticated && !!userType && userId !== null,
     retry: false,
     staleTime: 300000, // 5 minutes
   });
