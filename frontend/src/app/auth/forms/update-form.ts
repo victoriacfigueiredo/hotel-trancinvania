@@ -26,12 +26,39 @@ export const UpdateClientSchema = z.object({
 });
 
 export const UpdateHotelierSchema = z.object({
+  name: z.string().min(1, { message: "Nome é obrigatório" }).optional(),
   email: z.string().email({ message: "E-mail inválido" }).optional(),
   username: z
     .string()
     .min(3, { message: "Usuário deve ter pelo menos 3 caracteres" })
     .optional(),
-  password: passwordValidation,
+  password: passwordValidation.optional(),
+  hotel: z
+    .string()
+    .min(1, { message: "Nome do Hotel é obrigatório" })
+    .optional(),
+  cep: z
+    .string()
+    .min(8, { message: "CEP é obrigatório e deve ter 8 dígitos" })
+    .max(8, { message: "CEP deve ter 8 dígitos" })
+    .optional(),
+  address: z
+    .string()
+    .min(1, { message: "Endereço do Hotel é obrigatório" })
+    .optional(),
+  city: z.string().min(1, { message: "Cidade é obrigatória" }).optional(),
+  n_address: z.string().min(1, { message: "Nº é obrigatório" }).optional(),
+  UF: z
+    .string()
+    .min(2, { message: "UF é obrigatório" })
+    .max(2, { message: "UF deve ter 2 caracteres" })
+    .optional(),
+  cnpj: z
+    .string()
+    .regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, {
+      message: "CNPJ Inválido",
+    })
+    .optional(),
 });
 
 export type UpdateClientFormInputs = z.infer<typeof UpdateClientSchema>;

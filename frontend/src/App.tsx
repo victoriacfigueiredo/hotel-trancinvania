@@ -76,7 +76,7 @@ const router = createBrowserRouter([
     Component: RegisterHotelier,
   },
   {
-    path: "/hotelier/profile/edit",
+    path: "/hotelier/profile",
     element: (
       <AuthWrapper allowedUserTypes={["hotelier"]}>
         <EditProfileHotelier />

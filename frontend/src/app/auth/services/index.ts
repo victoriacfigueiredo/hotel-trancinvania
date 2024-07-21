@@ -8,7 +8,10 @@ import {
   RegisterClientFormInputsWithoutConfirmPassword,
   RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
-import { UpdateClientFormInputs } from "../forms/update-form";
+import {
+  UpdateClientFormInputs,
+  UpdateHotelierFormInputs,
+} from "../forms/update-form";
 import { sessionManager } from "../../../shared/config/session-manager";
 
 export async function loginClient({
@@ -59,10 +62,18 @@ export async function updateClientData(
   id: string
 ): Promise<void> {
   const response = await apiService.patch(`/client/update/${id}`, data);
-  console.log(response.data);
+  //console.log(response.data);
   return response.data;
 }
 
+export async function updateHotelierData(
+  data: UpdateHotelierFormInputs,
+  id: string
+): Promise<void> {
+  const response = await apiService.patch(`/hotelier/update/${id}`, data);
+  //console.log(response.data);
+  return response.data;
+}
 export async function registerHotelier(
   data: RegisterHotelierFormInputsWithoutConfirmPassword
 ): Promise<void> {

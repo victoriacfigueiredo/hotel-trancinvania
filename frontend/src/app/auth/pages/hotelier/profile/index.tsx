@@ -27,31 +27,35 @@ import {
 import { EditIcon, LockIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  RegisterHotelierFormInputs,
-  RegisterHotelierSchema,
-} from "../../../forms/register-form";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useHotelierData } from "../../../hooks/useUserData";
+import { useUpdateHotelierMutation } from "../../../hooks";
+import {
+  UpdateHotelierFormInputs,
+  UpdateHotelierSchema,
+} from "../../../forms/update-form";
+import { queryClient } from "../../../../../shared/config/query-client";
+import { useNavigate } from "react-router-dom";
 
 const wineGlassImage = "https://i.imgur.com/9y30n2W.png";
 
 const EditProfileHotelier: React.FC = () => {
+  const navigate = useNavigate();
+  const updateHotelierMutation = useUpdateHotelierMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentField, setCurrentField] =
-    useState<keyof RegisterHotelierFormInputs>("name");
-  //const { data, isLoading, error } = useHotelierData();
+    useState<keyof UpdateHotelierFormInputs>("name");
   const { data } = useHotelierData();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<RegisterHotelierFormInputs>({
-    resolver: zodResolver(RegisterHotelierSchema),
+  } = useForm<UpdateHotelierFormInputs>({
+    resolver: zodResolver(UpdateHotelierSchema),
   });
 
   useEffect(() => {
@@ -72,26 +76,60 @@ const EditProfileHotelier: React.FC = () => {
     }
   }, [data, reset]);
 
-  const onSubmit = () =>
-    //formData: RegisterHotelierFormInputs
-    {
-      // Handle form submission
+  useEffect(() => {
+    if (localStorage.getItem("navigateToProfile")) {
+      localStorage.removeItem("navigateToProfile"); // Remove o sinal
+      navigate("/hotelier/profile"); // Realiza a navegação
+    }
+  }, [navigate]);
+
+  const onSubmit = async (formData: UpdateHotelierFormInputs) => {
+    try {
+      const newData = {
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+      };
+      if (newData.password === "") {
+        // deleta a senha se estiver vazia
+        delete newData.password;
+      }
+      if (!data) {
+        throw new Error("User data not found");
+      }
+      await updateHotelierMutation
+        .mutateAsync({ data: newData, id: data.id })
+        .then(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["navbarUserData", data.id],
+          });
+        });
+      // Exibe mensagem de sucesso e recarrega a página
       toast.success(`Alterações salvas com sucesso!`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        // Define o sinal no localStorage e recarrega a página
+        localStorage.setItem("navigateToProfile", "true");
+        window.location.reload();
+      }, 3000);
+    } catch (error: any) {
+      toast.error(`Erro ao salvar alterações!`, {
         position: "top-right",
         autoClose: 5000,
       });
-      onClose();
-    };
+    }
+  };
 
-  const openEditModal = (field: keyof RegisterHotelierFormInputs) => {
+  const openEditModal = (field: keyof UpdateHotelierFormInputs) => {
     setCurrentField(field);
     onOpen();
   };
 
   const renderEditableField = (
     label: string,
-    fieldName: keyof RegisterHotelierFormInputs
-    //isPassword = false
+    fieldName: keyof UpdateHotelierFormInputs
   ) => (
     <GridItem colSpan={1} key={fieldName}>
       <FormControl>
@@ -115,7 +153,7 @@ const EditProfileHotelier: React.FC = () => {
 
   const renderLockedField = (
     label: string,
-    fieldName: keyof RegisterHotelierFormInputs
+    fieldName: keyof UpdateHotelierFormInputs
   ) => (
     <GridItem colSpan={1} key={fieldName}>
       <FormControl>
@@ -148,7 +186,7 @@ const EditProfileHotelier: React.FC = () => {
 */
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={5000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -181,40 +219,51 @@ const EditProfileHotelier: React.FC = () => {
                   {renderEditableField("Senha", "password")}
                   {renderLockedField("CNPJ", "cnpj")}
                   {renderLockedField("Hotel", "hotel")}
-                  {renderLockedField("CEP", "cep")}
-                  {renderLockedField("Endereço", "address")}
-                  {renderLockedField("Número", "n_address")}
-                  {renderLockedField("Cidade", "city")}
-                  {renderLockedField("UF", "UF")}
-
-                  <ButtonGroup
-                    spacing={4}
-                    display={"flex"}
-                    alignItems={"flex-end"}
-                    justifyContent={"flex-start"}
-                  >
-                    <Button
-                      type="submit"
-                      colorScheme="red"
-                      fontWeight={400}
-                      bg="#A4161A"
-                    >
-                      Salvar Alterações
-                    </Button>
-                    <Button
-                      variant="outline"
-                      borderColor="#A4161A"
-                      fontWeight={400}
-                      color={"white"}
-                      _hover={{
-                        bg: "#A4161A",
-                        color: "white",
-                      }}
-                      onClick={() => reset()} // limpa formulário
-                    >
-                      Cancelar
-                    </Button>
-                  </ButtonGroup>
+                  <GridItem colSpan={1}>
+                    <SimpleGrid columns={2} spacing={6}>
+                      {renderLockedField("CEP", "cep")}
+                      {renderLockedField("UF", "UF")}
+                    </SimpleGrid>
+                  </GridItem>
+                  <GridItem colSpan={1}>
+                    <SimpleGrid columns={2} spacing={6}>
+                      {renderLockedField("Cidade", "city")}
+                      {renderLockedField("Número", "n_address")}
+                    </SimpleGrid>
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <SimpleGrid columns={2} spacing={6}>
+                      {renderLockedField("Endereço", "address")}
+                      <ButtonGroup
+                        spacing={4}
+                        display={"flex"}
+                        alignItems={"flex-end"}
+                        justifyContent={"flex-start"}
+                      >
+                        <Button
+                          type="submit"
+                          colorScheme="red"
+                          fontWeight={400}
+                          bg="#A4161A"
+                        >
+                          Salvar Alterações
+                        </Button>
+                        <Button
+                          variant="outline"
+                          borderColor="#A4161A"
+                          fontWeight={400}
+                          color={"white"}
+                          _hover={{
+                            bg: "#A4161A",
+                            color: "white",
+                          }}
+                          onClick={() => reset()} // limpa formulário
+                        >
+                          Cancelar
+                        </Button>
+                      </ButtonGroup>
+                    </SimpleGrid>
+                  </GridItem>
                 </SimpleGrid>
               </VStack>
             </form>
@@ -244,12 +293,7 @@ const EditProfileHotelier: React.FC = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="red"
-              bg="#A4161A"
-              mr={3}
-              onClick={handleSubmit(onSubmit)}
-            >
+            <Button colorScheme="red" bg="#A4161A" mr={3} onClick={onClose}>
               Salvar
             </Button>
             <Button variant="ghost" onClick={onClose}>
