@@ -102,7 +102,7 @@ defineFeature(feature, (test) => {
             const savedPaymentMethod: PaymentMethod = { ...newPaymentMethod, id: paymentMethods.length + 1 };
             paymentMethods.push(savedPaymentMethod);
             prismaMock.paymentMethod.create.mockResolvedValue(savedPaymentMethod);
-            response = await request.post('/client/paymentMethods').send(newPaymentMethod);
+            response = await request.post('/client/1/paymentMethods').send(newPaymentMethod);
         });
         
     const whenUpdatePaymentMethod = (when: DefineStepFunction) =>
@@ -113,7 +113,7 @@ defineFeature(feature, (test) => {
             if (paymentMethod) {
                 paymentMethod.type = newType as CardType;
                 prismaMock.paymentMethod.update.mockResolvedValue(paymentMethod);
-                response = await request.patch(`/client/paymentMethods/${paymentMethod.id}`).send(paymentMethod);
+                response = await request.patch(`/client/1/paymentMethods/${paymentMethod.id}`).send(paymentMethod);
             }
         });
         
@@ -124,7 +124,7 @@ defineFeature(feature, (test) => {
           if (paymentMethod) {
               paymentMethods = paymentMethods.filter(method => method.name !== name);
               prismaMock.paymentMethod.delete.mockResolvedValue(paymentMethod);
-              response = await request.delete(`/client/paymentMethods/${paymentMethod.id}`);
+              response = await request.delete(`/client/1/paymentMethods/${paymentMethod.id}`);
           }
       });
 
@@ -137,21 +137,21 @@ defineFeature(feature, (test) => {
     const thenSeePaymentMethodOnList = (then: DefineStepFunction) =>
         then(/^vejo "(.*)" na lista de metodos de pagamento$/, async (name) => {
             prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
-            const res = await request.get('/client/paymentMethods');
+            const res = await request.get('/client/1/paymentMethods');
             expect(res.body.some((method: PaymentMethod) => method.name === name)).toBe(true);
         });
 
     const thenSeeUpdatedPaymentMethodOnList = (then: DefineStepFunction) =>
         then(/^vejo "(.*)" com o tipo "(.*)" na lista de metodos de pagamento$/, async (name, type) => {
             prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
-            const res = await request.get('/client/paymentMethods');
+            const res = await request.get('/client/1/paymentMethods');
             expect(res.body.some((method: PaymentMethod) => method.name === name && method.type === type)).toBe(true);
         });
 
     const thenDoNotSeePaymentMethodOnList = (and: DefineStepFunction) =>
       and(/^nao vejo "(.*)" na lista de metodos de pagamento$/, async (name) => {
           prismaMock.paymentMethod.findMany.mockResolvedValue(paymentMethods);
-          const res = await request.get('/client/paymentMethods');
+          const res = await request.get('/client/1/paymentMethods');
           expect(res.body.some((method: PaymentMethod) => method.name === name)).toBe(false);
       });
     

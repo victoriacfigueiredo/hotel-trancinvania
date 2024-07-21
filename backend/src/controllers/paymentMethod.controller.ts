@@ -38,8 +38,8 @@ export default class PaymentMethodController {
     this.payMethodService = new PaymentMethodService();
   }
 
-  private prefix = '/client/paymentMethods/:paymentMethod_id';
-  private prefixAll = '/client/paymentMethods';
+  private prefix = '/client/:client_id/paymentMethods/:paymentMethod_id';
+  private prefixAll = '/client/:client_id/paymentMethods';
   
   public setupRoutes(router: Router) {
     router.post(this.prefixAll, validateData(payMethodCreate), (req, res) => this.insertPayMethod(req, res));
@@ -51,13 +51,18 @@ export default class PaymentMethodController {
   }
 
   private async getAllPayMethod(req: Request, res: Response) {
-    const payMethods = await this.payMethodService.getAllPayMethods();
-    res.status(200).json(payMethods);
+    try {
+      const { client_id } = req.params
+      const payMethods = await this.payMethodService.getAllPayMethods(+client_id);
+      res.status(200).json(payMethods);
+    }catch (error: any){
+      res.status(500).json({message: 'Erro ao encontrar todos os metodos de pagamento'});
+    }
   }
 
   private async getPayMethodById(req: Request, res: Response) {
     try {
-      const { paymentMethod_id } = req.params;
+      const { client_id, paymentMethod_id } = req.params;
       const payMethod = await this.payMethodService.getPayMethodById(+paymentMethod_id);
       res.status(200).json(payMethod);
     } catch (error: any) {
@@ -67,7 +72,7 @@ export default class PaymentMethodController {
 
   private async insertPayMethod(req: Request, res: Response) {
     try {
-      const {payMethod_id} = req.params;
+      const { client_id} = req.params;
       const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
       const id = await this.payMethodService.insertPaymentMethod(name, numCard, cvv, expiryDate, type, clientId, cpf);
       res.status(201).json({ status: 201, message:`Cartao Cadastrado com Sucesso`});
@@ -77,9 +82,10 @@ export default class PaymentMethodController {
   }
 
   private async deleteAllPayMethod(req: Request, res: Response) {
-    await this.payMethodService.deleteAllPayMethods()
+    const { client_id } = req.params
+    await this.payMethodService.deleteAllPayMethods(+client_id)
     try {
-      const { paymentMethod_id } = req.params;
+      const {client_id, paymentMethod_id } = req.params;
       const payMethod = await this.payMethodService.getPayMethodById(+paymentMethod_id);
       res.status(200).json(payMethod);
     } catch (error: any) {
@@ -89,7 +95,7 @@ export default class PaymentMethodController {
 
   private async deletePayMethod(req: Request, res: Response) {
     try {
-      const { paymentMethod_id } = req.params;
+      const { cleinte_id, paymentMethod_id } = req.params;
       const payMethod = await this.payMethodService.deletePayMethodById(+paymentMethod_id);
       res.status(200).json({message: 'Metodo de pagamento Deletado com Sucesso'});
     } catch (error: any) {
@@ -99,9 +105,9 @@ export default class PaymentMethodController {
 
   private async updatePayMethod(req: Request, res: Response) {
     try {
-      const { paymentMethod_id } = req.params;
+      const { client_id, paymentMethod_id } = req.params;
       const {name, numCard, cvv, expiryDate, type, clientId, cpf} = req.body;
-      const payMethod = await this.payMethodService.updatePayMethod(+paymentMethod_id, name, numCard, cvv, expiryDate, type, clientId, cpf);
+      const payMethod = await this.payMethodService.updatePayMethod(+paymentMethod_id, name, numCard, cvv, expiryDate, type, +client_id, cpf);
       res.status(200).json({message: 'Metodo de Pagamento Alterado com Sucesso'});
     } catch (error: any) {
       res.status(500).json({ message: 'Erro na alteracao de metodo de pagamento'});

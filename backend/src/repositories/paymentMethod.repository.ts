@@ -13,9 +13,13 @@ export default class PaymentMethodRepository {
     return payMethod.id
   }
 
-  async getAllPayMethod(): Promise<PaymentMethod[]> {
-    const paymentMethods = await this.prisma.paymentMethod.findMany() as PaymentMethod[];
-    return paymentMethods;
+  async getAllPayMethod(client_id : number): Promise<PaymentMethod[]> {
+    const paymentMethods = await this.prisma.paymentMethod.findMany({
+      where: {
+        clientId : client_id
+      }
+    });
+    return paymentMethods as PaymentMethod[];
   }
 
   async getPayMethodById(id: number): Promise<PaymentMethod> {
@@ -39,8 +43,12 @@ export default class PaymentMethodRepository {
   }
 
   // delete all
-  async deleteAllPayMethod(): Promise<void> {
-    await this.prisma.paymentMethod.deleteMany();
+  async deleteAllPayMethod(client_id: number): Promise<void> {
+    await this.prisma.paymentMethod.deleteMany({
+      where : {
+        clientId : client_id
+      }
+    });
   }
 
   //delete by id

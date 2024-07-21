@@ -56,9 +56,9 @@ export default class PaymentMethodService {
     return newPayMethod;
   }
 
-  async getAllPayMethods(): Promise<PaymentMethod[]> {
+  async getAllPayMethods(client_id: number): Promise<PaymentMethod[]> {
     try {
-      return await this.paymentMethodRepository.getAllPayMethod();
+      return await this.paymentMethodRepository.getAllPayMethod(client_id);
     } catch (error: any) {
       throw new HttpInternalServerError({ msg: `Error getting all payment methods: ${error.message}` });
     }
@@ -125,9 +125,9 @@ export default class PaymentMethodService {
     }
 
   //delete all
-  async deleteAllPayMethods(): Promise<void> {
+  async deleteAllPayMethods(client_id: number): Promise<void> {
     try{
-        await this.paymentMethodRepository.deleteAllPayMethod();
+        await this.paymentMethodRepository.deleteAllPayMethod(client_id);
     }catch(error: any){
         throw new HttpInternalServerError({msg: `Error deleting all payment methods: ${error.message}`});
     }
