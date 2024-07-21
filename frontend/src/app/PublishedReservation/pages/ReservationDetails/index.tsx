@@ -59,7 +59,7 @@ export const ReservationDetails = () => {
         };
 
         fetchReservationData();
-    }, [selectedReservation?.id, updateFlag]);
+    }, [ updateFlag]);
 
     const handleDeleteReservation = async() => {
         try{
@@ -68,7 +68,7 @@ export const ReservationDetails = () => {
                 toast.success('Reserva deletada com sucesso!');
                 setTimeout(() => {
                     navigate('/hotelier-reservations');
-                }, 3000); 
+                }, 2000); 
             }
         }catch(error){
             const err = error as { response: { data: { message: string } } };
@@ -132,7 +132,7 @@ export const ReservationDetails = () => {
                         </Box>
                         <ButtonComponent id="updateReservationButton" label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate(`/reservationUpdate`)}/>
                         <ButtonDeleteComponent id="deleteReservationButton" label="Deletar Reserva" icon = {<DeleteIcon/>} onClick={handleDeleteReservation}/>
-                        <ButtonComponent id="registerPromotionButton" label="Cadastrar Promoção" icon={<AddIcon/>} onClick={() => navigate(`/promotions?action=createSingle`)}/>
+                        <ButtonComponent id="cadastrar-promocao" label="Cadastrar Promoção" icon={<AddIcon/>} onClick={() => navigate(`/promotions?action=createSingle`)}/>
                         <ButtonComponent id="editar-promocao" label="Editar Promoção" icon={<EditIcon />} onClick={() => navigate(`/promotions?action=update`)}/>
                         <ButtonDeleteComponent id="deletar-promocao" label="Deletar Promoção" icon={<DeleteIcon />} onClick={handleDeletePromotion}/>
                         <ButtonComponent id="goBackButton" label="Voltar" icon = {<ArrowBackIcon />} onClick={handleGoBack}/>
@@ -140,7 +140,7 @@ export const ReservationDetails = () => {
                 </Flex>
                 <TeiaImg />
             </Box>
-            <ToastContainer position='top-right' theme='dark' />
+            <ToastContainer position='top-right' theme='dark' autoClose={2000}/>
     </Box>)
 }
 
@@ -180,7 +180,7 @@ const ButtonDeleteComponent = ({id, label, icon, onClick}) => {
                         <Button ref={cancelRef} onClick={onClose}>
                         Não
                         </Button>
-                        <Button  ml={3} onClick={() => {
+                        <Button id="yes-button" ml={3} onClick={() => {
                             onClick();
                             onClose(); 
                         }}>
