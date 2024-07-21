@@ -183,6 +183,7 @@ defineFeature(feature, (test) => {
                     city: local
                 }
                 prismaMock.hotelier.create.mockResolvedValue(mockHotelier);
+                console.log('cheguei no given');
             }
         );
 
@@ -196,15 +197,18 @@ defineFeature(feature, (test) => {
                     checkin,
                     checkout
                 });
+                console.log('cheguei no when');
             }
         );
 
         then(/^a busca deve ter código "(.*)"$/, async (numCode) => {
             expect(response.status).toBe(parseInt(numCode));   
+            console.log('cheguei no then');
         })
 
         and(/^o JSON da resposta deve estar vazio$/, async (city, num_people, num_rooms) => {
             expect(response.body.length).toEqual(0);
+            console.log('cheguei no and');
         });
     })
 

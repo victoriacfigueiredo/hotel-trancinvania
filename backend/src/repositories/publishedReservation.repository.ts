@@ -133,7 +133,7 @@ export default class PublishedReservationRepository {
         });
 
         if (!reservations) {
-            throw new Error('Nenhuma reserva encontrada para o perÃ­odo especificado');
+            throw new Error('Nenhuma reserva encontrada para o período especificado');
         }
 
         return reservations as PublishedReservation[];

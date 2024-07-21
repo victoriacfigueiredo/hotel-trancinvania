@@ -41,7 +41,7 @@ defineFeature(feature, (test) => {
 
     const setupDBTest = new SetupDatabaseTest();
     
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
 
     beforeEach(async () => {
         paymentMethods = [];
