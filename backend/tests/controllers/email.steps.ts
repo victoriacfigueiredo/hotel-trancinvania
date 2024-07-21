@@ -86,7 +86,7 @@ defineFeature(feature, (test) => {
     let reserves: Reserve[] = []
 
     const setupDBTest = new SetupDatabaseTest();
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
 
     beforeEach(async () => {
       await setupDBTest.resetDatabase();

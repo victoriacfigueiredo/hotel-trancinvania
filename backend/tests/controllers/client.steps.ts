@@ -40,7 +40,7 @@ defineFeature(feature, (test) => {
     let response: request.Response;
     let clients: Client[] = [];
     const setupDBTest = new SetupDatabaseTest();
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
 
     beforeEach(async () => {
         jest.clearAllMocks();

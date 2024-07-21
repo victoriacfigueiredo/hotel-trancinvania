@@ -1,6 +1,9 @@
-import prisma from '../database';
+
+import prisma from "../database";
 
 export default class ClientRepository {
+
+
     async createClient(data: any) {
         return await prisma.client.create({
             data: data,
@@ -51,9 +54,9 @@ export default class ClientRepository {
     }
 
     async updateClientPassword(id: number, hashedPassword: string) {
-        return await prisma.client.update({
-            where: { id },
-            data: { password: hashedPassword },
-        });
+      return await prisma.client.update({
+        where: { id },
+        data: { password: hashedPassword },
+      });
     }
 }

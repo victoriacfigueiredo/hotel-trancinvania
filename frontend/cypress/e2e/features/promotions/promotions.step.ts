@@ -1,49 +1,55 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 
-Given('eu estou logado como hoteleiro com o e-mail {string} e a senha {string}', (email: string, password: string) => {
+Given('eu estou logado como hoteleiro com o username {string} e a senha {string}', (username: string, password: string) => {
     cy.visit('/hotelier/login');
-    cy.get('input[name=email]').type(email);
-    cy.get('input[name=password]').type(password);
-    cy.get('button[type=submit]').click();
+    cy.get('#username').type(username);
+    cy.get('#password').type(password);
+    cy.get('#login-button').click();
 })
 
 Given('eu estou na página {string}', (page: string) => {
-    cy.visit(page);
+    cy.url().should('include', page);
 })
 
 Given('eu estou na página {string} da reserva do {string}', (page: string, hotelName: string) => {
     cy.get(`#${hotelName}`).click();
-    cy.wait(500);
+    cy.wait(100);
     cy.url().should('include', page);
 })
 
 Given('eu estou na página {string} da reserva do {string} com o valor da diária por {string}', (page: string, hotelName: string, price: string) => {
     cy.get(`#${hotelName}`).click();
-    cy.wait(500);
-    cy.get('#registerPromotion').click();
+    cy.wait(100);
+    cy.get('#cadastrar-promocao').click();
     cy.contains(price).should('be.visible');
     cy.url().should('include', page);
 })
 
-Given('O {string} tem uma promoção de {string} cadastrada com o valor promocional de {string} a diária', (hotelName: string, discount: string, new_price: string) => {
+Given('o {string} tem uma promoção de {string} cadastrada com o valor promocional de {string} a diária', (hotelName: string, discount: string, new_price: string) => {
     cy.contains(hotelName).parent().within(() => {
         cy.contains(new_price).should('be.visible');
         cy.contains(discount).should('be.visible');
     });
 })
 
-Given('O {string} não possui nenhuma promoção cadastrada', () => {
+Given('o {string} com o valor promocional de {string} a diária', (hotelName: string, new_price: string) => {
+    cy.contains(hotelName).parent().within(() => {
+        cy.contains(new_price).should('be.visible');
+    });
+})
+
+Given('o {string} não possui nenhuma promoção cadastrada', () => {
     cy.get('#promotion').should('not.exist');
 })
 
-Given('O {string} está nas reservas publicadas com o valor de {string} a diária', (hotelName: string, price: string) => {
+Given('o {string} está nas reservas publicadas com o valor de {string} a diária', (hotelName: string, price: string) => {
     cy.contains(hotelName).parent().within(() => {
         cy.contains(price).should('be.visible');
     });
 })
 
-Given('Não há nenhuma promoção cadastrada', () => {
+Given('não há nenhuma promoção cadastrada', () => {
     cy.get('#bat').should('not.exist');
 })
 
@@ -59,6 +65,20 @@ When('eu seleciono {string}', (button: string) => {
     cy.get('#' + button).click();
 })
 
+When('eu tento deletar a promoção', () => {
+    cy.get('#deletar-promocao').click();
+    cy.contains('Tem certeza?').should('be.visible');
+    cy.contains('Esta ação não pode ser desfeita e a promoção será removida permanentemente do sistema.').should('be.visible');
+    cy.get('#yes-button').click();
+})
+
+When('eu tento deletar as promoções', () => {
+    cy.get('#deletar-promocoes').click();
+    cy.contains('Tem certeza?').should('be.visible');
+    cy.contains('Esta ação não pode ser desfeita e as promoções serão removidas permanentemente do sistema.').should('be.visible');
+    cy.get('#yes-button').click();
+})
+
 Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) => {
     cy.get('.Toastify__toast-body').should('contain.text', message);
 })
@@ -68,7 +88,7 @@ Then('eu vejo um toast de erro com a mensagem {string}', (message: string) => {
 })
 
 Then('eu sou redirecionado para a página {string}', (page: string) => {
-    cy.wait(3000);
+    cy.wait(100);
     cy.url().should('include', page);
 })
 
