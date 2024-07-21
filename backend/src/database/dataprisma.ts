@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma: PrismaClient = new PrismaClient();
+export default prisma;// src/database/dataprisma.ts
 
-export default prisma;

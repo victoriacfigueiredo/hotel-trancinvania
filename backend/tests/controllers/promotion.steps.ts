@@ -32,7 +32,7 @@ defineFeature(feature, (test) => {
     let hoteliers: Hotelier[] = []
 
     const setupDBTest = new SetupDatabaseTest();
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
     
     const createPublishedReservation = async (name: string, price: number) => {
         return {
