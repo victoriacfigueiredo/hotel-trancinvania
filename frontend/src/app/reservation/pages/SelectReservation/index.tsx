@@ -13,18 +13,22 @@ import { PublishedReservationModel } from '../../../PublishedReservation/models/
 import { SaveModel } from '../../../Wishlist/models';
 import { ToastContainer, toast } from 'react-toastify'; 
 import { useClientData } from '../../../auth/hooks/useUserData';
+//import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
+//import { PublishedHotelierModel } from '../../models/publishedhotelier'
 
 const SelectReservation: React.FC = () => {
     const { data } = useClientData();
     const clientId = Number(data?.id);
     const { reservation_id } = useParams();
+    //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
-
     useEffect(() => {
         const fetchReservationData = async () => {
             if (reservation_id) {
                 try {
+                    //console.log('Fetching reservation data for ID:', reservation_id);
                     const response = await getPublishedReservationById(+reservation_id) ?? '';
+                    //console.log('Fetched reservation data:', response);
                     setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
@@ -34,6 +38,19 @@ const SelectReservation: React.FC = () => {
 
         fetchReservationData();
     }, [reservation_id]);
+
+    // if (!reservationData || !reservationData.hotelier) {
+    //     return <div>Loading...</div>;
+    // }
+    
+    // const hotelName = reservationData.hotelier.hotel;
+    // const city = reservationData.hotelier.city;
+    // const uf = reservationData.hotelier.UF;
+    // const street = reservationData.hotelier.address;
+    // const nStreet = reservationData.hotelier.n_adress;
+    // const cep = reservationData.hotelier.cep;
+    
+
 
     const navigate = useNavigate();
 
@@ -105,14 +122,21 @@ const SelectReservation: React.FC = () => {
                         <Icon as={FaPerson} color="#EAEAEA" />
                         {reservationData.people} hóspedes
                     </Text>
-
-                    <HStack mt="10px" justify="center" spacing={4}>
-                        {reservationData.wifi &&  <ServicesComponent value="Wi-Fi" icon={FaWifi} />}
-                        {reservationData.room_service &&  <ServicesComponent value="Serviço de Quarto" icon={FaConciergeBell} />}
-                        {reservationData.breakfast &&  <ServicesComponent value="Café da Manhã" icon={FaCoffee} />}
-                        {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake} />}
-                        {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar} />}
-                    </HStack>
+                    {/* <VStack align="flex-start" spacing={4}> */}
+                        <HStack mt="10px" justify="center" spacing={4}>
+                            {reservationData.wifi &&  <ServicesComponent value="Wi-Fi" icon={FaWifi} />}
+                            {reservationData.room_service &&  <ServicesComponent value="Serviço de Quarto" icon={FaConciergeBell} />}
+                            {reservationData.breakfast &&  <ServicesComponent value="Café da Manhã" icon={FaCoffee} />}
+                            {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake} />}
+                            {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar} />}
+                        </HStack>
+                        {/* <HStack align="center" mt="2">
+                            <Icon as={FaMapMarkerAlt} color="#eaeaea" />
+                            <Text color="#eaeaea">
+                                {hotelName}: {street}, {nStreet}, {city} - {uf}, {cep}
+                        </Text>
+                        </HStack> */}
+                    {/* </VStack> */}
                 </Box>
 
                 {/* Botões empilhados à direita da imagem de aranha */}
