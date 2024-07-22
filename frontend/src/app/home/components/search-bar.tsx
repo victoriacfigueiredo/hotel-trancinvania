@@ -108,6 +108,8 @@ export const SearchBar = () => {
         borderRadius="0"
         borderLeftRadius="30"
         onChange={handleDestino}
+        fontFamily="Inter"
+        data-cy="destino"
       />
       <Input
         placeholder="Check-in"
@@ -121,6 +123,8 @@ export const SearchBar = () => {
         borderRadius="0"
         // defaultValue={(new Date()).toISOString().split('T')[0].split('-').reverse().join('/')}
         onChange={handleCheckin}
+        fontFamily="Inter"
+        data-cy="checkin"
       />
       <Input
         placeholder="Check-out"
@@ -133,8 +137,10 @@ export const SearchBar = () => {
         color={"black"}
         borderRadius="0"
         onChange={handleCheckout}
+        fontFamily="Inter"
+        data-cy="checkout"
       />
-      <Popover>
+      <Popover id="detalhes" >
         <PopoverTrigger>
           <Input
           placeholder="Detalhes"
@@ -145,12 +151,14 @@ export const SearchBar = () => {
           textAlign={"center"}
           backgroundColor={"white"}
           borderRadius="0"
+          fontFamily="Inter"
+          data-cy="detalhes"
         />  
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent borderRadius="0">
           <PopoverBody backgroundColor={'#191919'} color={'white'}>
             <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h3' size='lg' mr={5}>
+              <Heading as='h3' size='md' mr={5} fontFamily="Inter" width="90px">
                 Adultos
               </Heading>
               <IconButton
@@ -158,22 +166,24 @@ export const SearchBar = () => {
                 icon={<MinusIcon />}
                 mx={2}
                 isDisabled={numAdultos == 0}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={decreaseNumAdultos}
+                data-cy="less_adultos"
               />
-              <Text mx={1} fontSize={'xl'}>{numAdultos}</Text>
+              <Text mx={1} fontSize={'lg'}>{numAdultos}</Text>
               <IconButton
                 aria-label="increase"
                 icon={<AddIcon />}
                 mx={2}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={increaseNumAdultos}
+                data-cy="increase_adultos"
               />
             </ Flex>
             <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h3' size='lg' mr={5}>
+              <Heading as='h4' size='md' mr={5} fontFamily="Inter" width="90px">
                 Crianças
               </Heading>
               <IconButton
@@ -181,22 +191,24 @@ export const SearchBar = () => {
                 icon={<MinusIcon />}
                 mx={2}
                 isDisabled={numCriancas == 0}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={decreaseNumCriancas}
+                data-cy="less_criancas"
               />
-              <Text mx={1} fontSize={'xl'}>{numCriancas}</Text>
+              <Text mx={1} fontSize={'lg'}>{numCriancas}</Text>
               <IconButton
                 aria-label="increase"
                 icon={<AddIcon />}
                 mx={2}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={increaseNumCriancas}
+                data-cy="increase_criancas"
               />
             </ Flex>
             <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h3' size='lg' mr={5}>
+              <Heading as='h3' size='md' mr={5} fontFamily="Inter" width="90px">
                 Quartos
               </Heading>
               <IconButton
@@ -204,18 +216,20 @@ export const SearchBar = () => {
                 icon={<MinusIcon />}
                 mx={2}
                 isDisabled={numRooms == 0}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={decreaseNumRooms}
+                data-cy="less_quartos"
               />
-              <Text mx={1} fontSize={'xl'}>{numRooms}</Text>
+              <Text mx={1} fontSize={'lg'}>{numRooms}</Text>
               <IconButton
                 aria-label="increase"
                 icon={<AddIcon />}
                 mx={2}
-                height="35px"
-                width="35px"
+                height="25px"
+                width="25px"
                 onClick={increaseNumRooms}
+                data-cy="increase_quartos"
               />
             </ Flex>
           </PopoverBody>
@@ -233,6 +247,7 @@ export const SearchBar = () => {
         borderRadius="0"
         borderRightRadius="30"
         _hover={{color: "white", bgColor:"red"}}
+        data-cy="pesquisar"
       />
       <ToastContainer theme="dark"/>
     </Flex>
