@@ -140,8 +140,8 @@ export const SearchResult = () => {
     return (
     <Box mt={12} p={0} minH="500px" position="relative">
         <Box position="relative" zIndex="1">
-        <Heading as='h2' size='2xl' noOfLines={1} m={3} fontFamily="trancinfont" letterSpacing={"-0.07rem"}>
-            resultados de Busca
+        <Heading as='h2' size='2xl' noOfLines={1} m={3} fontFamily="trancinfont" letterSpacing={"-0.07em"}>
+            RESULTADOS DE BUSCA
         </Heading>
         <Flex flexWrap="wrap" gap="75px" mt="30px" fontFamily="Inter">
         {reservations.length == 0 && <Box fontFamily="Inter" mx={3} fontSize="xl" id="reservenotfound">Nenhuma reserva foi encontrada</Box>}
