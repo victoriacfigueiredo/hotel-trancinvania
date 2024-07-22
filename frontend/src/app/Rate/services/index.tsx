@@ -13,6 +13,11 @@ export async function getRatesByClientId(client_id: number): Promise<RateModel[]
     return response.data;
 }
 
+export async function getAllRatesbyPublishedReservation(reservation_id: number): Promise<RateModel[]> {
+    const response = await apiService.get(`/rated-reservations/client/${reservation_id}`);
+    return response.data;
+}
+
 // Função para excluir uma avaliação
 export async function deleteRateById(client_id: number, reservation_id: number) {
     const response = await apiService.delete(`/rated-reservations/${client_id}/${reservation_id}`);

@@ -22,7 +22,7 @@ export const Rating = () => {
         client_id,
         reservation_id: Number(reservationId),
         rating,
-        comments,
+        comments, // Comentário é opcional
       });
       toast.success('Avaliação enviada com sucesso!');
       setTimeout(() => {
@@ -36,7 +36,7 @@ export const Rating = () => {
   return (
     <Box bg="#191919" minH="100vh" display="flex" flexDirection="column">
       <NavBar />
-      <BottomLeftTopRightImages></BottomLeftTopRightImages>
+      <BottomLeftTopRightImages />
       <Box display="flex" flexDirection="column" alignItems="center" p="50px">
         <Text fontFamily="Trancinfont" fontSize="35px" mb="20px" color="#eaeaea">Avaliar Reserva</Text>
         <Flex flexDirection="row" mb="20px">
@@ -62,7 +62,7 @@ export const Rating = () => {
           })}
         </Flex>
         <Textarea
-          placeholder="Deixe seu comentário"
+          placeholder="Deixe seu comentário (opcional)"
           value={comments}
           onChange={(e) => setComments(e.target.value)}
           mb="20px"

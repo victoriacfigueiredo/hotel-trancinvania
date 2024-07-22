@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { Box, Flex, IconButton, Tooltip, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { FaStar, FaTrashAlt, FaEdit } from 'react-icons/fa';
 export const Rate = () => {
   const [reservations, setReservations] = useState<ReserveModel[]>([]);
   const [publishedReservations, setPublishedReservations] = useState<{ [key: number]: PublishedReservationModel }>({});
-  const [rates, setRates] = useState<{ [key: number]: RateModel }>({}); // Armazenar avaliações
+  const [rates, setRates] = useState<{ [key: number]: RateModel }>({});
   const { data } = useClientData();
   const client_id = Number(data?.id);
   const navigate = useNavigate();
@@ -88,26 +88,23 @@ export const Rate = () => {
 
   const handleReview = (reservationId: number) => {
     if (rates[reservationId]) {
-      // Se a avaliação já existe, redirecionar para a página de edição
       navigate(`/client/profile/rate/edit/${reservationId}`);
     } else {
-      // Caso contrário, redirecionar para a página de nova avaliação
       navigate(`/client/profile/rate/rating/${reservationId}`);
     }
   };
 
   const handleDelete = async (reservationId: number) => {
     try {
-      console.log(`Excluir avaliação da reserva com ID: ${reservationId}`);
-      await deleteRateById(client_id, reservationId); // Chamada ao serviço de exclusão
+      await deleteRateById(client_id, reservationId);
       // Atualizar o estado após a exclusão
       setRates((prevRates) => {
         const { [reservationId]: _, ...rest } = prevRates;
         return rest;
       });
-      toast.success('Avaliação excluída com sucesso!'); // Mensagem de sucesso
+      toast.success('Avaliação excluída com sucesso!');
     } catch (error) {
-      toast.error('Erro ao excluir a avaliação.'); // Mensagem de erro
+      toast.error('Erro ao excluir a avaliação.');
     }
   };
 
@@ -115,7 +112,7 @@ export const Rate = () => {
     <Box bg="#191919" minH="100vh" display="flex" flexDirection="column">
       <NavBar />
       <Box p="50px" position="relative">
-        <Box fontFamily="Trancinfont" fontSize="35px" mt="-25px" textAlign="center" color="#eaeaea">Minhas Avaliações</Box>
+        <Box fontFamily="Trancinfont" fontSize="6xl" mt="-25px" textAlign="center" color="#eaeaea">Minhas Avaliações</Box>
         <Flex flexWrap="wrap" gap="75px" mt="30px">
           {completedReservations.map((reservation) => {
             const publishedReservation = publishedReservations[reservation.publishedReservationId];
@@ -129,15 +126,7 @@ export const Rate = () => {
             return (
               <Box key={reservation.id} position="relative" w="250px" _hover={{ transform: 'translateY(-5px)' }}>
                 <Box position="relative" w="270px" bg="transparent" borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer">
-                  <Box
-                    w="100%"
-                    h="72%"
-                    backgroundSize="cover"
-                    backgroundPosition="center"
-                    borderBottomLeftRadius="10px"
-                    borderBottomRightRadius="10px"
-                    style={{ backgroundImage: `url(http://localhost:5001${publishedReservation.imageUrl})` }}
-                  />
+                  <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px" style={{ backgroundImage: `url(http://localhost:5001${publishedReservation.imageUrl})` }}></Box>
                   <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{publishedReservation.name}</Box>
                   <Box fontSize="14px" color={statusColor} textAlign="start">{status}</Box>
                   <Box position="absolute" bottom="10px" right="10px" display="flex" gap="10px">
@@ -165,8 +154,8 @@ export const Rate = () => {
                     )}
                   </Box>
                   {hasRate && (
-                    <Box mt="20px" p="10px" borderTop="1px solid #eaeaea">
-                      <Flex mb="5px">
+                    <Box mt="10px" p="10px" borderTop="1px solid #eaeaea">
+                      <Flex>
                         {[...Array(5)].map((_, index) => (
                           <FaStar
                             key={index}
@@ -175,7 +164,7 @@ export const Rate = () => {
                           />
                         ))}
                       </Flex>
-                      <Text color="#eaeaea" fontSize="14px">{rate.comments || 'Sem comentário'}</Text>
+                      <Text color="#eaeaea" fontSize="14px" mt="5px">{rate.comments || 'Sem comentário'}</Text>
                     </Box>
                   )}
                 </Box>
