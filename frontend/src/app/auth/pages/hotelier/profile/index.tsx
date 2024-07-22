@@ -79,7 +79,7 @@ const EditProfileHotelier: React.FC = () => {
   useEffect(() => {
     if (localStorage.getItem("navigateToProfile")) {
       localStorage.removeItem("navigateToProfile"); // Remove o sinal
-      navigate("/hotelier/profile"); // Realiza a navegação
+      navigate("/publishedReservation"); // Realiza a navegação
     }
   }, [navigate]);
 
