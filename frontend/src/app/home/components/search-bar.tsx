@@ -1,49 +1,61 @@
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import { Flex, Heading, IconButton, Input, Popover, PopoverBody, PopoverContent, PopoverTrigger, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  IconButton,
+  Input,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+  Box,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import { ISearch } from "../../search/models";
+import { useNavigate } from "react-router-dom";
 
 export const SearchBar = () => {
-
-  const [destino, setDestino] = useState('');
-  const [checkin, setCheckin] = useState('');
-  const [checkout, setCheckout] = useState('');
+  const [destino, setDestino] = useState("");
+  const [checkin, setCheckin] = useState("");
+  const [checkout, setCheckout] = useState("");
   const [numAdultos, setNumAdultos] = useState(0);
   const [numCriancas, setNumCriancas] = useState(0);
   const [numRooms, setNumRooms] = useState(0);
 
+  const navigate = useNavigate();
+
   const handleDestino = (event) => {
     setDestino(event.target.value);
-  }
+  };
 
   const handleCheckin = (event) => {
     setCheckin(event.target.value);
-  }
+  };
 
   const handleCheckout = (event) => {
     setCheckout(event.target.value);
-  }
+  };
 
   const searchCorrect = (search: ISearch) => {
-    if(search.city.length == 0){
-      toast.warning('Preencha todos os campos');
+    if(search.city.length === 0){
+      toast.warning("Preencha todos os campos");
       return false;
     }
 
     if(new Date(search.checkin) > new Date(search.checkout)){
-      toast.warning('Data de checkin posterior a data de checkout');
+      toast.warning("Data de checkin posterior a data de checkout");
       return false;
     }
 
     if(search.num_adults == 0 || search.num_rooms == 0){
-      toast.warning('Preencha todos os campos');
+      toast.warning("Preencha todos os campos");
       return false;
     }
 
     return true;
-  }
+  };
 
 
   const handleSearch = async () => {
@@ -58,7 +70,7 @@ export const SearchBar = () => {
     }
 
     if(searchCorrect(search)){
-      window.location.href = `http://localhost:3000/search?city=${destino}&checkin=${checkin}&checkout=${checkout}&num_adults=${numAdultos}&num_children=${numCriancas}&num_rooms=${numRooms}`
+      navigate(`/search?city=${destino}&checkin=${checkin}&checkout=${checkout}&num_adults=${numAdultos}&num_children=${numCriancas}&num_rooms=${numRooms}`)
     }
   }
 
@@ -94,7 +106,13 @@ export const SearchBar = () => {
   }
 
   return (
-    <Flex justify="center" align="center" mb={8} fontFamily="Inter" width="800px">
+    <Flex
+      justify="center"
+      align="center"
+      mb={8}
+      fontFamily="Inter"
+      width="800px"
+    >
       <Input
         placeholder="Destino"
         _placeholder={{ opacity: 1, color: 'black.500' }}
@@ -121,7 +139,6 @@ export const SearchBar = () => {
         backgroundColor={"white"}
         color={"black"}
         borderRadius="0"
-        // defaultValue={(new Date()).toISOString().split('T')[0].split('-').reverse().join('/')}
         onChange={handleCheckin}
         fontFamily="Inter"
         data-cy="checkin"
@@ -140,7 +157,7 @@ export const SearchBar = () => {
         fontFamily="Inter"
         data-cy="checkout"
       />
-      <Popover id="detalhes" >
+      <Popover>
         <PopoverTrigger>
           <Input
           placeholder="Detalhes"
@@ -155,83 +172,93 @@ export const SearchBar = () => {
           data-cy="detalhes"
         />  
         </PopoverTrigger>
-        <PopoverContent borderRadius="0">
-          <PopoverBody backgroundColor={'#191919'} color={'white'}>
-            <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h3' size='md' mr={5} fontFamily="Inter" width="90px">
-                Adultos
-              </Heading>
-              <IconButton
-                aria-label="less"
-                icon={<MinusIcon />}
-                mx={2}
-                isDisabled={numAdultos == 0}
-                height="25px"
-                width="25px"
-                onClick={decreaseNumAdultos}
-                data-cy="less_adultos"
-              />
-              <Text mx={1} fontSize={'lg'}>{numAdultos}</Text>
-              <IconButton
-                aria-label="increase"
-                icon={<AddIcon />}
-                mx={2}
-                height="25px"
-                width="25px"
-                onClick={increaseNumAdultos}
-                data-cy="increase_adultos"
-              />
-            </ Flex>
-            <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h4' size='md' mr={5} fontFamily="Inter" width="90px">
-                Crianças
-              </Heading>
-              <IconButton
-                aria-label="less"
-                icon={<MinusIcon />}
-                mx={2}
-                isDisabled={numCriancas == 0}
-                height="25px"
-                width="25px"
-                onClick={decreaseNumCriancas}
-                data-cy="less_criancas"
-              />
-              <Text mx={1} fontSize={'lg'}>{numCriancas}</Text>
-              <IconButton
-                aria-label="increase"
-                icon={<AddIcon />}
-                mx={2}
-                height="25px"
-                width="25px"
-                onClick={increaseNumCriancas}
-                data-cy="increase_criancas"
-              />
-            </ Flex>
-            <Flex justify="center" align="center" mt={4} mb={4}>
-              <Heading as='h3' size='md' mr={5} fontFamily="Inter" width="90px">
-                Quartos
-              </Heading>
-              <IconButton
-                aria-label="less"
-                icon={<MinusIcon />}
-                mx={2}
-                isDisabled={numRooms == 0}
-                height="25px"
-                width="25px"
-                onClick={decreaseNumRooms}
-                data-cy="less_quartos"
-              />
-              <Text mx={1} fontSize={'lg'}>{numRooms}</Text>
-              <IconButton
-                aria-label="increase"
-                icon={<AddIcon />}
-                mx={2}
-                height="25px"
-                width="25px"
-                onClick={increaseNumRooms}
-                data-cy="increase_quartos"
-              />
-            </ Flex>
+        <PopoverContent width="260px">
+          <PopoverBody backgroundColor={'white'} color={'black'}>
+            <Box p={4}>
+              <Flex justify="space-between" align="center" mb={4}>
+                <Box>
+                  <Text fontWeight="bold">Adultos</Text>
+                </Box>
+                <Flex align="center">
+                  <IconButton
+                    aria-label="less"
+                    icon={<MinusIcon />}
+                    mx={2}
+                    isDisabled={numAdultos == 0}
+                    height="35px"
+                    width="35px"
+                    onClick={decreaseNumAdultos}
+                    data-cy="less_adultos"
+                  />
+                  <Text mx={1} fontSize={'xl'}>
+                    {numAdultos}
+                  </Text>
+                  <IconButton
+                    aria-label="increase"
+                    icon={<AddIcon />}
+                    mx={2}
+                    height="35px"
+                    width="35px"
+                    onClick={increaseNumAdultos}
+                    data-cy="increase_adultos"
+                  />
+                </ Flex>
+              </Flex>
+              <Flex justify="space-between" align="center" mt={4} mb={4}>
+                <Box>
+                  <Text fontWeight="bold">Crianças</Text>
+                </Box>
+                <Flex align="center">
+                  <IconButton
+                    aria-label="less"
+                    icon={<MinusIcon />}
+                    mx={2}
+                    isDisabled={numCriancas == 0}
+                    height="35px"
+                    width="35px"
+                    onClick={decreaseNumCriancas}
+                    data-cy="less_criancas"
+                  />
+                  <Text mx={1} fontSize={'xl'}>{numCriancas}</Text>
+                  <IconButton
+                    aria-label="increase"
+                    icon={<AddIcon />}
+                    mx={2}
+                    height="35px"
+                    width="35px"
+                    onClick={increaseNumCriancas}
+                    data-cy="increase_criancas"
+                  />
+                </Flex>
+              </Flex>
+              <Flex justify="space-between" align="center" mb={4}>
+                <Box>
+                  <Text fontWeight="bold">Quartos</Text>
+                </Box>
+                <Flex align="center">
+                  <IconButton
+                    aria-label="less"
+                    icon={<MinusIcon />}
+                    mx={2}
+                    isDisabled={numRooms == 0}
+                    height="35px"
+                    width="35px"
+                    onClick={decreaseNumRooms}
+                    data-cy="less_quartos"
+                  />
+                  <Text mx={1} fontSize={'xl'}>{numRooms}</Text>
+                  <IconButton
+                    aria-label="increase"
+                    icon={<AddIcon />}
+                    mx={2}
+                    height="35px"
+                    width="35px"
+                    onClick={increaseNumRooms}
+                    data-cy="increase_quartos"
+                  />
+                </Flex>
+              </ Flex>
+            </Box>
           </PopoverBody>
         </PopoverContent>
       </Popover>
