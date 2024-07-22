@@ -52,6 +52,14 @@ export default class PublishedReservationService {
         }
     }
 
+    // public async getPublishedReservationWithHotelierById(
+    //     id: number,
+    // ): Promise<PublishedReservation> {
+    //     const Reservation =
+    //         await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
+    //     return Reservation;
+    // }
+
     public async insertImageUrl(reservation_id: number, imageUrl: string): Promise<void>{
         try{
             await this.publishedReservationRepository.insertImageUrl(reservation_id, imageUrl);

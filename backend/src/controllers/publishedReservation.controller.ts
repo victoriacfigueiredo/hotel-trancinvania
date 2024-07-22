@@ -109,16 +109,24 @@ export default class PublishedReservationController{
         router.post(this.prefixReservation, validateData(publishedReservationDto), (req, res) => this.insertPublishedReservation(req, res));
         router.patch(this.prefix + '/:id', (req, res) => this.updatePublishedReservation(req, res));
         router.delete(this.prefix + '/:id', (req, res) => this.deletePublishedReservation(req, res));
-
+        //router.get(this.prefix + '/hotelier/:id', (req, res) => this.getPublishedReservationWithHotelierById(req, res));
         // pega todas as reservas com filtros especificos (busca de reservas)
         router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); 
     }
+
+    
+    // private getPublishedReservationWithHotelierById(req: Request, res: Response) {
+    //     const { id } = req.params;
+    //     const reservation =
+    //         this.publishedReservationService.getPublishedReservationWithHotelierById(+id);
+    //     res.status(200).json(reservation);
+    // }
 
     private async uploadImage(req: Request, res: Response){
         const { reservation_id } = req.params;
         const file = req.file;
         if (!file) {
-            throw new Error('Arquivo não encontrado');
+            throw new Error('Arquivo nï¿½o encontrado');
         }
         const imageUrl = `/images/${file.filename}`;
         await this.publishedReservationService.insertImageUrl(+reservation_id, imageUrl);
@@ -155,7 +163,7 @@ export default class PublishedReservationController{
 
         const reservation = await this.publishedReservationService.getPublishedReservationById(+id);
         if (!reservation) {
-            return res.status(404).json({ error: 'Reserva não encontrada' });
+            return res.status(404).json({ error: 'Reserva nï¿½o encontrada' });
         }
 
         if (reservation.imageUrl) {
@@ -176,7 +184,7 @@ export default class PublishedReservationController{
             });
 
             if(!hotelier){
-                throw new Error("Hoteleiro não encontrado");
+                throw new Error("Hoteleiro nï¿½o encontrado");
             }
 
             if(hotelier.city == city){
