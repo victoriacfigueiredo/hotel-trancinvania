@@ -3,7 +3,7 @@ import prisma from "../database";
 
 export default class RateRepository{
 
-    async rateReservation(reservation_id: number, client_id:number, params: Partial<RateReservation>): Promise<void>{
+    async rateReservation(client_id: number, reservation_id :number, params: Partial<RateReservation>): Promise<void>{
         try {
             const reservation = await prisma.reserve.findUnique({
                 where:{
@@ -23,8 +23,8 @@ export default class RateRepository{
             // Criação de RateReservation com dados combinados corretamente
             await prisma.rateReservation.create({
                 data: {
-                    reservation_id,
                     client_id,
+                    reservation_id,
                     rating: params.rating,
                     comments: params.comments
                 }
@@ -101,8 +101,9 @@ export default class RateRepository{
             const rate = await prisma.rateReservation.update({
                 where: {
                     client_id_reservation_id: {
-                        reservation_id: reservation_id,
-                        client_id: client_id
+                        client_id: client_id,
+                        reservation_id: reservation_id
+                    
                     }
                 },
                 data: params

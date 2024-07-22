@@ -41,7 +41,7 @@ defineFeature(feature, (test) => {
     let response: request.Response;
     let hoteliers: Hotelier[] = [];
     const setupDBTest = new SetupDatabaseTest();
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
 
     beforeEach(async () => {
         jest.clearAllMocks();

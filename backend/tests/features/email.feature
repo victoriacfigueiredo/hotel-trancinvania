@@ -20,7 +20,7 @@ Scenario: Edição da reserva
 Scenario: Cancelamento da reserva  
     Given existe um usuário "Cliente" logado com o e-mail "mleticiagaspar17@gmail.com" e a senha "let123"
     And o quarto de id "1" está na listagem das reservas feitas por ele
-    When uma requisição DELETE é enviada para "/client/1/publishedReservation/1/reserve/1"
+    When uma requisição DELETE é enviada para "/reserve/1"
     Then o status da resposta deve ser "200"
     And é retornada a mensagem "Reserva cancelada com sucesso."
 

@@ -17,6 +17,7 @@ import { NavBar } from '../../../../shared/components/nav-bar';
 import { RiImageAddFill } from 'react-icons/ri';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
 import { createPublishedReservation, uploadImage } from '../../services';
+import { useHotelierData } from '../../../auth/hooks/useUserData';
 
 export const PublishedReservation = () => {
     const [name, setName] = useState('');
@@ -30,7 +31,9 @@ export const PublishedReservation = () => {
     const [breakfast, setBreakfast] = useState(false);
     const [parking, setParking] = useState(false);
     const [roomService, setRoomService] = useState(false);
+    const { data } = useHotelierData();
 
+    
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         const imagePreview = file ? URL.createObjectURL(file) : ''
@@ -49,20 +52,25 @@ export const PublishedReservation = () => {
 
     const navigate = useNavigate();
 
+    const handleGoBack = () => {
+        navigate(-1); // Navega para a página anterior
+    };
+
     const handlePublicReservation = async() => {
+        const hotelier = data?.id;
         if(!image){
             toast.warning('Selecione uma imagem!');
         }else if(name === '' || rooms === '' || people === '' || price === ''){
             toast.warning('Preencha todos os campos!');
         }else{
             try{
-                const data = await createPublishedReservation(1, name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
+                const data = await createPublishedReservation(Number(hotelier), name, parseInt(rooms, 10), parseInt(people, 10), wifi, breakfast, airConditioner, parking, roomService, parseFloat(price));
                 const formData = new FormData();
                 formData.append('image', image);
                 await uploadImage(+data.id, formData);
                 toast.success('Reserva publicada com sucesso!');
                 setTimeout(() => {
-                    navigate('/publishedReservationList');
+                    navigate('/hotelier-reservations');
                 }, 3000); 
             }catch(error){
                 const err = error as { response: { data: { message: string } } };
@@ -96,15 +104,15 @@ export const PublishedReservation = () => {
                             </Flex>
                         </Box>
                         <Box>
-                            <LabelComponent value="Nome" type="text" input={name} onChange={handleDataChange(setName)}/>
-                            <LabelComponent value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)}/>
-                            <LabelComponent value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)}/>
-                            <LabelComponent value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)}/>
+                            <LabelComponent dataCy="name" id="name" value="Nome" type="text" input={name} onChange={handleDataChange(setName)} placeholder={""}/>
+                            <LabelComponent dataCy="rooms" id="rooms" value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)} placeholder={""}/>
+                            <LabelComponent dataCy="people" id="people" value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)} placeholder={""}/>
+                            <LabelComponent dataCy="price" id="price" value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)} placeholder={"R$"}/>
 
                         </Box>
                     </Flex>
                     <Flex justify="space-between" mt="15px">
-                        <Button leftIcon={<ArrowBackIcon />} onClick={() => navigate('/publishedReservationList')} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="0" mr="10px" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
+                        <Button leftIcon={<ArrowBackIcon />} onClick={handleGoBack} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="0" mr="10px" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
                             Voltar
                         </Button>
                         <Button rightIcon={<CheckIcon />} onClick={handlePublicReservation} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="10px" mr="0" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
@@ -125,11 +133,11 @@ export const CheckboxComponent = ({ value, checked, onChange }) => {
     );
 }
 
-export const LabelComponent = ({ value, type, input, onChange }) => {
+export const LabelComponent = ({ id, value, type, input, onChange, placeholder, dataCy }) => {
     return (
         <FormControl mb="15px">
-            <FormLabel color="white" mb="8px">{value}</FormLabel>
-            <Input isRequired type={type} min={0} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" />
+            <FormLabel htmlFor={id} color="white" mb="8px">{value}</FormLabel>
+            <Input isRequired data-cy={dataCy} id={ id } type={type} min={0} max={100} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
         </FormControl>
     );
 };

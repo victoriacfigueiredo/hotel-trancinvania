@@ -12,22 +12,26 @@ import {
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
 import aranhaImg from './aranha.png';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';;
+import { useLocation, useNavigate } from 'react-router-dom';;
 import { PromotionType } from '../models/promotion';
 import { LabelComponent } from '../../PublishedReservation/pages/Register';
 import { NavBar } from '../../../shared/components/nav-bar';
 import { BottomLeftTopRightImages } from '../../../shared/components/spider-images';
 import { createPromotion, createPromotionAll, updatePromotion } from '../services';
 import { getPublishedReservationById } from '../../PublishedReservation/services';
-
+import { PublishedReservationModel } from '../../PublishedReservation/models/publishedReservation';
+import { useReservationContext } from '../../PublishedReservation/context';
+import { useHotelierData } from '../../auth/hooks/useUserData';
 
 export const Promotion = () => {
-    const { reservation_id } = useParams();
-    const [reservationData, setReservationData] = useState<any>([]);
+    //const { reservation_id } = useParams();
+    const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
+    const { selectedReservation } = useReservationContext();
     const [promoType, setPromoType] = useState('');
     const [discount, setDiscount] = useState('');
     const [numRooms, setNumRooms] = useState('');
     const [actionType, setActionType] = useState('');
+    const { data } = useHotelierData();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -38,9 +42,9 @@ export const Promotion = () => {
         setActionType(action);
 
         const fetchReservationData = async () => {
-            if(reservation_id){
+            if(selectedReservation?.id){
                 try {
-                    const response = await getPublishedReservationById(+reservation_id);
+                    const response = await getPublishedReservationById(selectedReservation.id);
                     setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);
@@ -48,7 +52,7 @@ export const Promotion = () => {
             }
         };
         fetchReservationData();
-    },[location, reservation_id]);
+    },[]);
 
     const handlePromoTypeChange = (event) => {
         setPromoType(event.target.value);
@@ -73,31 +77,27 @@ export const Promotion = () => {
             toast.warning('O desconto deve estar entre 5% e 60%');
         }else{
             try{
-                if(reservation_id){
-                    if (actionType === 'createSingle') {
-                        if(promoType === 'ilimitada'){
-                            await createPromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA });
-                        }else{
-                            await createPromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)} );
-                        }
-                        toast.success('Promoção cadastrada com sucesso!');
-                    }else if (actionType === 'update') {
-                        if(promoType === 'ilimitada'){
-                            await updatePromotion(+reservation_id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA});
-                        }else{
-                            await updatePromotion(+reservation_id, {discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)});
-                        }
-                        toast.success('Promoção atualizada com sucesso!');
+                if (actionType === 'createSingle') {
+                    if(promoType === 'ilimitada'){
+                        await createPromotion(selectedReservation!.id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA });
+                    }else{
+                        await createPromotion(selectedReservation!.id, { discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)} );
                     }
-                }else{
-                    if (actionType === 'createAll') {
-                        await createPromotionAll(1, {discount: parseInt(discount, 10), type: PromotionType.ILIMITADA} );
-                        toast.success('Promoção cadastrada com sucesso!');
+                    toast.success('Promoção cadastrada com sucesso!');
+                }else if (actionType === 'update') {
+                    if(promoType === 'ilimitada'){
+                        await updatePromotion(selectedReservation!.id, { discount: parseInt(discount, 10), type: PromotionType.ILIMITADA});
+                    }else{
+                        await updatePromotion(selectedReservation!.id, {discount: parseInt(discount, 10), type: PromotionType.LIMITE_QUARTO, num_rooms: parseInt(numRooms, 10)});
                     }
+                    toast.success('Promoção atualizada com sucesso!');
+                }else if (actionType === 'createAll') {
+                    await createPromotionAll(Number(data?.id), {discount: parseInt(discount, 10), type: PromotionType.ILIMITADA} );
+                    toast.success('Promoção cadastrada com sucesso!');
                 }
                 setTimeout(() => {
-                    navigate('/publishedReservationList');
-                }, 3000); 
+                    navigate('/hotelier-reservations');
+                }, 2000); 
             }catch(error){
                 const err = error as { response: { data: { message: string } } };
                 toast.error(`${err.response.data.message}`);
@@ -105,13 +105,9 @@ export const Promotion = () => {
         }
     }
 
-    const handleComeBack = () => {
-        if(actionType === 'createAll'){
-            navigate('/publishedReservationList');
-        }else{
-            navigate(`/publishedReservationDetails/${reservation_id}`);
-        }
-    }
+    const handleGoBack = () => {
+        navigate(-1); // Navega para a página anterior
+    };
     
     const handlePriceChange = () => {
         const new_price = +reservationData.price * ((1 - (+discount)/100));
@@ -130,20 +126,20 @@ export const Promotion = () => {
                         Dados da Promoção
                     </Text>
                         <Flex flexDirection="column" mt="20px">
-                            <LabelComponent value="Desconto" type="number" input={discount} onChange={handleDiscountChange} />
+                            <LabelComponent dataCy="desconto" id="desconto" value="Desconto" type="number" input={discount} onChange={handleDiscountChange} placeholder={"%"}/>
                             
-                            {reservation_id && (
+                            {(actionType === "createSingle" || actionType === "update") && (
                                 <Box>
                                     <FormControl mb="15px">
-                                    <FormLabel htmlFor="promoType" color="white" mb="8px">Promoção</FormLabel>
-                                        <Select placeholder="" isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
+                                    <FormLabel htmlFor="type" color="white" mb="8px">Promoção</FormLabel>
+                                        <Select data-cy="type" id="type" placeholder="" isRequired onChange={handlePromoTypeChange} bg="#6A0572" color="white" borderRadius="4px" border="1px solid #eaeaea">
                                             <option value='nothig' style={{ backgroundColor: '#6A0572' }}></option>
                                             <option value='ilimitada' style={{ backgroundColor: '#6A0572' }}>Ilimitada</option>
                                             <option value='limiteQuarto' style={{ backgroundColor: '#6A0572' }}>Limite de Quarto</option>
                                         </Select>
                                     </FormControl>
                                     {promoType === 'limiteQuarto' && (
-                                        <LabelComponent value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} />
+                                        <LabelComponent dataCy="quantidade-de-quartos" id="quantidade-de-quartos" value="Quantidade de Quartos" type="number" input={numRooms} onChange={handleNumRoomsChange} placeholder={""}/>
                                     )}
                                     <Box mb="25px">
                                         <FormLabel htmlFor="valor" color="white" mb="8px">Valor</FormLabel>
@@ -156,17 +152,17 @@ export const Promotion = () => {
                                 </Box>
                             )}
                             <Flex justify="space-between" mt="10px">
-                                <Button leftIcon={<ArrowBackIcon />} onClick={handleComeBack} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="0" mr="10px" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
+                                <Button leftIcon={<ArrowBackIcon />} onClick={handleGoBack} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px" flex="1" ml="0" mr="10px" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
                                     Voltar
                                 </Button>
-                                <Button rightIcon={<CheckIcon />} onClick={handleConfirmRegister} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px"  flex="1" ml="10px" mr="0" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
+                                <Button data-cy="confirmar" id="confirmar" rightIcon={<CheckIcon />} onClick={handleConfirmRegister} border="1px solid white" borderRadius="4px" color="white" bg="transparent" maxW="160px" px="10px" py="10px" fontSize="16px"  flex="1" ml="10px" mr="0" _hover={{ bg: "white", color: "#191919" }} fontWeight="none">
                                     Confirmar
                                 </Button>
                             </Flex>
                         </Flex>
                     </Box>
             </Box>
-                <ToastContainer position="top-right" theme='dark' autoClose={3000}/>
+                <ToastContainer position="top-right" theme='dark' autoClose={2000}/>
         </Box>);
     }
 

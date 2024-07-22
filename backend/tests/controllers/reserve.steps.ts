@@ -77,7 +77,7 @@ defineFeature(feature, (test) => {
     let payments: PaymentMethod[] = [];
     let publishedReservations: PublishedReservation[] = [];
     const setupDBTest = new SetupDatabaseTest();
-    setupDBTest.resetDatabase();
+    //setupDBTest.resetDatabase();
 
     const createReservation = async (num_rooms: number, checkin: string, checkout: string, num_adults: number, num_children: number, paymentMethodName: string) => {
         return {

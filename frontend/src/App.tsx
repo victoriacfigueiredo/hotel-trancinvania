@@ -1,15 +1,17 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateReservation from "./app/reservation/pages/CreateReservation";
-import PayReservation from "./app/reservation/pages/PayReservation";
 import MyReservations from "./app/reservation/pages/MyReservations";
 import SelectReservation from "./app/reservation/pages/SelectReservation";
 import EditReservation from "./app/reservation/pages/EditReservation";
-import EditPay from "./app/reservation/pages/EditPay";
+import SeeReservation from "./app/reservation/pages/SeeReservation";
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
 import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 import { HomePage } from "./app/home/pages/homepage";
+import { Profile } from "./app/Profile";
+import { Rate } from "./app/Rate/pages/myRates";
+import { Whishlist } from "./app/Wishlist/pages/myWhishlist";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
 import RecoverPasswordHotelier from "./app/auth/pages/hotelier/recover";
@@ -52,10 +54,34 @@ const router = createBrowserRouter([
     Component: RegisterClient,
   },
   {
+    path: "/client/profile",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Profile />
+      </AuthWrapper>
+    ),
+  },
+  {
     path: "/client/profile/edit",
     element: (
       <AuthWrapper allowedUserTypes={["client"]}>
         <EditProfileClient />
+      </AuthWrapper>
+    ),
+  },
+  {
+    path: "/client/profile/rate",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Rate />
+      </AuthWrapper>
+    ),
+  },
+  {
+    path: "/client/profile/whishlist",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Whishlist />
       </AuthWrapper>
     ),
   },
@@ -84,56 +110,84 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/create-reservation",
-    Component: CreateReservation,
-  },
-  {
-    path: "/pay-reservation",
-    Component: PayReservation,
+    path: "/create-reservation/:reservation_id",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <CreateReservation />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/my-reservations",
-    Component: MyReservations,
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <MyReservations />
+      </AuthWrapper>
+    ),
   },
   {
-    path: "/select-reservation",
+    path: "/select-reservation/:reservation_id",
     Component: SelectReservation,
   },
   {
-    path: "/edit-reservation",
-    Component: EditReservation,
+    path: "/edit-reservation/:reserve_id",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <EditReservation />
+      </AuthWrapper>
+    ),
   },
   {
-    path: "/edit-pay",
-    Component: EditPay,
+    path: "/see-reservation/:reserve_id",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <SeeReservation />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/search",
     Component: SearchPage,
   },
   {
-    path: "/promotions/:reservation_id",
-    Component: Promotion,
-  },
-  {
     path: "/promotions",
-    Component: Promotion,
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <Promotion />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/publishedReservation",
-    Component: PublishedReservation,
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <PublishedReservation />
+      </AuthWrapper>
+    ),
   },
   {
-    path: "/publishedReservationList",
-    Component: AllPublishedReservation,
+    path: "/hotelier-reservations",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <AllPublishedReservation />
+      </AuthWrapper>
+    ),
   },
   {
-    path: "/publishedReservationDetails/:reservation_id",
-    Component: ReservationDetails,
+    path: "/reservationDetails",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <ReservationDetails />
+      </AuthWrapper>
+    ),
   },
   {
-    path: "/publishedReservationUpdate/:reservation_id",
-    Component: PublishedReservationUpdate,
+    path: "/reservationUpdate",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <PublishedReservationUpdate />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/reservations",
