@@ -50,7 +50,7 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
 
     Scenario: fazer uma busca de reservas com login, sem preencher todos os campos
         Given eu estou na página inicial
-        And eu estou logado como hoteleiro com username "VICCESAR" e senha "VIC1234"
+        And eu estou logado como hoteleiro com username "viccesar" e senha "vic1234"
         When eu preencho o campo "checkin" com "2024-07-23"
         And eu preencho o campo "checkout" com "2024-07-28"
         And eu clico no campo "detalhes"
@@ -62,7 +62,7 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
 
     Scenario: fazer uma busca de reservas com login, sem encontrar reservas
         Given eu estou na página inicial 
-        And eu estou logado como hoteleiro com username "VICCESAR" e senha "VIC1234"
+        And eu estou logado como hoteleiro com username "viccesar" e senha "vic1234"
         When eu preencho o campo "destino" com "Recife"
         And eu preencho o campo "checkin" com "2024-07-23"
         And eu preencho o campo "checkout" com "2024-07-28"
