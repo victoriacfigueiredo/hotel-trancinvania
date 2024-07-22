@@ -50,7 +50,7 @@ import {
 import Select, { SingleValue} from 'react-select';
 import { useClientData } from "../../../auth/hooks/useUserData"
 import { createReservation } from '../../services';
-
+import { getAllPayMethod } from '../../../payment/services'
 
 
 interface OptionType {
@@ -106,6 +106,7 @@ const CreateReservation: React.FC = () => {
   const { activeStep, setActiveStep } = useSteps({ index: 0 });
   const [selectedPayment, setSelectedPayment] = useState<SingleValue<OptionType>>(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [paymentOptions, setPaymentOptions] = useState<OptionType[]>([]);
   const { data } = useClientData();
 
   const navigate = useNavigate();
@@ -186,12 +187,12 @@ useEffect(() => {
   };
 
 
-  const options: OptionType[] = [
-    { value: 'nothing', label: '' },
-    { value: '1', label: '1' },
-    { value: '2', label: '2' },
-    { value: '3', label: '3' }
-  ];
+  // const options: OptionType[] = [
+  //   { value: 'nothing', label: '' },
+  //   { value: '1', label: '1' },
+  //   { value: '2', label: '2' },
+  //   { value: '3', label: '3' }
+  // ];
 
 
   const customStyles = {
@@ -221,6 +222,27 @@ useEffect(() => {
       color: '#191919'
     })
   };  
+
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const payMethods = await getAllPayMethod(Number(data?.id));
+        const options = payMethods.map(method => {
+          const censoredNumCard = `**** **** **** ${method.numCard.slice(-4)}`;
+          return {
+            value: method.numCard,
+            label: censoredNumCard
+          };
+        });
+        setPaymentOptions(options);
+      } catch (error) {
+        //const err = error as { response: { data: { message: string } } };
+        toast.warning(`Cadastre um método de pagamento!`);
+      }
+    };
+
+    fetchPaymentMethods();
+  }, []);
  
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
@@ -437,7 +459,7 @@ useEffect(() => {
                       <FormLabel color="#EAEAEA">Método de Pagamento</FormLabel>
                       <Select
                         styles={customStyles}
-                        options={options}
+                        options={paymentOptions}
                         placeholder=""
                         onChange={(option) => setSelectedPayment(option)}
                       />

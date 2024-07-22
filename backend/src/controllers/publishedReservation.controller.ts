@@ -109,10 +109,18 @@ export default class PublishedReservationController{
         router.post(this.prefixReservation, validateData(publishedReservationDto), (req, res) => this.insertPublishedReservation(req, res));
         router.patch(this.prefix + '/:id', (req, res) => this.updatePublishedReservation(req, res));
         router.delete(this.prefix + '/:id', (req, res) => this.deletePublishedReservation(req, res));
-
+        //router.get(this.prefix + '/hotelier/:id', (req, res) => this.getPublishedReservationWithHotelierById(req, res));
         // pega todas as reservas com filtros especificos (busca de reservas)
         router.post(this.prefix, validateData(publishedReservationGetDto), (req, res) => this.getPublishedReservationsByFilters(req, res)); 
     }
+
+    
+    // private getPublishedReservationWithHotelierById(req: Request, res: Response) {
+    //     const { id } = req.params;
+    //     const reservation =
+    //         this.publishedReservationService.getPublishedReservationWithHotelierById(+id);
+    //     res.status(200).json(reservation);
+    // }
 
     private async uploadImage(req: Request, res: Response){
         const { reservation_id } = req.params;
