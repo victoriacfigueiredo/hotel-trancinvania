@@ -104,10 +104,10 @@ export const PublishedReservation = () => {
                             </Flex>
                         </Box>
                         <Box>
-                            <LabelComponent id="name" value="Nome" type="text" input={name} onChange={handleDataChange(setName)} placeholder={""}/>
-                            <LabelComponent id="rooms" value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)} placeholder={""}/>
-                            <LabelComponent id="people" value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)} placeholder={""}/>
-                            <LabelComponent id="price" value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)} placeholder={"R$"}/>
+                            <LabelComponent dataCy="name" id="name" value="Nome" type="text" input={name} onChange={handleDataChange(setName)} placeholder={""}/>
+                            <LabelComponent dataCy="rooms" id="rooms" value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)} placeholder={""}/>
+                            <LabelComponent dataCy="people" id="people" value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)} placeholder={""}/>
+                            <LabelComponent dataCy="price" id="price" value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)} placeholder={"R$"}/>
 
                         </Box>
                     </Flex>
@@ -133,11 +133,11 @@ export const CheckboxComponent = ({ value, checked, onChange }) => {
     );
 }
 
-export const LabelComponent = ({ id, value, type, input, onChange, placeholder }) => {
+export const LabelComponent = ({ id, value, type, input, onChange, placeholder, dataCy }) => {
     return (
         <FormControl mb="15px">
             <FormLabel htmlFor={id} color="white" mb="8px">{value}</FormLabel>
-            <Input isRequired id={ id } type={type} min={0} max={100} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
+            <Input isRequired data-cy={dataCy} id={ id } type={type} min={0} max={100} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
         </FormControl>
     );
 };

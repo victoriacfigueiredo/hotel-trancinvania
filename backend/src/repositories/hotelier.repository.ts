@@ -1,4 +1,3 @@
-
 import prisma from '../database';
 
 export default class HotelierRepository {

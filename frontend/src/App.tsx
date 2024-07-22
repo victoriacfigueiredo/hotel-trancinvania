@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import CreateReservation from "./app/reservation/pages/CreateReservation"
-import MyReservations from "./app/reservation/pages/MyReservations"
-import SelectReservation from "./app/reservation/pages/SelectReservation"
-import EditReservation from "./app/reservation/pages/EditReservation"
-import SeeReservation from "./app/reservation/pages/SeeReservation"
+import CreateReservation from "./app/reservation/pages/CreateReservation";
+import MyReservations from "./app/reservation/pages/MyReservations";
+import SelectReservation from "./app/reservation/pages/SelectReservation";
+import EditReservation from "./app/reservation/pages/EditReservation";
+import SeeReservation from "./app/reservation/pages/SeeReservation";
 import { Promotion } from "./app/Promotion/pages";
 import { PublishedReservation } from "./app/PublishedReservation/pages/Register";
 import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reservations";
@@ -24,8 +24,9 @@ import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
-
-
+import EditProfileHotelier from "./app/auth/pages/hotelier/profile";
+import { AuthWrapper } from "./shared/components/auth-wrapper";
+import NotFoundPage from "./app/home/pages/notfound";
 
 const router = createBrowserRouter([
   {
@@ -33,15 +34,19 @@ const router = createBrowserRouter([
     Component: HomePage,
   },
   {
+    path: "*",
+    element: <NotFoundPage />,
+  },
+  {
     path: "/client/login",
     Component: LoginClient,
   },
   {
-    path: "client/password/recover",
+    path: "/client/password/recover",
     Component: RecoverPasswordClient,
   },
   {
-    path: "client/password/reset",
+    path: "/client/password/reset",
     Component: ResetPasswordClient,
   },
   {
@@ -49,19 +54,47 @@ const router = createBrowserRouter([
     Component: RegisterClient,
   },
   {
-    path: "client/profile/edit",
-    Component: EditProfileClient,
+    path: "/client/profile",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Profile />
+      </AuthWrapper>
+    ),
+  },
+  {
+    path: "/client/profile/edit",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <EditProfileClient />
+      </AuthWrapper>
+    ),
+  },
+  {
+    path: "/client/profile/rate",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Rate />
+      </AuthWrapper>
+    ),
+  },
+  {
+    path: "/client/profile/whishlist",
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Whishlist />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/hotelier/login",
     Component: LoginHotelier,
   },
   {
-    path: "hotelier/password/recover",
+    path: "/hotelier/password/recover",
     Component: RecoverPasswordHotelier,
   },
   {
-    path: "hotelier/password/reset",
+    path: "/hotelier/password/reset",
     Component: ResetPasswordHotelier,
   },
   {
@@ -69,24 +102,28 @@ const router = createBrowserRouter([
     Component: RegisterHotelier,
   },
   {
-    path: "/client/profile",
-    Component: Profile,
-  },
-  {
-    path: "/client/profile/rate",
-    Component: Rate,
-  },
-  {
-    path: "/client/profile/whishlist",
-    Component: Whishlist,
+    path: "/hotelier/profile",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <EditProfileHotelier />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/create-reservation/:reservation_id",
-    Component: CreateReservation,
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <CreateReservation />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/my-reservations",
-    Component: MyReservations,
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <MyReservations />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/select-reservation/:reservation_id",
@@ -94,44 +131,68 @@ const router = createBrowserRouter([
   },
   {
     path: "/edit-reservation/:reserve_id",
-    Component: EditReservation,
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <EditReservation />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/see-reservation/:reserve_id",
-    Component: SeeReservation,
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <SeeReservation />
+      </AuthWrapper>
+    ),
   },
   {
     path: "/search",
     Component: SearchPage,
   },
   {
-    path: '/promotions',
-    Component: Promotion,
+    path: "/promotions",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <Promotion />
+      </AuthWrapper>
+    ),
   },
   {
-    path: '/promotions',
-    Component: Promotion,
+    path: "/publishedReservation",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <PublishedReservation />
+      </AuthWrapper>
+    ),
   },
   {
-    path: '/publishedReservation',
-    Component: PublishedReservation,
+    path: "/hotelier-reservations",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <AllPublishedReservation />
+      </AuthWrapper>
+    ),
   },
   {
-    path: '/hotelier-reservations',
-    Component: AllPublishedReservation,
+    path: "/reservationDetails",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <ReservationDetails />
+      </AuthWrapper>
+    ),
   },
   {
-    path: '/reservationDetails',
-    Component: ReservationDetails,
+    path: "/reservationUpdate",
+    element: (
+      <AuthWrapper allowedUserTypes={["hotelier"]}>
+        <PublishedReservationUpdate />
+      </AuthWrapper>
+    ),
   },
   {
-    path: '/reservationUpdate',
-    Component: PublishedReservationUpdate,
-  },
-  {
-    path: '/reservations',
+    path: "/reservations",
     Component: AllPublishedReservationClient,
-  }
+  },
 ]);
 
 export default function App() {
