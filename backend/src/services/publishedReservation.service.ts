@@ -52,6 +52,14 @@ export default class PublishedReservationService {
         }
     }
 
+    // public async getPublishedReservationWithHotelierById(
+    //     id: number,
+    // ): Promise<PublishedReservation> {
+    //     const Reservation =
+    //         await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
+    //     return Reservation;
+    // }
+
     public async insertImageUrl(reservation_id: number, imageUrl: string): Promise<void>{
         try{
             await this.publishedReservationRepository.insertImageUrl(reservation_id, imageUrl);
@@ -69,6 +77,10 @@ export default class PublishedReservationService {
             const reservation = await this.publishedReservationRepository.getPublishedReservationById(id);
             if(!reservation){
                 throw new HttpNotFoundError({msg: 'Reservation not found'});
+            }
+            const reservationName = await this.publishedReservationRepository.checkReservationAlreadyExists(reservation.hotelier_id, name);
+            if(reservationName){
+                throw new HttpBadRequestError({msg: 'Reserva existente!'})
             }
             const params = this.preparePublishedReservationParams(reservation.hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, reservation.promotion_id);
             await this.publishedReservationRepository.updatePublishedReservationById(id, params);

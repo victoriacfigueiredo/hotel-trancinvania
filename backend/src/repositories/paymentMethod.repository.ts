@@ -1,20 +1,16 @@
-import { PaymentMethod, PrismaClient } from '@prisma/client';
+import { PaymentMethod } from '@prisma/client';
 import { paymentMethod } from '../controllers/paymentMethod.controller';
+import prisma from '../database';
 
 export default class PaymentMethodRepository {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
 
   async createPaymentMethod(data: any): Promise<number> {
-    const payMethod =  await this.prisma.paymentMethod.create({data});
+    const payMethod =  await prisma.paymentMethod.create({data});
     return payMethod.id
   }
 
   async getAllPayMethod(client_id : number): Promise<PaymentMethod[]> {
-    const paymentMethods = await this.prisma.paymentMethod.findMany({
+    const paymentMethods = await prisma.paymentMethod.findMany({
       where: {
         clientId : client_id
       }
@@ -22,8 +18,10 @@ export default class PaymentMethodRepository {
     return paymentMethods as PaymentMethod[];
   }
 
+
+
   async getPayMethodById(id: number): Promise<PaymentMethod> {
-    const paymentMethod = await this.prisma.paymentMethod.findUnique({
+    const paymentMethod = await prisma.paymentMethod.findUnique({
         where: {
             id : id
         }
@@ -33,7 +31,7 @@ export default class PaymentMethodRepository {
 
   //update by id
   async updatePayMethodById(id: number, params: PaymentMethod): Promise<PaymentMethod> {
-    const updatedPayMethod = await this.prisma.paymentMethod.update({
+    const updatedPayMethod = await prisma.paymentMethod.update({
         where: {
             id: id
         },
@@ -43,8 +41,8 @@ export default class PaymentMethodRepository {
   }
 
   // delete all
-  async deleteAllPayMethod(client_id: number): Promise<void> {
-    await this.prisma.paymentMethod.deleteMany({
+ async deleteAllPayMethod(client_id: number): Promise<void> {
+    await prisma.paymentMethod.deleteMany({
       where : {
         clientId : client_id
       }
@@ -53,16 +51,16 @@ export default class PaymentMethodRepository {
 
   //delete by id
   async deletePayMethodById(payMethod_id: number): Promise<PaymentMethod> {
-    const deletedPayMethod = await this.prisma.paymentMethod.delete({
+    const deletedPayMethod = await prisma.paymentMethod.delete({
         where: {
             id: payMethod_id,
         },
     });
     return deletedPayMethod as PaymentMethod
   }
-  
+
   async findPaymentMethodByClientAndCard(clientId: number, numCard: string): Promise<number> {
-    const paymentMethod = await this.prisma.paymentMethod.findFirst({
+    const paymentMethod = await prisma.paymentMethod.findFirst({
       where: { // Use a chave composta
           clientId: clientId,
           numCard: numCard,
@@ -71,9 +69,10 @@ export default class PaymentMethodRepository {
         id: true,
       },
     });
-  
+
     return paymentMethod?.id ?? -1;
   }
+  
 
   // //delete by id
   // async deletePromotionById(clientId: number, numCard: string): Promise<void> { 
@@ -83,10 +82,10 @@ export default class PaymentMethodRepository {
   //       where: { id: deleteId }
   //     });
   //   } else {
-  //     console.warn(`MÈtodo de pagamento n„o encontrado para clientId ${clientId} e numCard ${numCard}`);
+  //     console.warn(`M√©todo de pagamento n√£o encontrado para clientId ${clientId} e numCard ${numCard}`);
   //   }
   // }
 
 
-  
+
 }

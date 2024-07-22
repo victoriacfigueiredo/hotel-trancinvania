@@ -94,6 +94,16 @@ export default class PublishedReservationRepository {
         return reservation as PublishedReservation;
     }
 
+    // async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservation> {
+    //     const reservation = await prisma.publishedReservation.findUnique({
+    //         where: { id: id },
+    //         include: {
+    //             hotelier: true,
+    //         },
+    //     });
+    //     return reservation as PublishedReservation;
+    // }
+
     async insertPublishedReservation(params: PublishedReservation): Promise <number> {
         const result = await prisma.publishedReservation.create({data: params});
         return result.id;
