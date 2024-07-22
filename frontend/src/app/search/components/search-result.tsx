@@ -51,8 +51,8 @@ export const SearchResult = () => {
                 ...prevPromotions,
                 [reservation_id]: discount,
             }));
-        } catch (error) {
-            console.error('Erro ao obter promoção:', error);
+        } catch (error: any) {
+            console.error('Erro ao obter promoção:', error.response ? error.response : error);
         }
     };
 
@@ -78,25 +78,31 @@ export const SearchResult = () => {
     }
 
     const calculateData = async (reservas: IPublishedReservations[]) => {
-        let promocao;
 
         let newReservas = Promise.all(reservas.map(async (reserva) => {
             handlePromotion(reserva.id);
 
             reserva.rating = await handleRating(reserva.id);
-
-
-            // promotion
-            promocao = promotion[reserva.id];
-            if(promocao){
-                reserva.new_price = reserva.price * (1 - promocao / 100);
-            }
             return reserva;
         })
 )
 
         return newReservas;
     }
+
+    useEffect(() => {
+        let reservas = reservations.map((reserva) => {
+            let promocao = promotion[reserva.id];
+            if(promocao){
+                reserva.new_price = reserva.price * (1 - promocao / 100);
+            }
+            console.log(promocao)
+
+            return reserva;
+        })
+
+        setReservations(reservas);
+    }, [promotion])
 
     useEffect(() => {
         const fetchSearch = async () => {
@@ -136,7 +142,8 @@ export const SearchResult = () => {
         <Heading as='h2' size='2xl' noOfLines={1} m={3} fontFamily="trancinfont" letterSpacing={"-0.07rem"}>
             resultados de Busca
         </Heading>
-        <Flex flexWrap="wrap" gap="75px" mt="30px">
+        <Flex flexWrap="wrap" gap="75px" mt="30px" fontFamily="Inter">
+        {reservations.length == 0 && <Box fontFamily="Inter" mx={3} fontSize="xl" id="reservenotfound">Nenhuma reserva foi encontrada</Box>}
         {reservations.map(reservation => (
             <Box key={reservation.id} position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
                 {reservation.promotion_id && (
@@ -145,7 +152,7 @@ export const SearchResult = () => {
                 <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => navigate(`/publishedReservationDetails/${reservation.id}`)}>
                     <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
                     <Flex justify="center" align="center">
-                        <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{reservation.name}</Box>
+                        <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold" id="reservation_name">{reservation.name}</Box>
                         <Spacer />
                         <Box color="#eaeaea" textAlign="start">
                             <HStack>
@@ -159,7 +166,12 @@ export const SearchResult = () => {
                             </HStack>
                         </Box>
                     </Flex>
-                    <Flex textAlign="start" fontSize="20px" color="#eaeaea">{reservation.new_price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})} { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" mx="5px" mt="3px">{reservation.price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}</Box>} a diária</Flex>
+                    <Flex textAlign="start" fontSize="20px" color="#eaeaea">
+                        <Text id="reservation_price">
+                            {reservation.new_price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}
+                        </Text>
+
+                        { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" mx="5px" mt="3px">{reservation.price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}</Box>} a diária</Flex>
                 </Box>
             </Box>
         ))}

@@ -128,12 +128,14 @@ export default class PublishedReservationRepository {
                 people: {
                     gte: (num_adults + (num_children*0.5))
                 },
-                rooms: num_rooms,
+                rooms: {
+                    gte: num_rooms
+                },
             }
         });
 
         if (!reservations) {
-            throw new Error('Nenhuma reserva encontrada para o período especificado');
+            throw new Error('Nenhuma reserva encontrada para o perï¿½odo especificado');
         }
 
         return reservations as PublishedReservation[];
