@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -11,8 +12,11 @@ import {
   Image,
   Input,
   Text,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
-import React from "react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,12 +24,15 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ResetTokenInputs, ResetTokenSchema } from "../../../forms/reset-form";
 import { useResetPasswordClientMutation } from "../../../hooks";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const wizardImage = "https://i.imgur.com/En0qPaO.png";
 const booImage = "https://i.imgur.com/1oLAmzY.png";
 
 export const ResetPasswordClient: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClick = () => setShowPassword(!showPassword);
   const navigate = useNavigate();
   const resetPasswordMutation = useResetPasswordClientMutation();
   const {
@@ -54,10 +61,15 @@ export const ResetPasswordClient: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
-        <Flex position="relative" alignItems="flex-end">
+        <Flex
+          position="relative"
+          alignItems="flex-end"
+          ml={{ base: "0", lg: "-10%" }}
+        >
           <Container maxW="container.md" position="relative" zIndex={1}>
             <Flex direction="column" align="center" justify="center">
               <HStack alignItems={"flex-start"} mb={5}>
@@ -112,12 +124,26 @@ export const ResetPasswordClient: React.FC = () => {
                     maxWidth="400px"
                   >
                     <FormLabel htmlFor="newPassword">Nova Senha</FormLabel>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      placeholder="Digite sua nova senha"
-                      {...register("newPassword")}
-                    />
+                    <InputGroup>
+                      <Input
+                        id="newPassword"
+                        alignSelf={"center"}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Digite sua nova senha"
+                        {...register("newPassword")}
+                      />
+                      <InputRightElement width="4.5rem">
+                        <IconButton
+                          h="1.75rem"
+                          size="sm"
+                          onClick={handleClick}
+                          icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                          aria-label={""}
+                          variant="
+                             unstyled"
+                        />
+                      </InputRightElement>
+                    </InputGroup>
                     <FormErrorMessage>
                       {errors.newPassword && errors.newPassword.message}
                     </FormErrorMessage>
@@ -130,12 +156,26 @@ export const ResetPasswordClient: React.FC = () => {
                     <FormLabel htmlFor="confirmPassword">
                       Confirme a Nova Senha
                     </FormLabel>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Confirme sua nova senha"
-                      {...register("confirmPassword")}
-                    />
+                    <InputGroup>
+                      <Input
+                        id="confirmPassword"
+                        alignSelf={"center"}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Confirme sua nova senha"
+                        {...register("confirmPassword")}
+                      />
+                      <InputRightElement width="4.5rem">
+                        <IconButton
+                          h="1.75rem"
+                          size="sm"
+                          onClick={handleClick}
+                          icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                          aria-label={""}
+                          variant="
+                             unstyled"
+                        />
+                      </InputRightElement>
+                    </InputGroup>
                     <FormErrorMessage>
                       {errors.confirmPassword && errors.confirmPassword.message}
                     </FormErrorMessage>

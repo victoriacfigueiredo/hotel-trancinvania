@@ -31,32 +31,31 @@ import { BottomLeftTopRightImages } from "../../../../../shared/components/spide
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useClientData } from "../../../hooks/useUserData";
-import { useUpdateClientMutation } from "../../../hooks";
+import { useHotelierData } from "../../../hooks/useUserData";
+import { useUpdateHotelierMutation } from "../../../hooks";
 import {
-  UpdateClientFormInputs,
-  UpdateClientSchema,
+  UpdateHotelierFormInputs,
+  UpdateHotelierSchema,
 } from "../../../forms/update-form";
 import { queryClient } from "../../../../../shared/config/query-client";
 import { useNavigate } from "react-router-dom";
 
 const wineGlassImage = "https://i.imgur.com/9y30n2W.png";
 
-const EditProfileClient: React.FC = () => {
+const EditProfileHotelier: React.FC = () => {
   const navigate = useNavigate();
-  const updateClientMutation = useUpdateClientMutation();
+  const updateHotelierMutation = useUpdateHotelierMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentField, setCurrentField] =
-    useState<keyof UpdateClientFormInputs>("name");
-  //const { data, isLoading, error } = useClientData();
-  const { data } = useClientData();
+    useState<keyof UpdateHotelierFormInputs>("name");
+  const { data } = useHotelierData();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<UpdateClientFormInputs>({
-    resolver: zodResolver(UpdateClientSchema),
+  } = useForm<UpdateHotelierFormInputs>({
+    resolver: zodResolver(UpdateHotelierSchema),
   });
 
   useEffect(() => {
@@ -66,9 +65,13 @@ const EditProfileClient: React.FC = () => {
         name: data.name,
         email: data.email,
         username: data.username,
-        cpf: data.cpf,
-        phone: data.phone,
-        birthDate: data.birthDate,
+        hotel: data.hotel,
+        cep: data.cep,
+        address: data.address,
+        city: data.city,
+        n_address: data.n_address,
+        UF: data.UF,
+        cnpj: data.cnpj,
       });
     }
   }, [data, reset]);
@@ -76,11 +79,11 @@ const EditProfileClient: React.FC = () => {
   useEffect(() => {
     if (localStorage.getItem("navigateToProfile")) {
       localStorage.removeItem("navigateToProfile"); // Remove o sinal
-      navigate("/client/profile"); // Realiza a navegação
+      navigate("/publishedReservation"); // Realiza a navegação
     }
   }, [navigate]);
 
-  const onSubmit = async (formData: UpdateClientFormInputs) => {
+  const onSubmit = async (formData: UpdateHotelierFormInputs) => {
     try {
       const newData = {
         email: formData.email,
@@ -94,7 +97,7 @@ const EditProfileClient: React.FC = () => {
       if (!data) {
         throw new Error("User data not found");
       }
-      await updateClientMutation
+      await updateHotelierMutation
         .mutateAsync({ data: newData, id: data.id })
         .then(() => {
           queryClient.invalidateQueries({
@@ -119,17 +122,16 @@ const EditProfileClient: React.FC = () => {
     }
   };
 
-  const openEditModal = (field: keyof UpdateClientFormInputs) => {
+  const openEditModal = (field: keyof UpdateHotelierFormInputs) => {
     setCurrentField(field);
     onOpen();
   };
 
   const renderEditableField = (
     label: string,
-    fieldName: keyof UpdateClientFormInputs
-    //isPassword = false
+    fieldName: keyof UpdateHotelierFormInputs
   ) => (
-    <GridItem colSpan={1} key={fieldName}>
+    <GridItem colSpan={{ base: 2, md: 1 }} key={fieldName}>
       <FormControl>
         <FormLabel htmlFor={fieldName}>{label}</FormLabel>
         <HStack>
@@ -151,9 +153,9 @@ const EditProfileClient: React.FC = () => {
 
   const renderLockedField = (
     label: string,
-    fieldName: keyof UpdateClientFormInputs
+    fieldName: keyof UpdateHotelierFormInputs
   ) => (
-    <GridItem colSpan={1} key={fieldName}>
+    <GridItem colSpan={{ base: 2, md: 1 }} key={fieldName}>
       <FormControl>
         <FormLabel htmlFor={fieldName}>{label}</FormLabel>
         <HStack>
@@ -215,37 +217,53 @@ const EditProfileClient: React.FC = () => {
                   {renderEditableField("E-mail", "email")}
                   {renderEditableField("Username", "username")}
                   {renderEditableField("Senha", "password")}
-                  {renderLockedField("CPF", "cpf")}
-                  {renderLockedField("Número de Telefone", "phone")}
-                  {renderLockedField("Data de Nascimento", "birthDate")}
-                  <ButtonGroup
-                    spacing={4}
-                    display={"flex"}
-                    alignItems={"flex-end"}
-                    justifyContent={"flex-start"}
-                  >
-                    <Button
-                      type="submit"
-                      colorScheme="red"
-                      fontWeight={400}
-                      bg="#A4161A"
-                    >
-                      Salvar Alterações
-                    </Button>
-                    <Button
-                      variant="outline"
-                      borderColor="#A4161A"
-                      fontWeight={400}
-                      color={"white"}
-                      _hover={{
-                        bg: "#A4161A",
-                        color: "white",
-                      }}
-                      onClick={() => reset()} // limpa formulário
-                    >
-                      Cancelar
-                    </Button>
-                  </ButtonGroup>
+                  {renderLockedField("CNPJ", "cnpj")}
+                  {renderLockedField("Hotel", "hotel")}
+                  <GridItem colSpan={{ base: 2, md: 1 }}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                      {renderLockedField("CEP", "cep")}
+                      {renderLockedField("UF", "UF")}
+                    </SimpleGrid>
+                  </GridItem>
+                  <GridItem colSpan={{ base: 2, md: 1 }}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                      {renderLockedField("Cidade", "city")}
+                      {renderLockedField("Número", "n_address")}
+                    </SimpleGrid>
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                      {renderLockedField("Endereço", "address")}
+                      <ButtonGroup
+                        spacing={4}
+                        display={"flex"}
+                        alignItems={"flex-end"}
+                        justifyContent={"flex-start"}
+                      >
+                        <Button
+                          type="submit"
+                          colorScheme="red"
+                          fontWeight={400}
+                          bg="#A4161A"
+                        >
+                          Salvar Alterações
+                        </Button>
+                        <Button
+                          variant="outline"
+                          borderColor="#A4161A"
+                          fontWeight={400}
+                          color={"white"}
+                          _hover={{
+                            bg: "#A4161A",
+                            color: "white",
+                          }}
+                          onClick={() => reset()} // limpa formulário
+                        >
+                          Cancelar
+                        </Button>
+                      </ButtonGroup>
+                    </SimpleGrid>
+                  </GridItem>
                 </SimpleGrid>
               </VStack>
             </form>
@@ -288,4 +306,4 @@ const EditProfileClient: React.FC = () => {
   );
 };
 
-export default EditProfileClient;
+export default EditProfileHotelier;

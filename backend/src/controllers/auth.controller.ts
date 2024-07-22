@@ -27,13 +27,11 @@ class AuthController {
     private setupRoutes() {
         this.router.post('/client/login', this.clientLogin.bind(this));
         this.router.post('/client/recover-password', this.clientRecoverPassword.bind(this));
-        this.router
-            .post(
-                '/client/reset-password',
-                validateData(resetPasswordSchema),
-                this.clientResetPassword,
-            )
-            .bind(this);
+        this.router.post(
+            '/client/reset-password',
+            validateData(resetPasswordSchema),
+            this.clientResetPassword.bind(this),
+        );
         this.router.post('/hotelier/login', this.hotelierLogin.bind(this));
         this.router.post('/hotelier/recover-password', this.hotelierRecoverPassword.bind(this));
         this.router.post(
@@ -52,7 +50,7 @@ class AuthController {
                 return res.status(400).json({ message: info.message });
             }
             const token = jwt.sign({ id: client.id, type: 'client' }, process.env.JWT_SECRET!, {
-                expiresIn: '1h',
+                expiresIn: '24h',
             });
             return res.json({ token });
         })(req, res, next);
@@ -67,7 +65,7 @@ class AuthController {
                 return res.status(400).json({ message: info.message });
             }
             const token = jwt.sign({ id: hotelier.id, type: 'hotelier' }, process.env.JWT_SECRET!, {
-                expiresIn: '1h',
+                expiresIn: '24h',
             });
             return res.json({ token });
         })(req, res, next);
