@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPayMethodsByClient, deletePayMethodsById } from '../../services';
+import { getPayMethodsByClient, deletePayMethodsById, postPayMethods, editPayMethods } from '../../services';
 import {
   Box,
   Button,
@@ -9,11 +9,22 @@ import {
   IconButton,
   HStack,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { NavBar } from '../../../../shared/components/nav-bar';
-import { colors } from '../../../PaymentMethods/models/colors';
-import { CardModel } from '../../models/card';
+import { colors } from '../../../PaymentMethods/models/colors'; // Importe o arquivo de cores
+import { CardModel, CardType } from '../../models/card';
 
 const CartaoItem = ({ cartao, selecionado, onClick }) => (
   <Box
@@ -35,7 +46,7 @@ const CartaoItem = ({ cartao, selecionado, onClick }) => (
   </Box>
 );
 
-const CartaoDetalhes = ({ cartao, onDelete }) => {
+const CartaoDetalhes = ({ cartao, onEdit, onDelete }) => {
   if (!cartao) {
     return null;
   }
@@ -83,8 +94,8 @@ const CartaoDetalhes = ({ cartao, onDelete }) => {
         </Text>
       </Box>
       <HStack justify="center" spacing={4}>
-        <Button variant="link" colorScheme={colors.buttonTextEdit}>Editar</Button>
-        <Button variant="link" colorScheme={colors.buttonTextDelete} onClick={onDelete}>Excluir</Button>
+        <Button variant="link" colorScheme={colors.buttonTextEdit} onClick={() => onEdit(cartao)}>Editar</Button>
+        <Button variant="link" colorScheme={colors.buttonTextDelete} onClick={() => onDelete(cartao.id)}>Excluir</Button>
       </HStack>
     </Box>
   );
@@ -93,8 +104,20 @@ const CartaoDetalhes = ({ cartao, onDelete }) => {
 const Cartoes = () => {
   const [cartoes, setCartoes] = useState<CardModel[]>([]);
   const [cartaoSelecionado, setCartaoSelecionado] = useState<CardModel | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formValues, setFormValues] = useState<CardModel>({
+    id: 0,
+    name: '',
+    numCard: '',
+    cvv: 0,
+    expiryDate: '',
+    type: CardType.CREDITO,
+    clientId: 7, // Substitua isso pelo método real de obter o clientId
+    cpf: '',
+  });
   const clientId = 7; // Substitua isso pelo método real de obter o clientId
-  const toast = useToast(); // Inicialize o useToast
+  const toast = useToast();
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -114,18 +137,71 @@ const Cartoes = () => {
     }
   }, [clientId]);
 
+  const handleAddEditCartao = async () => {
+    try {
+      if (isEditing) {
+        await editPayMethods(formValues.id, formValues);
+      } else {
+        await postPayMethods(formValues);
+      }
+      toast({
+        title: isEditing ? 'Cartão atualizado com sucesso.' : 'Cartão adicionado com sucesso.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+        containerStyle: {
+          backgroundColor: '#A4161A',
+          color: '#EAEAEA',
+        },
+      });
+      // Refresh the card list
+      const cartoesData: CardModel[] = await getPayMethodsByClient(clientId);
+      setCartoes(cartoesData);
+      setIsOpen(false);
+      setFormValues({
+        id: 0,
+        name: '',
+        numCard: '',
+        cvv: 0,
+        expiryDate: '',
+        type: CardType.CREDITO,
+        clientId: clientId,
+        cpf: '',
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Erro ao salvar o cartão:', error);
+      toast({
+        title: 'Erro ao salvar o cartão.',
+        description: 'Ocorreu um erro ao tentar salvar o cartão. Por favor, tente novamente.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+      });
+    }
+  };
+
   const handleAddCartao = () => {
-    const novoCartao: CardModel = {
-      id: cartoes.length + 1,
-      name: `Cartão ${cartoes.length + 1}`,
-      numCard: '0000000000000000',
-      cvv: 123,
-      expiryDate: '12/25',
-      type: 'NovoCartao',
+    setIsEditing(false);
+    setFormValues({
+      id: 0,
+      name: '',
+      numCard: '',
+      cvv: 0,
+      expiryDate: '',
+      type: CardType.CREDITO,
       clientId: clientId,
-      cpf: '000.000.000-00'
-    };
-    setCartoes([...cartoes, novoCartao]);
+      cpf: '',
+    });
+    setIsOpen(true);
+  };
+
+  const handleEditCartao = (cartao: CardModel) => {
+    setIsEditing(true);
+    setFormValues(cartao);
+    setIsOpen(true);
   };
 
   const handleDeleteCartao = async (cartaoId: number) => {
@@ -144,10 +220,18 @@ const Cartoes = () => {
         containerStyle: {
           backgroundColor: '#A4161A',
           color: '#EAEAEA',
-        }
+        },
       });
     } catch (error) {
       console.error('Erro ao deletar o cartão:', error);
+      toast({
+        title: 'Erro ao excluir o cartão.',
+        description: 'Ocorreu um erro ao tentar excluir o cartão. Por favor, tente novamente.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+      });
     }
   };
 
@@ -158,80 +242,151 @@ const Cartoes = () => {
       </Box>
       <Flex
         justifyContent="center"
-        alignItems="flex-start"
+        alignItems="center"
         mt={12}
         px={6}
-        flexDirection={{ base: 'column', md: 'row' }}
-        width="100%"
+        flexDirection="row"
         maxW="1200px"
+        width="100%"
         direction={{ base: 'column', md: 'row' }}
-        gap={4}
+        align="flex-start"
       >
         <Flex
-          flexDirection="column"
-          alignItems="center"
-          width={{ base: '100%', md: '300px' }}
-          mb={{ base: 4, md: 0 }}
+          flexDirection="row"
+          alignItems="flex-start"
+          width="100%"
+          maxW="1200px"
+          justifyContent="center"
         >
-          <Box
-            bg={colors.background}
-            p={4}
-            borderRadius="md"
-            mb={4}
-            width="100%"
-            maxH="200px"
-            overflowY="auto"
-            boxShadow="md"
-            textAlign="center"
-          >
-            <Text fontSize={{ base: '2xl', md: '4xl' }} mb={4} fontWeight="bold" color={colors.title}>Carteira</Text>
-            <Text mb={4} color={colors.title}>Cartões Cadastrados</Text>
-          </Box>
-          <Box
-            bg={colors.cardBackground}
-            p={4}
-            borderRadius="md"
-            mb={4}
-            width="100%"
-            maxH="500px"
-            overflowY="auto"
-            boxShadow="md"
-            textAlign="center"
-          >
-            <VStack spacing={4} align="stretch">
-              {cartoes.map(cartao => (
-                <CartaoItem
-                  key={cartao.id}
-                  cartao={cartao}
-                  selecionado={cartaoSelecionado && cartao.id === cartaoSelecionado.id}
-                  onClick={() => setCartaoSelecionado(cartao)}
-                />
-              ))}
-              <Box
-                onClick={handleAddCartao}
-                bg={colors.addCardBackground}
-                p={4}
-                borderRadius="md"
-                cursor="pointer"
-                width="100%"
-                textAlign="center"
-                border={`1px dashed ${colors.addCardBorder}`}
-              >
-                <IconButton icon={<AddIcon />} aria-label="Adicionar novo cartão" />
-                <Text>Adicione um método de pagamento</Text>
-              </Box>
-            </VStack>
-          </Box>
+          <Flex flexDirection="column" alignItems="center" width={{ base: '100%', md: '300px' }} mr={{ base: 0, md: 4 }}>
+            <Box
+              bg={colors.background}
+              p={4}
+              borderRadius="md"
+              mb={4}
+              width="100%"
+              maxH="200px"
+              overflowY="auto"
+              boxShadow="md"
+            >
+              <Text fontSize="4xl" mb={4} fontWeight="bold" color={colors.title}>Carteira</Text>
+              <Text mb={4} color={colors.title}>Cartões Cadastrados</Text>
+            </Box>
+            <Box
+              bg={colors.cardBackground}
+              p={4}
+              borderRadius="md"
+              mb={4}
+              width="100%"
+              maxH="500px"
+              overflowY="auto"
+              boxShadow="md"
+            >
+              <VStack spacing={4} width="100%">
+                {cartoes.map(cartao => (
+                  <CartaoItem
+                    key={cartao.id}
+                    cartao={cartao}
+                    selecionado={cartaoSelecionado && cartao.id === cartaoSelecionado.id}
+                    onClick={() => setCartaoSelecionado(cartao)}
+                  />
+                ))}
+                <Box
+                  bg={colors.addCardBackground}
+                  p={4}
+                  borderRadius="md"
+                  cursor="pointer"
+                  width="100%"
+                  textAlign="center"
+                  border={`1px dashed ${colors.addCardBorder}`}
+                  onClick={handleAddCartao}
+                >
+                  <HStack spacing={4} justify="center">
+                    <Text>Adicione um método de pagamento</Text>
+                    <IconButton
+                      icon={<AddIcon />}
+                      colorScheme="teal"
+                      aria-label="Adicionar novo método de pagamento"
+                    />
+                  </HStack>
+                </Box>
+              </VStack>
+            </Box>
+          </Flex>
+          {cartaoSelecionado && (
+            <Box ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} width={{ base: '100%', md: '500px' }} display="flex" alignItems="center">
+              <CartaoDetalhes
+                cartao={cartaoSelecionado}
+                onEdit={handleEditCartao}
+                onDelete={handleDeleteCartao}
+              />
+            </Box>
+          )}
         </Flex>
-        {cartaoSelecionado && (
-          <Box width={{ base: '100%', md: '500px' }} display="flex" justifyContent="center">
-            <CartaoDetalhes
-              cartao={cartaoSelecionado}
-              onDelete={() => handleDeleteCartao(cartaoSelecionado.id)}
-            />
-          </Box>
-        )}
       </Flex>
+
+      {/* Modal for adding/editing card */}
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{isEditing ? 'Editar Cartão' : 'Adicionar Novo Cartão'}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl isRequired mb={4}>
+              <FormLabel>Nome</FormLabel>
+              <Input
+                value={formValues.name}
+                onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
+              />
+            </FormControl>
+            <FormControl isRequired mb={4}>
+              <FormLabel>Número do Cartão</FormLabel>
+              <Input
+                value={formValues.numCard}
+                onChange={(e) => setFormValues({ ...formValues, numCard: e.target.value })}
+              />
+            </FormControl>
+            <FormControl isRequired mb={4}>
+              <FormLabel>CVV</FormLabel>
+              <Input
+                type="number"
+                value={formValues.cvv}
+                onChange={(e) => setFormValues({ ...formValues, cvv: Number(e.target.value) })}
+              />
+            </FormControl>
+            <FormControl isRequired mb={4}>
+              <FormLabel>Data de Expiração</FormLabel>
+              <Input
+                value={formValues.expiryDate}
+                onChange={(e) => setFormValues({ ...formValues, expiryDate: e.target.value })}
+              />
+            </FormControl>
+            <FormControl isRequired mb={4}>
+              <FormLabel>Tipo</FormLabel>
+              <Select
+                value={formValues.type}
+                onChange={(e) => setFormValues({ ...formValues, type: e.target.value as CardType })}
+              >
+                <option value={CardType.CREDITO}>Crédito</option>
+                <option value={CardType.DEBITO}>Débito</option>
+              </Select>
+            </FormControl>
+            <FormControl isRequired mb={4}>
+              <FormLabel>CPF</FormLabel>
+              <Input
+                value={formValues.cpf}
+                onChange={(e) => setFormValues({ ...formValues, cpf: e.target.value })}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="teal" mr={3} onClick={handleAddEditCartao}>
+              {isEditing ? 'Salvar Alterações' : 'Adicionar Cartão'}
+            </Button>
+            <Button variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

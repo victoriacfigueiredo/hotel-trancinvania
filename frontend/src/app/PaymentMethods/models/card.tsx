@@ -1,3 +1,8 @@
+export enum CardType{
+    CREDITO = 'CREDITO',
+    DEBITO = 'DEBITO'
+}
+
 export interface CardModel {
     id: number;
     name: string;
