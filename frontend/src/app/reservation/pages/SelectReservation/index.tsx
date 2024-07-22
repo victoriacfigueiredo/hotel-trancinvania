@@ -2,8 +2,9 @@ import React from 'react';
 import { JustSpider } from '../../components/just-spider';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
-import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
+import { FaWhatsapp, FaTwitter, FaFacebook } from 'react-icons/fa';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
@@ -11,12 +12,12 @@ import { saveReservation } from '../../../Wishlist/services';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { SaveModel } from '../../../Wishlist/models';
-import { ToastContainer, toast } from 'react-toastify'; 
+import { ToastContainer, toast } from 'react-toastify';
 import { useClientData } from '../../../auth/hooks/useUserData';
 
 const SelectReservation: React.FC = () => {
     const { data } = useClientData();
-    const clientId = Number(data?.id);
+    const clientId = data ? Number(data.id) : null; // Permitir clientId como null se não autenticado
     const { reservation_id } = useParams();
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
 
@@ -43,6 +44,11 @@ const SelectReservation: React.FC = () => {
             return;
         }
 
+        if (!clientId) {
+            toast.error('Você precisa estar logado para salvar a reserva.');
+            return;
+        }
+
         const saveData: SaveModel = {
             client_id: clientId, 
             reservation_id: reservationData.id
@@ -55,6 +61,11 @@ const SelectReservation: React.FC = () => {
             toast.error('Erro ao salvar a reserva.');
         }
     };
+
+    const baseUrl = 'https://b0cd-2804-14d-5492-848a-15c7-aea9-f927-cf73.ngrok-free.app/select-reservation/';
+    const share_facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseUrl + reservationData.id)}`;
+    const share_twitter = `https://twitter.com/intent/tweet?url=${encodeURIComponent(baseUrl + reservationData.id)}&text=Confira%20essa%20oferta%20de%20arrepiar!!`;
+    const share_whatsapp = `https://wa.me/?text=${encodeURIComponent(baseUrl + reservationData.id + ' Confira essa oferta de arrepiar!!')}`;
 
     return (
         <Box width="100vw" height="100vh" display="flex" flexDirection="column">
@@ -153,22 +164,37 @@ const SelectReservation: React.FC = () => {
                         color="#EAEAEA"
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
-                        leftIcon={<Icon as={FaShareAlt} />}
-                    >
-                        Compartilhar Reserva
-                    </Button>
-                    <Button
-                        height="50px"
-                        width="250px"
-                        bg="#6A0572"
-                        color="#EAEAEA"
-                        border="1px solid #EAEAEA"
-                        _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaArrowLeft} />}
                         onClick={() => navigate(`/reservations`)}
                     >
                         Voltar
                     </Button>
+                    <HStack spacing={6} mt={4}>
+                        <a href={share_facebook} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaFacebook} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                        <a href={share_twitter} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaTwitter} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                        <a href={share_whatsapp} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaWhatsapp} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                    </HStack>
                 </VStack>
             </Box>
             <ToastContainer position="top-right" theme="dark" autoClose={3000} /> {/* Adicione esta linha */}
