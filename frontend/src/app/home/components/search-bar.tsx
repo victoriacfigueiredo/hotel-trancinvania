@@ -24,6 +24,10 @@ export const SearchBar = () => {
   const [numCriancas, setNumCriancas] = useState(0);
   const [numRooms, setNumRooms] = useState(0);
 
+  const today = new Date();
+  const todayPlusFive = new Date();
+  todayPlusFive.setDate(today.getDate() + 5);
+
   const navigate = useNavigate();
 
   const handleDestino = (event) => {
@@ -40,7 +44,7 @@ export const SearchBar = () => {
 
   const searchCorrect = (search: ISearch) => {
     if(search.city.length === 0){
-      toast.warning("Preencha todos os campos");
+      toast.warning("Local não foi especificado");
       return false;
     }
 
@@ -49,7 +53,12 @@ export const SearchBar = () => {
       return false;
     }
 
-    if(search.num_adults == 0 || search.num_rooms == 0){
+    if(search.num_adults == 0){
+      toast.warning("Quantidade de pessoas está errada");
+      return false;
+    }
+
+    if(search.num_rooms == 0){
       toast.warning("Preencha todos os campos");
       return false;
     }
@@ -142,6 +151,7 @@ export const SearchBar = () => {
         onChange={handleCheckin}
         fontFamily="Inter"
         data-cy="checkin"
+        defaultValue={today.toISOString().split("T")[0]}
       />
       <Input
         placeholder="Check-out"
@@ -156,6 +166,7 @@ export const SearchBar = () => {
         onChange={handleCheckout}
         fontFamily="Inter"
         data-cy="checkout"
+        defaultValue={todayPlusFive.toISOString().split("T")[0]}
       />
       <Popover>
         <PopoverTrigger>
