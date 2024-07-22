@@ -43,8 +43,9 @@ export const Profile = () => {
           transform="translate(-50%, -50%)"
         >
           <Text
-            fontSize="35px"
+            fontSize="60px"
             fontFamily="Trancinfont"
+            letterSpacing={"-0.07em"}
             fontWeight="300"
             mb={3}
             textAlign="center"
