@@ -70,6 +70,10 @@ export default class PublishedReservationService {
             if(!reservation){
                 throw new HttpNotFoundError({msg: 'Reservation not found'});
             }
+            const reservationName = await this.publishedReservationRepository.checkReservationAlreadyExists(reservation.hotelier_id, name);
+            if(reservationName){
+                throw new HttpBadRequestError({msg: 'Reseva existente!'})
+            }
             const params = this.preparePublishedReservationParams(reservation.hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, reservation.promotion_id);
             await this.publishedReservationRepository.updatePublishedReservationById(id, params);
             await this.publishedReservationRepository.updatePriceAllReservations();
