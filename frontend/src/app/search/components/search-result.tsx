@@ -1,17 +1,14 @@
-import { Box, Flex, Heading, HStack, Spacer, Text } from "@chakra-ui/react"
+import { Box, Flex, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { IPublishedReservations, ISearch } from "../../search/models";
 import { getPromotionById, getPublishedReservationsByFilters, getRatingById } from "../services";
 import { toast } from "react-toastify";
-import { StarIcon } from "@chakra-ui/icons";
 import { PromotionModel } from "../../Promotion/models/promotion";
-import morcegoImg from './bat.png';
+import { ReservationCard } from "../../../shared/components/reservation-card";
 
 
 export const SearchResult = () => {
-
-
     const [queryParams] = useSearchParams();
     const [search, setSearch] = useState<ISearch>();
     const [reservations, setReservations] = useState<IPublishedReservations[]>([]);
@@ -135,8 +132,6 @@ export const SearchResult = () => {
         fetchSearch()
     }, [search])
 
-    const navigate = useNavigate();
-
     return (
     <Box mt={12} p={0} minH="500px" position="relative">
         <Box position="relative" zIndex="1">
@@ -146,35 +141,7 @@ export const SearchResult = () => {
         <Flex flexWrap="wrap" gap="75px" mt="30px" fontFamily="Inter">
         {reservations.length == 0 && <Box fontFamily="Inter" mx={3} fontSize="xl" id="reservenotfound">Nenhuma reserva foi encontrada</Box>}
         {reservations.map(reservation => (
-            <Box key={reservation.id} position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
-                {reservation.promotion_id && (
-                    <Flex alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" style={{ backgroundImage: `url(${morcegoImg})` }}> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
-                )}
-                <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => navigate(`/select-reservation/${reservation.id}`)}>
-                    <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
-                    <Flex justify="center" align="center">
-                        <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold" data-cy="reservation_name">{reservation.name}</Box>
-                        <Spacer />
-                        <Box color="#eaeaea" textAlign="start">
-                            <HStack>
-                                <Text fontSize="20px" fontWeight="bold">
-                                    {reservation.rating}
-                                </Text>
-                                <StarIcon 
-                                    height="15px"
-                                    width="15px"
-                                />
-                            </HStack>
-                        </Box>
-                    </Flex>
-                    <Flex textAlign="start" fontSize="20px" color="#eaeaea">
-                        <Text data-cy="reservation_price">
-                            {reservation.new_price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}
-                        </Text>
-
-                        { reservation.promotion_id &&   <Box fontSize="15px" textDecoration="line-through" mx="5px" mt="3px">{reservation.price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}</Box>} a diária</Flex>
-                </Box>
-            </Box>
+            <ReservationCard key={reservation.id} reservation={reservation} promotionValue={promotion[reservation.id]} />
         ))}
         </Flex>
         </Box>
