@@ -119,7 +119,7 @@ const router = createBrowserRouter([
     Component: AllPublishedReservationClient,
   },
   {
-    path : '/myCards',
+    path : '/client/:client_id/paymentMethods',
     Component: Cartoes,
   }
 ]);

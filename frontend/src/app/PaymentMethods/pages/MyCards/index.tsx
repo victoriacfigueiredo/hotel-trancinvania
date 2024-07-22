@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getPayMethodsByClient, deletePayMethodsById } from '../../services';
 import {
   Box,
   Button,
@@ -7,20 +8,12 @@ import {
   VStack,
   IconButton,
   HStack,
+  useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { NavBar } from '../../../../shared/components/nav-bar';
-import { colors } from '../../../PaymentMethods/models/colors'; // Importe o arquivo de cores
-
-// Função simulada para buscar dados dos cartões
-const fetchCartoes = async () => {
-  // Simulando uma requisição ao servidor
-  return [
-    { id: 1, apelido: 'Cartão Roxo', cor: 'purple.500', bandeira: 'Visa', numero: '1234567812341234', nome: 'JOSE G DA SILVA' },
-    { id: 2, apelido: 'Cartão Vermelho', cor: 'red.500', bandeira: 'Visa', numero: '1234567812345678', nome: 'JOSE G DA SILVA' },
-    { id: 3, apelido: 'Cartão Preto', cor: 'black', bandeira: 'Mastercard', numero: '1234567812349999', nome: 'JOSE G DA SILVA' },
-  ];
-};
+import { colors } from '../../../PaymentMethods/models/colors';
+import { CardModel } from '../../models/card';
 
 const CartaoItem = ({ cartao, selecionado, onClick }) => (
   <Box
@@ -35,92 +28,126 @@ const CartaoItem = ({ cartao, selecionado, onClick }) => (
     borderWidth={selecionado ? 2 : 1}
     borderColor={selecionado ? colors.cardBorderSelected : colors.cardBorder}
   >
-    <Box bg={cartao.cor} width="80px" height="30px" mr={4} />
+    <Box bg={colors.cardBackground} width="80px" height="30px" mr={4} />
     <Box>
-      <Text fontSize="sm">Cartão de crédito terminando em **** {cartao.numero.slice(-4)}</Text>
+      <Text fontSize="sm">Cartão de crédito terminando em **** {cartao.numCard ? cartao.numCard.slice(-4) : 'Número desconhecido'}</Text>
     </Box>
   </Box>
 );
 
-const CartaoDetalhes = ({ cartao, onDelete }) => (
-  <Box bg="#EAEAEA" p={6} borderRadius="md" boxShadow="md" width={{ base: '100%', md: '500px' }} mt={{ base: 4, md: 0 }}>
-    <Box
-      bg={cartao.cor}
-      height="250px"
-      borderRadius="md"
-      mb={4}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      color="white"
-      position="relative"
-    >
-      <Text
-        fontWeight="bold"
-        fontSize="lg"
-        position="absolute"
-        top={4}
-        left={4}
-      >
-        {cartao.bandeira}
-      </Text>
-      <Text
-        fontSize="md"
-        position="absolute"
-        bottom={4}
-        right={4}
-      >
-        **** {cartao.numero.slice(-4)}
-      </Text>
-      <Text
-        position="absolute"
-        bottom={4}
-        left={4}
-        mb={2}
-      >
-        {cartao.nome}
-      </Text>
-    </Box>
-    <HStack justify="center" spacing={4}>
-      <Button variant="link" colorScheme={colors.buttonTextEdit}>Editar</Button>
-      <Button variant="link" colorScheme={colors.buttonTextDelete} onClick={onDelete}>Excluir</Button>
-    </HStack>
-  </Box>
-);
+const CartaoDetalhes = ({ cartao, onDelete }) => {
+  if (!cartao) {
+    return null;
+  }
 
-const Cartoes: React.FC = () => {
-  const [cartoes, setCartoes] = useState([]);
-  const [cartaoSelecionado, setCartaoSelecionado] = useState(null);
+  const { name, numCard, type } = cartao;
+
+  return (
+    <Box bg="#EAEAEA" p={6} borderRadius="md" boxShadow="md" width={{ base: '100%', md: '500px' }} mt={{ base: 4, md: 0 }}>
+      <Box
+        bg={colors.cardBackground}
+        height="250px"
+        borderRadius="md"
+        mb={4}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        color="white"
+        position="relative"
+      >
+        <Text
+          fontWeight="bold"
+          fontSize="lg"
+          position="absolute"
+          top={4}
+          left={4}
+        >
+          {type || 'Tipo desconhecido'}
+        </Text>
+        <Text
+          fontSize="md"
+          position="absolute"
+          bottom={4}
+          right={4}
+        >
+          **** {numCard ? numCard.slice(-4) : 'Número desconhecido'}
+        </Text>
+        <Text
+          position="absolute"
+          bottom={4}
+          left={4}
+          mb={2}
+        >
+          {name || 'Nome desconhecido'}
+        </Text>
+      </Box>
+      <HStack justify="center" spacing={4}>
+        <Button variant="link" colorScheme={colors.buttonTextEdit}>Editar</Button>
+        <Button variant="link" colorScheme={colors.buttonTextDelete} onClick={onDelete}>Excluir</Button>
+      </HStack>
+    </Box>
+  );
+};
+
+const Cartoes = () => {
+  const [cartoes, setCartoes] = useState<CardModel[]>([]);
+  const [cartaoSelecionado, setCartaoSelecionado] = useState<CardModel | null>(null);
+  const clientId = 7; // Substitua isso pelo método real de obter o clientId
+  const toast = useToast(); // Inicialize o useToast
 
   useEffect(() => {
-    const fetchData = async () => {
-      const cartoesData = await fetchCartoes();
-      setCartoes(cartoesData);
-      if (cartoesData.length > 0) {
-        setCartaoSelecionado(cartoesData[0]);
+    const fetchCard = async () => {
+      try {
+        const cartoesData: CardModel[] = await getPayMethodsByClient(clientId);
+        setCartoes(cartoesData);
+        if (cartoesData.length > 0) {
+          setCartaoSelecionado(cartoesData[0]);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar cartões:', error);
       }
     };
 
-    fetchData();
-  }, []);
+    if (clientId) {
+      fetchCard();
+    }
+  }, [clientId]);
 
   const handleAddCartao = () => {
-    const novoCartao = {
+    const novoCartao: CardModel = {
       id: cartoes.length + 1,
-      apelido: `Cartão ${cartoes.length + 1}`,
-      cor: 'gray.500',
-      bandeira: 'NovoCartao',
-      numero: '0000000000000000',
-      nome: 'JOSE G DA SILVA'
+      name: `Cartão ${cartoes.length + 1}`,
+      numCard: '0000000000000000',
+      cvv: 123,
+      expiryDate: '12/25',
+      type: 'NovoCartao',
+      clientId: clientId,
+      cpf: '000.000.000-00'
     };
     setCartoes([...cartoes, novoCartao]);
   };
 
-  const handleDeleteCartao = (cartaoId) => {
-    setCartoes(cartoes.filter(cartao => cartao.id !== cartaoId));
-    if (cartaoSelecionado.id === cartaoId) {
-      setCartaoSelecionado(null);
+  const handleDeleteCartao = async (cartaoId: number) => {
+    try {
+      await deletePayMethodsById(clientId, cartaoId);
+      setCartoes(cartoes.filter(cartao => cartao.id !== cartaoId));
+      if (cartaoSelecionado && cartaoSelecionado.id === cartaoId) {
+        setCartaoSelecionado(null);
+      }
+      toast({
+        title: 'Cartão excluído com sucesso.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+        containerStyle: {
+          backgroundColor: '#A4161A',
+          color: '#EAEAEA',
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao deletar o cartão:', error);
     }
   };
 
@@ -131,80 +158,79 @@ const Cartoes: React.FC = () => {
       </Box>
       <Flex
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start"
         mt={12}
         px={6}
-        flexDirection="row"
-        maxW="1200px"
+        flexDirection={{ base: 'column', md: 'row' }}
         width="100%"
+        maxW="1200px"
         direction={{ base: 'column', md: 'row' }}
-        align="flex-start"
+        gap={4}
       >
         <Flex
-          flexDirection="row"
-          alignItems="flex-start"
-          width="100%"
-          maxW="1200px"
-          justifyContent="center"
+          flexDirection="column"
+          alignItems="center"
+          width={{ base: '100%', md: '300px' }}
+          mb={{ base: 4, md: 0 }}
         >
-          <Flex flexDirection="column" alignItems="center" width={{ base: '100%', md: '300px' }} mr={{ base: 0, md: 4 }}>
-            <Box
-              bg={colors.background}
-              p={4}
-              borderRadius="md"
-              mb={4}
-              width="100%"
-              maxH="200px"
-              overflowY="auto"
-              boxShadow="md"
-            >
-              <Text fontSize="4xl" mb={4} fontWeight="bold" color={colors.title}>Carteira</Text>
-              <Text mb={4} color={colors.title}>Cartões Cadastrados</Text>
-            </Box>
-            <Box
-              bg={colors.cardBackground}
-              p={4}
-              borderRadius="md"
-              mb={4}
-              width="100%"
-              maxH="500px"
-              overflowY="auto"
-              boxShadow="md"
-            >
-              <VStack spacing={4} align="stretch">
-                {cartoes.map(cartao => (
-                  <CartaoItem
-                    key={cartao.id}
-                    cartao={cartao}
-                    selecionado={cartaoSelecionado && cartao.id === cartaoSelecionado.id}
-                    onClick={() => setCartaoSelecionado(cartao)}
-                  />
-                ))}
-                <Box
-                  onClick={handleAddCartao}
-                  bg={colors.addCardBackground}
-                  p={4}
-                  borderRadius="md"
-                  cursor="pointer"
-                  width="100%"
-                  textAlign="center"
-                  border={`1px dashed ${colors.addCardBorder}`}
-                >
-                  <IconButton icon={<AddIcon />} aria-label="Adicionar novo cartão" />
-                  <Text>Adicione um método de pagamento</Text>
-                </Box>
-              </VStack>
-            </Box>
-          </Flex>
-          {cartaoSelecionado && (
-            <Box ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} width={{ base: '100%', md: '500px' }} display="flex" alignItems="center">
-              <CartaoDetalhes
-                cartao={cartaoSelecionado}
-                onDelete={() => handleDeleteCartao(cartaoSelecionado.id)}
-              />
-            </Box>
-          )}
+          <Box
+            bg={colors.background}
+            p={4}
+            borderRadius="md"
+            mb={4}
+            width="100%"
+            maxH="200px"
+            overflowY="auto"
+            boxShadow="md"
+            textAlign="center"
+          >
+            <Text fontSize={{ base: '2xl', md: '4xl' }} mb={4} fontWeight="bold" color={colors.title}>Carteira</Text>
+            <Text mb={4} color={colors.title}>Cartões Cadastrados</Text>
+          </Box>
+          <Box
+            bg={colors.cardBackground}
+            p={4}
+            borderRadius="md"
+            mb={4}
+            width="100%"
+            maxH="500px"
+            overflowY="auto"
+            boxShadow="md"
+            textAlign="center"
+          >
+            <VStack spacing={4} align="stretch">
+              {cartoes.map(cartao => (
+                <CartaoItem
+                  key={cartao.id}
+                  cartao={cartao}
+                  selecionado={cartaoSelecionado && cartao.id === cartaoSelecionado.id}
+                  onClick={() => setCartaoSelecionado(cartao)}
+                />
+              ))}
+              <Box
+                onClick={handleAddCartao}
+                bg={colors.addCardBackground}
+                p={4}
+                borderRadius="md"
+                cursor="pointer"
+                width="100%"
+                textAlign="center"
+                border={`1px dashed ${colors.addCardBorder}`}
+              >
+                <IconButton icon={<AddIcon />} aria-label="Adicionar novo cartão" />
+                <Text>Adicione um método de pagamento</Text>
+              </Box>
+            </VStack>
+          </Box>
         </Flex>
+        {cartaoSelecionado && (
+          <Box width={{ base: '100%', md: '500px' }} display="flex" justifyContent="center">
+            <CartaoDetalhes
+              cartao={cartaoSelecionado}
+              onDelete={() => handleDeleteCartao(cartaoSelecionado.id)}
+            />
+          </Box>
+        )}
       </Flex>
     </Box>
   );
