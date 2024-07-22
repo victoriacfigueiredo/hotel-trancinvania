@@ -153,7 +153,7 @@ export const LabelComponent = ({ id, value, type, input, onChange, placeholder, 
             if (!/[0-9.,]/.test(key) && key !== 'Backspace' && key !== 'Tab') {
                 e.preventDefault();
             }
-        }else{
+        }else if(type === "number"){
             const key = e.key;
             // Permite números, ponto, vírgula, Backspace e Tab
             if (!/[0-9]/.test(key) && key !== 'Backspace' && key !== 'Tab') {

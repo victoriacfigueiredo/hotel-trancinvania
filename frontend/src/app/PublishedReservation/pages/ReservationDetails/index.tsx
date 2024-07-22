@@ -17,6 +17,7 @@ import {
     AlertDialogOverlay,
     AlertDialogCloseButton,
     useDisclosure,
+    Divider,
 } from '@chakra-ui/react';
 import { AddIcon, ArrowBackIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { TeiaImg } from '../../../Promotion/pages';
@@ -101,21 +102,26 @@ export const ReservationDetails = () => {
             <NavBar/>
             <Box ml="20px">
             <Flex flex="1" bg="#191919" justifyContent="center" alignItems="center" position="relative">
-                <Box position="absolute" left="100px" top="70px" width="500px">
+                <Box position="absolute" left="130px" top="70px" width="500px">
                     <Box position="relative" width="100%" height="300px" bg="#6A0572" zIndex="1" backgroundSize="cover" backgroundPosition="center" style={{backgroundImage: `url(http://localhost:5001${reservationData.imageUrl})`}}/>
                     <Box position="absolute" width="100%" height="300px" bg="rgba(255, 255, 255, 0.1)" top="10px" left="10px" zIndex="0" />
                     <Text mt="20px" color="#EAEAEA" fontSize="2xl" fontWeight="bold" textAlign="center">
                         {reservationData.name}
                     </Text>
-                    {reservationData.promotion_id ? (
-                            <Text color="#EAEAEA" fontSize="xl" textAlign="center">
-                                 R$ {new_price.toFixed(2)} a diária <Badge data-cy="promotion" id="promotion" variant="solid" fontSize="15px" colorScheme="red" >({promotionData.discount}% OFF)</Badge>
-                            </Text>
-                        ) : (
-                            <Text color="#EAEAEA" fontSize="xl" textAlign="center">
-                                R$ {price.toFixed(2)} a diária
-                            </Text>
-                        )}
+                    <Flex justify="center">
+                        {reservationData.promotion_id ? (
+                                <Text color="#EAEAEA" fontSize="xl" textAlign="center">
+                                    R$ {new_price.toFixed(2)} a diária <Badge data-cy="promotion" id="promotion" variant="solid" fontSize="15px" colorScheme="red" >({promotionData.discount}% OFF)</Badge>
+                                </Text>
+                            ) : (
+                                <Text color="#EAEAEA" fontSize="xl" textAlign="center">
+                                    R$ {price.toFixed(2)} a diária 
+                                </Text>
+                            )}
+                            <Divider orientation="vertical" borderColor="#EAEAEA" height="20px" m="6px" />
+                            <Icon as={FaPerson} color="#EAEAEA" m="6px" boxSize="20px"/>
+                            <Text color="#EAEAEA" fontSize="20px" mb="2px">{`${reservationData.people} Pessoas`}</Text>
+                    </Flex>
                     <HStack mt="10px" justify="center" spacing={4}>
                         {reservationData.wifi &&  <ServicesComponent value="Wi-Fi" icon={FaWifi}/>}
                         {reservationData.room_service &&  <ServicesComponent value="Serviço de Quarto" icon={FaConciergeBell}/>}
@@ -124,11 +130,9 @@ export const ReservationDetails = () => {
                         {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
                     </HStack>
                 </Box>
-                    <Flex flexDirection={'column'} gap="12px" ml="320px" mt="70px">
+                    <Flex flexDirection={'column'} gap="20px" position="relative" left="15%" mt="70px">
                         <Box mb="25px">
                             <DataComponent value={`${reservationData.rooms} Quartos`} icon={MdOutlineBedroomChild}/>
-                            <Box boxSize="12px"></Box>
-                            <DataComponent value={`${reservationData.people} Pessoas`} icon={FaPerson}/>
                         </Box>
                         <ButtonComponent dataCy="update" id="updateReservationButton" label="Editar Reserva" icon = {<EditIcon/>} onClick={() => navigate(`/reservationUpdate`)}/>
                         <ButtonDeleteComponent dataCy="delete" id="deleteReservationButton" label="Deletar Reserva" icon = {<DeleteIcon/>} onClick={handleDeleteReservation}/>
