@@ -21,6 +21,7 @@ import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
+import  Cartoes  from "./app/PaymentMethods/pages/MyCards";
 
 
 
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
   {
     path: '/reservations',
     Component: AllPublishedReservationClient,
+  },
+  {
+    path : '/myCards',
+    Component: Cartoes,
   }
 ]);
 
