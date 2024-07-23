@@ -1,4 +1,4 @@
-import { IGetReservationsByFilters, PublishedReservation } from "../controllers/publishedReservation.controller";
+import { IGetReservationsByFilters, PublishedReservation} from "../controllers/publishedReservation.controller";
 import PublishedReservationRepository from "../repositories/publishedReservation.repository";
 import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
 import fs from 'fs';
@@ -52,11 +52,9 @@ export default class PublishedReservationService {
         }
     }
 
-    // public async getPublishedReservationWithHotelierById(
-    //     id: number,
-    // ): Promise<PublishedReservation> {
-    //     const Reservation =
-    //         await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
+    // public async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservationWHotelier> {
+    //     console.log(`Service called with id: ${id}`);
+    //     const Reservation = await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
     //     return Reservation;
     // }
 
@@ -78,9 +76,11 @@ export default class PublishedReservationService {
             if(!reservation){
                 throw new HttpNotFoundError({msg: 'Reservation not found'});
             }
-            const reservationName = await this.publishedReservationRepository.checkReservationAlreadyExists(reservation.hotelier_id, name);
-            if(reservationName){
-                throw new HttpBadRequestError({msg: 'Reserva existente!'})
+            if(reservation.name !== name){
+                const reservationName = await this.publishedReservationRepository.checkReservationAlreadyExists(reservation.hotelier_id, name);
+                if(reservationName){
+                    throw new HttpBadRequestError({msg: 'Reserva existente!'})
+                }
             }
             const params = this.preparePublishedReservationParams(reservation.hotelier_id, name, rooms, people, wifi, breakfast, airConditioner, parking, room_service, price, reservation.promotion_id);
             await this.publishedReservationRepository.updatePublishedReservationById(id, params);

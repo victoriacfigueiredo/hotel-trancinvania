@@ -55,7 +55,7 @@ const LoginClient: React.FC = () => {
         navigate("/reservations");
       }, 3000);
     } catch (error) {
-      toast.error("Falha ao fazer login. Tente novamente.");
+      toast.error("Usuário ou senha incorretos. Tente novamente.");
     }
   };
 
@@ -154,6 +154,7 @@ const LoginClient: React.FC = () => {
                       Entrar
                     </Button>
                     <Button
+                      data-cy="esqueci-senha-c"
                       variant="outline"
                       borderColor="#A4161A"
                       fontWeight={400}

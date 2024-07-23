@@ -121,6 +121,7 @@ const RegisterClient: React.FC = () => {
                       <FormControl isInvalid={!!errors.name}>
                         <FormLabel htmlFor="name">Nome</FormLabel>
                         <Input
+                          data-cy="name"
                           id="name"
                           placeholder="Nome Completo"
                           {...register("name")}
@@ -135,6 +136,7 @@ const RegisterClient: React.FC = () => {
                       <FormControl isInvalid={!!errors.email}>
                         <FormLabel htmlFor="email">E-mail</FormLabel>
                         <Input
+                          data-cy="email"
                           id="email"
                           placeholder="Digite seu e-mail"
                           {...register("email")}
@@ -149,6 +151,7 @@ const RegisterClient: React.FC = () => {
                       <FormControl isInvalid={!!errors.username}>
                         <FormLabel htmlFor="username">Username</FormLabel>
                         <Input
+                          data-cy="username-rc"
                           id="username"
                           placeholder="Username"
                           {...register("username")}
@@ -170,6 +173,7 @@ const RegisterClient: React.FC = () => {
                               as={InputMask}
                               mask="999.999.999-99"
                               id="cpf"
+                              data-cy="cpf"
                               placeholder="000.000.000-00"
                               {...field}
                               maxW={{ base: "100%", md: "300px" }}
@@ -194,6 +198,7 @@ const RegisterClient: React.FC = () => {
                               as={InputMask}
                               mask="(99) 99999-9999"
                               id="phone"
+                              data-cy="phone"
                               placeholder="Digite seu número com DDD"
                               {...field}
                               maxW={{ base: "100%", md: "300px" }}
@@ -218,6 +223,7 @@ const RegisterClient: React.FC = () => {
                               as={InputMask}
                               mask="9999/99/99"
                               id="birthDate"
+                              data-cy="birthDate"
                               placeholder="aaaa/mm/dd"
                               {...field}
                               maxW={{ base: "100%", md: "300px" }}
@@ -237,6 +243,7 @@ const RegisterClient: React.FC = () => {
                         <InputGroup>
                           <Input
                             id="password"
+                            data-cy="password"
                             alignSelf={"center"}
                             type={showPassword ? "text" : "password"}
                             placeholder="Digite sua senha"
@@ -269,6 +276,7 @@ const RegisterClient: React.FC = () => {
                         <InputGroup>
                           <Input
                             id="confirmPassword"
+                            data-cy="confirmPassword"
                             alignSelf={"center"}
                             type={showPassword ? "text" : "password"}
                             placeholder="Digite a senha novamente"
@@ -298,6 +306,7 @@ const RegisterClient: React.FC = () => {
                     </GridItem>
                   </SimpleGrid>
                   <Button
+                    data-cy="confirmar-cadastro"
                     alignSelf="flex-end"
                     type="submit"
                     colorScheme="red"

@@ -51,8 +51,9 @@ export const Profile: React.FC = () => {
           transform="translate(-50%, -50%)"
         >
           <Text
-            fontSize="35px"
+            fontSize="60px"
             fontFamily="Trancinfont"
+            letterSpacing={"-0.07em"}
             fontWeight="300"
             mb={3}
             textAlign="center"
@@ -94,6 +95,7 @@ export const Profile: React.FC = () => {
               </Link>
 
               <Button
+                data-cy="my-reservations-button"
                 bg="#784A95"
                 color="#EAEAEA"
                 _hover={{ bg: "#5e3a72" }}

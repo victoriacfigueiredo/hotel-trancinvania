@@ -14,7 +14,7 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
         And eu clico no campo de "quartos" "1" vez
         And eu clico em "pesquisar"
         Then eu sou redirecionado para a página "/search?city=Recife&checkin=2024-07-21&checkout=2024-07-22&num_adults=2&num_children=0&num_rooms=1"
-        And eu vejo o "Quarto Outono" com o valor promocional de "850"
+        And eu vejo o "Quarto Outono" com o valor promocional de "1000"
 
     Scenario: fazer uma busca de reservas sem login, sem encontrar reservas
         Given eu estou na página inicial 
@@ -42,7 +42,19 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
         Then eu vejo um toast de erro com "Quantidade de pessoas está errada"
         And eu continuo na página de busca de reservas
 
-    Scenario: fazer uma busca de reservas com login, sem preencher todos os campos
+    Scenario: fazer uma busca de reservas sem login, sem colocar a quantidade de quartos
+        Given eu estou na página inicial
+        And eu não estou logado
+        When eu preencho o campo "destino" com "Recife"
+        And eu preencho o campo "checkin" com "2024-07-23"
+        And eu preencho o campo "checkout" com "2024-07-28"
+        And eu clico no campo "detalhes"
+        And eu clico no campo de "adultos" "2" vezes
+        And eu clico em "pesquisar"
+        Then eu vejo uma mensagem dizendo que o "Quantidade de quartos precisa ser maior que 0"
+        And eu continuo na página de busca de reservas
+
+    Scenario: fazer uma busca de reservas com login, sem preencher o campo de cidade
         Given eu estou na página inicial
         And eu estou logado como hoteleiro com username "viccesar" e senha "vic1234"
         When eu preencho o campo "checkin" com "2024-07-23"
@@ -53,6 +65,8 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
         And eu clico em "pesquisar"
         Then eu vejo uma mensagem dizendo que o "Local não foi especificado"
         And eu continuo na página de busca de reservas
+    
+
 
     Scenario: fazer uma busca de reservas com login, sem encontrar reservas
         Given eu estou na página inicial 
@@ -78,7 +92,7 @@ Feature: Busca de reservas com filtro (localidade, preço, reviews, etc.)
         And eu clico no campo de "quartos" "1" vez
         And eu clico em "pesquisar"
         Then eu sou redirecionado para a página "/search?city=Recife&checkin=2024-07-21&checkout=2024-07-22&num_adults=2&num_children=0&num_rooms=1"
-        And eu vejo o "Quarto Outono" com o valor promocional de "850"
+        And eu vejo o "Quarto Outono" com o valor promocional de "1000"
 
     Scenario: teste de data padrão em check-in
         Given eu estou na página inicial

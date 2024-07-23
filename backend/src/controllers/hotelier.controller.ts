@@ -72,6 +72,7 @@ export default class HotelierController {
     router.post('/hotelier/create', validateData(hotelierSchema), (req, res) => this.registerHotelier(req, res));
     router.get('/hotelier/read/:id', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.getHotelier(req, res));
     router.get('/hotelier/list', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.getAllHoteliers(req, res));
+    router.get('/hotelier/:id', (req, res) => this.getHotelier(req, res));
     router.patch('/hotelier/update/:id', passport.authenticate('hotelier-jwt', { session: false }), validateData(hotelierSchemaOptional), (req, res) => this.updateHotelier(req, res));
     router.delete('/hotelier/delete/:id', passport.authenticate('hotelier-jwt', { session: false }), (req, res) => this.deleteHotelier(req, res));
   }

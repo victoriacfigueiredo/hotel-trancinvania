@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Text, Button, HStack, VStack, Icon, Divider } from '@chakra-ui/react';
-import { FaBed, FaChild, FaUser, FaCalendarAlt, FaEdit, FaTrashAlt, FaWifi, FaConciergeBell, FaCoffee, FaSnowflake, FaCar, FaCreditCard, FaDollarSign } from 'react-icons/fa';
+import { Box, Text, Button, HStack, VStack, Icon, Divider, AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
+  useDisclosure } from '@chakra-ui/react';
+import {DeleteIcon} from '@chakra-ui/icons'
+import { FaMapMarkerAlt, FaBed, FaChild, FaUser, FaCalendarAlt, FaEdit, FaWifi, FaConciergeBell, FaCoffee, FaSnowflake, FaCar, FaCreditCard, FaDollarSign } from 'react-icons/fa';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { getReservationById, cancelReservation } from '../../services';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
@@ -10,8 +18,11 @@ import { PublishedReservationModel } from '../../../PublishedReservation/models/
 import { FaPerson } from 'react-icons/fa6';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getHotelierById } from '../../../auth/services';
+import { HotelierModel } from '../../models/publishedhotelier';
 
 const SeeReservation: React.FC = () => {
+  const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
   const { reserve_id } = useParams<{ reserve_id: string }>();
   const [reservation, setReservation] = useState<ReserveModel>({} as ReserveModel);
   const [publishedReservation, setPublishedReservation] = useState<PublishedReservationModel>({} as PublishedReservationModel);
@@ -35,6 +46,31 @@ const SeeReservation: React.FC = () => {
 
     fetchReservation();
   }, [reserve_id]);
+
+  useEffect(() => {
+    const fetchHotelierData = async () => {
+        if (publishedReservation?.hotelier_id) {
+            try {
+                //console.log('Fetching reservation data for ID:', reservation_id);
+                const response = await getHotelierById(publishedReservation?.hotelier_id) ?? '';
+                //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
+                //console.log('Fetched reservation data:', response);
+                setHotelier(response);
+            } catch (error) {
+                console.error('Erro ao obter os dados da reserva:', error);
+            }
+        }
+    };
+  
+    fetchHotelierData();
+  }, [publishedReservation?.hotelier_id]);
+
+const hotelName = hotelier.hotel;
+const city = hotelier.city;
+const uf = hotelier.UF;
+const street = hotelier.address;
+const nStreet = hotelier.n_address;
+const cep = hotelier.cep;
 
   if (!reservation || !publishedReservation) {
     return <Box>Carregando...</Box>;
@@ -120,6 +156,12 @@ const SeeReservation: React.FC = () => {
             {publishedReservation.airConditioner && <ServicesComponent value="Ar-condicionado" icon={FaSnowflake} />}
             {publishedReservation.parking && <ServicesComponent value="Estacionamento" icon={FaCar} />}
           </HStack>
+          <HStack align="center" mt="3">
+              <Icon as={FaMapMarkerAlt} color="#eaeaea" />
+                  <Text color="#eaeaea" fontSize = "13px" >
+                        {hotelName}: {street}, {nStreet} / {city} - {uf}, {cep} 
+                  </Text>
+          </HStack>
         </Box>
         <Box
           position="relative"
@@ -188,18 +230,7 @@ const SeeReservation: React.FC = () => {
                 >
                   Editar
                 </Button>
-                <Button
-                  onClick={handleCancel}
-                  variant="outline"
-                  borderColor="#EAEAEA"
-                  color="#EAEAEA"
-                  _hover={{ bg: 'red.500', color: '#EAEAEA' }}
-                  leftIcon={<FaTrashAlt />}
-                  height = "50px"
-                  width="150px"
-                >
-                  Cancelar
-                </Button>
+                <ButtonDeleteComponent dataCy="delete" id="deleteReservationButton" label="Cancelar" icon = {<DeleteIcon/>} onClick={handleCancel}/>
               </HStack>
             )}
           </VStack>
@@ -221,4 +252,63 @@ const ServicesComponent = ({ icon, value }) => {
   );
 };
 
+const ButtonDeleteComponent = ({ id, label, icon, onClick, dataCy }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  return (
+      <Box>
+          <Button 
+              data-cy={dataCy} 
+              id={id} 
+              border="1px solid #EAEAEA" 
+              borderRadius="4px" 
+              color="#EAEAEA" 
+              variant="outline" 
+              borderColor="#EAEAEA"
+              _hover={{ bg: '#a4161a', color: '#EAEAEA' }} 
+              leftIcon={icon} 
+              onClick={onOpen} 
+              height="50px" 
+              width="150px"
+              bg="#191919" 
+              w="150px" 
+              p="10px" 
+              fontSize="16px"
+          >
+              {label}
+          </Button>
+          <AlertDialog 
+              motionPreset='slideInBottom'
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+              isOpen={isOpen}
+              isCentered
+          >
+              <AlertDialogOverlay />
+
+              <AlertDialogContent bg="#191919" color="#EAEAEA" border="2px solid #EAEAEA">
+                  <AlertDialogHeader>Tem certeza?</AlertDialogHeader>
+                  <AlertDialogCloseButton />
+                  <AlertDialogBody>
+                      Esta ação não pode ser desfeita e a reserva será removida permanentemente do sistema.
+                  </AlertDialogBody>
+                  <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onClose}>
+                          Não
+                      </Button>
+                      <Button data-cy="yes-button" id="yes-button" ml={3} onClick={() => {
+                          onClick();
+                          onClose(); 
+                      }}>
+                          Sim
+                      </Button>
+                  </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog>
+      </Box>
+  )
+}
+
+
 export default SeeReservation;
+
