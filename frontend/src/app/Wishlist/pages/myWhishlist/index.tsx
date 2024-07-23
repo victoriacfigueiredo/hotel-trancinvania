@@ -2,12 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
-  Heading,
-  Image,
   Button,
-  Text,
-  Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 //import { Fonts } from "../../../../shared/theme/Fonts";
 import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
