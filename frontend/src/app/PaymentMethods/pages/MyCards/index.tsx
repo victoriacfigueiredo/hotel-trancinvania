@@ -27,15 +27,13 @@ import { colors } from '../../context/colors'; // Importe o arquivo de cores
 import { CardModel, CardType } from '../../models/card';
 import { useClientData } from "../../../auth/hooks/useUserData";
 
-const { data } = useClientData();
-const client_id = Number(data?.id);
-
 const getCardColor = (cvv) => {
   return colors.cardColors[cvv % 3];
 };
 
 const CartaoItem = ({ cartao, selecionado, onClick }) => (
   <Box
+    data-cy="cartao-item"
     onClick={onClick}
     bg={selecionado ? colors.cardHoverBackground : colors.cardBackground}
     p={4}
@@ -103,14 +101,18 @@ const CartaoDetalhes = ({ cartao, onEdit, onDelete }) => {
         </Text>
       </Box>
       <HStack justify="center" spacing={4}>
-        <Button variant="link" colorScheme={colors.buttonTextEdit} onClick={() => onEdit(cartao)}>Editar</Button>
-        <Button variant="link" colorScheme={colors.buttonTextDelete} onClick={() => onDelete(cartao.id)}>Excluir</Button>
+        <Button data-cy="edit-button" variant="link" colorScheme={colors.buttonTextEdit} onClick={() => onEdit(cartao)}>Editar</Button>
+        <Button data-cy="delete-button" variant="link" colorScheme={colors.buttonTextDelete} onClick={() => onDelete(cartao.id)}>Excluir</Button>
       </HStack>
     </Box>
   );
 };
 
 const Cartoes = () => {
+  const { data } = useClientData();
+  const client_id = Number(data?.id);
+  
+
   const [cartoes, setCartoes] = useState<CardModel[]>([]);
   const [cartaoSelecionado, setCartaoSelecionado] = useState<CardModel | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -343,13 +345,14 @@ const Cartoes = () => {
       {/* Modal for adding/editing card */}
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent  data-cy="modal" >
           <ModalHeader>{isEditing ? 'Editar Cartão' : 'Adicionar Novo Cartão'}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl isRequired mb={4}>
               <FormLabel>Nome</FormLabel>
               <Input
+                data-cy="name-input"
                 value={formValues.name}
                 onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
               />
@@ -357,6 +360,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Número do Cartão</FormLabel>
               <Input
+                data-cy="num-card-input"
                 maxLength={16}
                 value={formValues.numCard}
                 onChange={(e) => setFormValues({ ...formValues, numCard: e.target.value })}
@@ -365,6 +369,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>CVV</FormLabel>
               <Input
+                data-cy="cvv-input"
                 type="number"
                 maxLength={3}
                 value={formValues.cvv}
@@ -374,6 +379,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Data de Expiração</FormLabel>
               <Input
+                data-cy="expiry-date-input"
                 maxLength={7}
                 value={formValues.expiryDate}
                 onChange={(e) => setFormValues({ ...formValues, expiryDate: e.target.value })}
@@ -382,6 +388,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Tipo</FormLabel>
               <Select
+                data-cy="type-select"
                 value={formValues.type}
                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value as CardType })}
               >
@@ -392,6 +399,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>CPF</FormLabel>
               <Input
+                data-cy="cpf-input"
                 maxLength={11}
                 value={formValues.cpf}
                 onChange={(e) => setFormValues({ ...formValues, cpf: e.target.value })}
@@ -399,7 +407,7 @@ const Cartoes = () => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="teal" mr={3} onClick={handleAddEditCartao}>
+            <Button data-cy="save-button" colorScheme="teal" mr={3} onClick={handleAddEditCartao}>
               {isEditing ? 'Salvar Alterações' : 'Adicionar Cartão'}
             </Button>
             <Button variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>

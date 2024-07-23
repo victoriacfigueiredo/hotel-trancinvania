@@ -195,8 +195,12 @@ const router = createBrowserRouter([
     Component: AllPublishedReservationClient,
   },
   {
-    path : '/client/:client_id/paymentMethods',
-    Component: Cartoes,
+    path : '/client/paymentMethods',
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Cartoes/>
+      </AuthWrapper>
+    ),
   },
 ]);
 

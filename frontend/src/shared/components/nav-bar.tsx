@@ -52,7 +52,7 @@ export const NavBar: React.FC = () => {
   return (
     <Box bg="#EAEAEA" color="#000000" height="80px">
       <Flex justify="space-between" align="center" p={4} height="100%">
-        <Image src={LogoHotel} alt="Hotel TransilvÃ¢nia Logo" height="60px" />
+        <Image src={LogoHotel} alt="Hotel Transilvânia Logo" height="60px" />
 
         {/* Desktop Menu */}
         <Flex
@@ -73,7 +73,7 @@ export const NavBar: React.FC = () => {
             fontSize="24px"
           >
             <FaSpider style={{ marginRight: "6px" }} />
-            <Text>InÃ­cio</Text>
+            <Text>Início</Text>
           </Link>
 
           <Menu isOpen={isReservasMenuOpen}>
@@ -149,7 +149,7 @@ export const NavBar: React.FC = () => {
                       <MenuItem as={RouterLink} to="/client/profile">
                         Meu Perfil
                       </MenuItem>
-                      <MenuItem as={RouterLink} to="/client/payment">
+                      <MenuItem as={RouterLink} to="/client/paymentMethods">
                         Pagamento
                       </MenuItem>
                     </>
@@ -289,7 +289,7 @@ export const NavBar: React.FC = () => {
                         </Link>
                         <Link
                           as={RouterLink}
-                          to="/client/payment"
+                          to="/client/paymentMethods"
                           display="block"
                           textDecoration="none"
                           color="#000000"
