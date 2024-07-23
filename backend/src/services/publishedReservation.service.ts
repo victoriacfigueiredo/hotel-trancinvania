@@ -1,4 +1,4 @@
-import { IGetReservationsByFilters, PublishedReservation } from "../controllers/publishedReservation.controller";
+import { IGetReservationsByFilters, PublishedReservation} from "../controllers/publishedReservation.controller";
 import PublishedReservationRepository from "../repositories/publishedReservation.repository";
 import { HttpBadRequestError, HttpError, HttpInternalServerError, HttpNotFoundError } from "../utils/errors/http.error";
 import fs from 'fs';
@@ -52,11 +52,9 @@ export default class PublishedReservationService {
         }
     }
 
-    // public async getPublishedReservationWithHotelierById(
-    //     id: number,
-    // ): Promise<PublishedReservation> {
-    //     const Reservation =
-    //         await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
+    // public async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservationWHotelier> {
+    //     console.log(`Service called with id: ${id}`);
+    //     const Reservation = await this.publishedReservationRepository.getPublishedReservationWithHotelierById(id);
     //     return Reservation;
     // }
 

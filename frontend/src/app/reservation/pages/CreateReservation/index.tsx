@@ -1,5 +1,5 @@
 import React, {ForwardedRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import { JustSpider } from "../../components/just-spider";
 import {
   Box,
@@ -22,6 +22,7 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import {
+  FaMapMarkerAlt,
   FaArrowLeft,
   FaArrowRight,
   FaCalendarAlt,
@@ -51,7 +52,9 @@ import Select, { SingleValue} from 'react-select';
 import { useClientData } from "../../../auth/hooks/useUserData"
 import { createReservation } from '../../services';
 import { getAllPayMethod } from '../../../payment/services'
-
+import { useReservationContext } from '../../../PublishedReservation/context';
+import { getHotelierById } from '../../../auth/services';
+import { HotelierModel } from '../../models/publishedhotelier';
 
 interface OptionType {
   value: string;
@@ -67,13 +70,38 @@ interface CustomDateInputProps {
 
 
 
-const CustomDateInput = React.forwardRef(
+const CustomDateInputIn = React.forwardRef(
   (props: CustomDateInputProps, ref: ForwardedRef<HTMLInputElement>) => (
     <InputGroup>
       <InputRightElement pointerEvents="none">
         <Icon as={FaCalendarAlt} color="#EAEAEA" />
       </InputRightElement>
       <Input
+        data-cy="checkinn"
+        bg="#6A0572"
+        color="#EAEAEA"
+        textAlign="center"
+        border="1px solid #EAEAEA"
+        fontSize= "sm"
+        value={props.value}
+        onClick={props.onClick}
+        ref={ref}
+        width="146px"
+        height="50px"
+        placeholder=""
+      />
+    </InputGroup>
+  ),
+);
+
+const CustomDateInputOut = React.forwardRef(
+  (props: CustomDateInputProps, ref: ForwardedRef<HTMLInputElement>) => (
+    <InputGroup>
+      <InputRightElement pointerEvents="none">
+        <Icon as={FaCalendarAlt} color="#EAEAEA" />
+      </InputRightElement>
+      <Input
+        data-cy="checkoutt"
         bg="#6A0572"
         color="#EAEAEA"
         textAlign="center"
@@ -96,7 +124,8 @@ const steps = [
 ];
 
 const CreateReservation: React.FC = () => {
-  const { reservation_id } = useParams();
+  //const { reservation_id } = useParams();
+  const { selectedReservation } = useReservationContext();
   const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
@@ -107,15 +136,16 @@ const CreateReservation: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<SingleValue<OptionType>>(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [paymentOptions, setPaymentOptions] = useState<OptionType[]>([]);
+  const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
   const { data } = useClientData();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReservationData = async () => {
-        if(reservation_id){
+        if(selectedReservation?.id){
             try {
-                const response = await getPublishedReservationById(+reservation_id) ?? '';
+                const response = await getPublishedReservationById(selectedReservation?.id) ?? '';
                 setReservationData(response);
             } catch (error) {
                 console.error('Erro ao obter os dados da reserva:', error);
@@ -123,7 +153,33 @@ const CreateReservation: React.FC = () => {
         }
     };
     fetchReservationData();
-}, [reservation_id]);
+}, [selectedReservation?.id]);
+
+useEffect(() => {
+  const fetchHotelierData = async () => {
+      if (selectedReservation?.hotelier_id) {
+          try {
+              //console.log('Fetching reservation data for ID:', reservation_id);
+              const response = await getHotelierById(selectedReservation?.hotelier_id) ?? '';
+              //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
+              //console.log('Fetched reservation data:', response);
+              setHotelier(response);
+          } catch (error) {
+              console.error('Erro ao obter os dados da reserva:', error);
+          }
+      }
+  };
+
+  fetchHotelierData();
+}, [selectedReservation?.hotelier_id]);
+
+const hotelName = hotelier.hotel;
+const city = hotelier.city;
+const uf = hotelier.UF;
+const street = hotelier.address;
+const nStreet = hotelier.n_address;
+const cep = hotelier.cep;
+    
 
 useEffect(() => {
   const calculateDays = (startDate: Date | null, endDate: Date | null) => {
@@ -143,7 +199,7 @@ useEffect(() => {
       toast.warning('Preencha todos os campos!');
     }
     else if(adultos + 0.5*criancas > reservationData.people){
-      toast.warning('A capacidade do quarto foi excedida');
+      toast.warning('A capacidade do quarto foi excedida!');
     }
     else if(checkInDate >= checkOutDate){
       toast.warning('A data de check-in deve preceder a data de check-out');
@@ -237,7 +293,7 @@ useEffect(() => {
         setPaymentOptions(options);
       } catch (error) {
         //const err = error as { response: { data: { message: string } } };
-        toast.warning(`Cadastre um método de pagamento!`);
+        
       }
     };
 
@@ -303,6 +359,12 @@ useEffect(() => {
                         {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake}/>}
                         {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
           </HStack>
+          <HStack align="center" mt="3">
+              <Icon as={FaMapMarkerAlt} color="#eaeaea" />
+                  <Text color="#eaeaea" fontSize = "13px" >
+                        {hotelName}: {street}, {nStreet} / {city} - {uf}, {cep} 
+                  </Text>
+          </HStack>
         </Box>
         <Stepper index={activeStep}>
           {steps.map((_, index) => (
@@ -340,7 +402,7 @@ useEffect(() => {
                           selected={checkInDate}
                           onChange={(date) => setCheckInDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          customInput={<CustomDateInput />}
+                          customInput={<CustomDateInputIn />}
                         />
                       </FormControl>
                       <FormControl id="checkout" isRequired>
@@ -349,7 +411,7 @@ useEffect(() => {
                           selected={checkOutDate}
                           onChange={(date) => setCheckOutDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          customInput={<CustomDateInput />}
+                          customInput={<CustomDateInputOut />}
                         />
                       </FormControl>
                     </HStack>
@@ -357,6 +419,7 @@ useEffect(() => {
                       <FormLabel color="#EAEAEA">Quantidade de quartos</FormLabel>
                       <NumberInput min={1} defaultValue={1} size="md" value={quartos} onChange={(_, valueAsNumber) => setQuartos(valueAsNumber)}>
                         <NumberInputField
+                          data-cy = "quartos"
                           bg="#6A0572"
                           color="#EAEAEA"
                           textAlign="center"
@@ -372,6 +435,7 @@ useEffect(() => {
                       <FormLabel color="#EAEAEA">Quantidade de adultos</FormLabel>
                       <NumberInput min={1} defaultValue={1} size="md" value={adultos} onChange={(_, valueAsNumber) => setAdultos(valueAsNumber)}>
                         <NumberInputField
+                          data-cy = "adultos"
                           bg="#6A0572"
                           color="#EAEAEA"
                           textAlign="center"
@@ -387,6 +451,7 @@ useEffect(() => {
                       <FormLabel color="#EAEAEA">Quantidade de crianças</FormLabel>
                       <NumberInput min={0} defaultValue={0} size="md" value={criancas} onChange={(_, valueAsNumber) => setCriancas(valueAsNumber)}>
                         <NumberInputField
+                          data-cy = "criancas"
                           bg="#6A0572"
                           color="#EAEAEA"
                           textAlign="center"
@@ -408,10 +473,11 @@ useEffect(() => {
                       leftIcon={<Icon as={FaArrowLeft} />}
                       width="146px"
                       height="50px"
-                      onClick={() => navigate(`/select-reservation/${reservationData.id}`)}
+                      onClick={() => navigate(-1)}
                     >
                     </Button>
                     <Button
+                      data-cy = "avancar"
                       bg="transparent"
                       color="#EAEAEA"
                       border="1px solid #EAEAEA"
@@ -461,6 +527,7 @@ useEffect(() => {
                         styles={customStyles}
                         options={paymentOptions}
                         placeholder=""
+                        data-cy="pagamento"
                         onChange={(option) => setSelectedPayment(option)}
                       />
                     </FormControl>
@@ -487,6 +554,7 @@ useEffect(() => {
                     >
                     </Button>
                     <Button
+                      data-cy="finalizar-reserva"
                       bg="transparent"
                       color="#EAEAEA"
                       border="1px solid #EAEAEA"

@@ -117,6 +117,7 @@ export const NavBar: React.FC = () => {
 
           <Menu isOpen={isPerfilMenuOpen}>
             <MenuButton
+              data-cy="menu-c-button"
               as={Button}
               leftIcon={<FaUser />}
               onMouseEnter={onPerfilMenuOpen}
