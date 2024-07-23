@@ -102,9 +102,9 @@ export const ReservationDetails = () => {
             <NavBar/>
             <Box ml="20px">
             <Flex flex="1" bg="#191919" justifyContent="center" alignItems="center" position="relative">
-                <Box position="absolute" left="130px" top="70px" width="500px">
-                    <Box position="relative" width="100%" height="300px" bg="#6A0572" zIndex="1" backgroundSize="cover" backgroundPosition="center" style={{backgroundImage: `url(http://localhost:5001${reservationData.imageUrl})`}}/>
-                    <Box position="absolute" width="100%" height="300px" bg="rgba(255, 255, 255, 0.1)" top="10px" left="10px" zIndex="0" />
+                <Box position="absolute" left="130px" top="95px" width="550px">
+                    <Box position="relative" width="100%" height="320px" bg="#6A0572" zIndex="1" backgroundSize="cover" backgroundPosition="center" style={{backgroundImage: `url(http://localhost:5001${reservationData.imageUrl})`}}/>
+                    <Box position="absolute" width="100%" height="320px" bg="rgba(255, 255, 255, 0.1)" top="10px" left="10px" zIndex="0" />
                     <Text mt="20px" color="#EAEAEA" fontSize="2xl" fontWeight="bold" textAlign="center">
                         {reservationData.name}
                     </Text>
@@ -130,7 +130,7 @@ export const ReservationDetails = () => {
                         {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
                     </HStack>
                 </Box>
-                    <Flex flexDirection={'column'} gap="20px" position="relative" left="15%" mt="70px">
+                    <Flex flexDirection={'column'} gap="18px" position="relative" left="15%" mt="100px">
                         <Box mb="25px">
                             <DataComponent value={`${reservationData.rooms} Quartos`} icon={MdOutlineBedroomChild}/>
                         </Box>
@@ -150,7 +150,7 @@ export const ReservationDetails = () => {
 
 const ButtonComponent = ({id, label, icon, onClick, dataCy}) => {
     return (
-        <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onClick} _hover={{color: "#191919", bg: "#eaeaea"}}>
+        <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="21px" fontSize="17px" leftIcon={icon} onClick={onClick} _hover={{color: "#191919", bg: "#eaeaea"}}>
             {label}
         </Button>
             
@@ -162,7 +162,7 @@ const ButtonDeleteComponent = ({id, label, icon, onClick, dataCy}) => {
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     return (
         <Box>
-            <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="10px" fontSize="16px" leftIcon={icon} onClick={onOpen} _hover={{color: "#191919", bg: "#eaeaea"}}>
+            <Button data-cy={dataCy} id={id} border="1px solid white" borderRadius="4px" color="#eaeaea" bg="#6A0572" w="100%" p="21px" fontSize="17px" leftIcon={icon} onClick={onOpen} _hover={{color: "#191919", bg: "#eaeaea"}}>
                 {label}
             </Button>
             <AlertDialog 
