@@ -153,6 +153,7 @@ const LoginClient: React.FC = () => {
                       Entrar
                     </Button>
                     <Button
+                      data-cy="esqueci-senha-c"
                       variant="outline"
                       borderColor="#A4161A"
                       fontWeight={400}

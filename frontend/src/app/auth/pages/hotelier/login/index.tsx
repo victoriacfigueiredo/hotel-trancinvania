@@ -151,6 +151,7 @@ const LoginHotelier: React.FC = () => {
                       Entrar
                     </Button>
                     <Button
+                      data-cy="esqueci-senha-h"
                       variant="outline"
                       borderColor="#A4161A"
                       fontWeight={400}
