@@ -1,11 +1,10 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
-
 Given('eu estou logado como hoteleiro com o username {string} e a senha {string}', (username: string, password: string) => {
     cy.visit('/hotelier/login');
-    cy.get('#username').type(username);
-    cy.get('#password').type(password);
-    cy.get('#login-button').click();
+    cy.get('[data-cy="username"]').type(username);
+    cy.get('[data-cy="password"]').type(password);
+    cy.get('[data-cy="login-button"]').click();
 })
 
 Given('eu estou na página {string}', (page: string) => {
@@ -13,15 +12,13 @@ Given('eu estou na página {string}', (page: string) => {
 })
 
 Given('eu estou na página {string} da reserva do {string}', (page: string, hotelName: string) => {
-    cy.get(`#${hotelName}`).click();
-    cy.wait(100);
+    cy.get(`[data-cy="${hotelName}"]`).click();
     cy.url().should('include', page);
 })
 
 Given('eu estou na página {string} da reserva do {string} com o valor da diária por {string}', (page: string, hotelName: string, price: string) => {
-    cy.get(`#${hotelName}`).click();
-    cy.wait(100);
-    cy.get('#cadastrar-promocao').click();
+    cy.get(`[data-cy="${hotelName}"]`).click();
+    cy.get('[data-cy="cadastrar-promocao"]').click();
     cy.contains(price).should('be.visible');
     cy.url().should('include', page);
 })
@@ -40,7 +37,7 @@ Given('o {string} com o valor promocional de {string} a diária', (hotelName: st
 })
 
 Given('o {string} não possui nenhuma promoção cadastrada', () => {
-    cy.get('#promotion').should('not.exist');
+    cy.get('[data-cy="promotion"]').should('not.exist');
 })
 
 Given('o {string} está nas reservas publicadas com o valor de {string} a diária', (hotelName: string, price: string) => {
@@ -50,33 +47,33 @@ Given('o {string} está nas reservas publicadas com o valor de {string} a diári
 })
 
 Given('não há nenhuma promoção cadastrada', () => {
-    cy.get('#bat').should('not.exist');
+    cy.get('[data-cy="promotion"]').should('not.exist');
 })
 
 When('eu preencho o campo {string} com {string}', (field: string, value: string) => {
-    cy.get("#" + field).type(value);
+    cy.get(`[data-cy="${field}"]`).type(value);
 })
 
 When('eu seleciono a promoção {string}', (type: string) => {
-    cy.get("#type").select(type);
+    cy.get('[data-cy="type"]').select(type);
 })
 
 When('eu seleciono {string}', (button: string) => {
-    cy.get('#' + button).click();
+    cy.get(`[data-cy="${button}"]`).click();
 })
 
 When('eu tento deletar a promoção', () => {
-    cy.get('#deletar-promocao').click();
+    cy.get('[data-cy="deletar-promocao"]').click();
     cy.contains('Tem certeza?').should('be.visible');
     cy.contains('Esta ação não pode ser desfeita e a promoção será removida permanentemente do sistema.').should('be.visible');
-    cy.get('#yes-button').click();
+    cy.get('[data-cy="yes-button"]').click();
 })
 
 When('eu tento deletar as promoções', () => {
-    cy.get('#deletar-promocoes').click();
+    cy.get('[data-cy="deletar-promocoes"]').click();
     cy.contains('Tem certeza?').should('be.visible');
     cy.contains('Esta ação não pode ser desfeita e as promoções serão removidas permanentemente do sistema.').should('be.visible');
-    cy.get('#yes-button').click();
+    cy.get('[data-cy="yes-button"]').click();
 })
 
 Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) => {
@@ -88,7 +85,6 @@ Then('eu vejo um toast de erro com a mensagem {string}', (message: string) => {
 })
 
 Then('eu sou redirecionado para a página {string}', (page: string) => {
-    cy.wait(100);
     cy.url().should('include', page);
 })
 

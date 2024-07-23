@@ -74,33 +74,6 @@ export default class SaveRepository {
         }
     }
 
-    async getClientsbyReservationId(reservation_id: number): Promise<Client[]>{
-        try{
-            const client = await prisma.clientSavedReservation.findMany({
-            where :{
-                reservation_id :reservation_id
-            },
-            include:{
-                client: true
-            }
-
-            });
-
-            if (!client){
-                throw new Error("Nenhum usuário salvou a reserva")
-            }
-            let clientsbyreservation: Client[]=[];
-            for (let i = 0; i < client.length; i++) {
-                clientsbyreservation.push(client[i].client);
-            }
-
-            return clientsbyreservation as Client[];
-        }
-
-        catch (error) {
-            throw error;
-        }        
-    }
 
     async deleteSavedReservationById(client_id: number, reservation_id: number): Promise<void> {
         try {

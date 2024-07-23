@@ -8,11 +8,17 @@ import {
   sendRecoveryEmailClient,
   registerClient,
   registerHotelier,
+  updateClientData,
+  updateHotelierData,
 } from "../services";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
-  RegisterHotelierFormInputs,
+  RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
+import {
+  UpdateClientFormInputs,
+  UpdateHotelierFormInputs,
+} from "../forms/update-form";
 
 export function useLoginClientMutation() {
   return useMutation({
@@ -58,6 +64,26 @@ export function useSendRecoveryEmailHotelierMutation() {
 
 export function useRegisterHotelierMutation() {
   return useMutation({
-    mutationFn: (data: RegisterHotelierFormInputs) => registerHotelier(data),
+    mutationFn: (data: RegisterHotelierFormInputsWithoutConfirmPassword) =>
+      registerHotelier(data),
+  });
+}
+
+export function useUpdateClientMutation() {
+  return useMutation({
+    mutationFn: ({ data, id }: { data: UpdateClientFormInputs; id: string }) =>
+      updateClientData(data, id),
+  });
+}
+
+export function useUpdateHotelierMutation() {
+  return useMutation({
+    mutationFn: ({
+      data,
+      id,
+    }: {
+      data: UpdateHotelierFormInputs;
+      id: string;
+    }) => updateHotelierData(data, id),
   });
 }

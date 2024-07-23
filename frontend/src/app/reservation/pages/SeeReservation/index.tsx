@@ -46,9 +46,6 @@ const SeeReservation: React.FC = () => {
 
   const handleCancel = async () => {
     if (!reserve_id) return;
-
-    const confirmCancel = window.confirm("Tem certeza que deseja cancelar esta reserva?");
-    if (confirmCancel) {
       try {
         await cancelReservation(+reserve_id) ?? '';
         toast.success("Reserva cancelada com sucesso!", {
@@ -60,9 +57,13 @@ const SeeReservation: React.FC = () => {
       } catch (error) {
         toast.error("Erro ao cancelar a reserva. Tente novamente.");
       }
-    }
   };
   const isFutureReservation = new Date(reservation.checkin) > new Date();
+
+  const paymentMethodName = reservation?.paymentMethodName;
+  const formattedPaymentMethod = paymentMethodName
+    ? `**** **** **** ${paymentMethodName.slice(-4)}`
+    : '';
 
   return (
     <Box width="100vw" height="100vh" display="flex" flexDirection="column">
@@ -167,7 +168,7 @@ const SeeReservation: React.FC = () => {
             </HStack>
             <HStack>
               <Icon as={FaCreditCard} color="#EAEAEA" />
-              <Text color="#EAEAEA">Método de Pagamento: {reservation.paymentMethodName}</Text>
+              <Text color="#EAEAEA">Método de Pagamento: {formattedPaymentMethod || 'Não disponível'} </Text>
             </HStack>
             <HStack>
               <Icon as={FaDollarSign} color="#EAEAEA" />

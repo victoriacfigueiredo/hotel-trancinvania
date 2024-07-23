@@ -27,22 +27,27 @@ import {
 import { EditIcon, LockIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  RegisterClientFormInputs,
-  RegisterClientSchema,
-} from "../../../forms/register-form";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useClientData } from "../../../hooks/useUserData";
+import { useUpdateClientMutation } from "../../../hooks";
+import {
+  UpdateClientFormInputs,
+  UpdateClientSchema,
+} from "../../../forms/update-form";
+import { queryClient } from "../../../../../shared/config/query-client";
+import { useNavigate } from "react-router-dom";
 
 const wineGlassImage = "https://i.imgur.com/9y30n2W.png";
 
 const EditProfileClient: React.FC = () => {
+  const navigate = useNavigate();
+  const updateClientMutation = useUpdateClientMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentField, setCurrentField] =
-    useState<keyof RegisterClientFormInputs>("name");
+    useState<keyof UpdateClientFormInputs>("name");
   //const { data, isLoading, error } = useClientData();
   const { data } = useClientData();
   const {
@@ -50,8 +55,8 @@ const EditProfileClient: React.FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<RegisterClientFormInputs>({
-    resolver: zodResolver(RegisterClientSchema),
+  } = useForm<UpdateClientFormInputs>({
+    resolver: zodResolver(UpdateClientSchema),
   });
 
   useEffect(() => {
@@ -68,25 +73,60 @@ const EditProfileClient: React.FC = () => {
     }
   }, [data, reset]);
 
-  const onSubmit = () =>
-    //formData: RegisterClientFormInputs
-    {
-      // Handle form submission
+  useEffect(() => {
+    if (localStorage.getItem("navigateToProfile")) {
+      localStorage.removeItem("navigateToProfile"); // Remove o sinal
+      navigate("/client/profile"); // Realiza a navegação
+    }
+  }, [navigate]);
+
+  const onSubmit = async (formData: UpdateClientFormInputs) => {
+    try {
+      const newData = {
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+      };
+      if (newData.password === "") {
+        // deleta a senha se estiver vazia
+        delete newData.password;
+      }
+      if (!data) {
+        throw new Error("User data not found");
+      }
+      await updateClientMutation
+        .mutateAsync({ data: newData, id: data.id })
+        .then(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["navbarUserData", data.id],
+          });
+        });
+      // Exibe mensagem de sucesso e recarrega a página
       toast.success(`Alterações salvas com sucesso!`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        // Define o sinal no localStorage e recarrega a página
+        localStorage.setItem("navigateToProfile", "true");
+        window.location.reload();
+      }, 3000);
+    } catch (error: any) {
+      toast.error(`Erro ao salvar alterações!`, {
         position: "top-right",
         autoClose: 5000,
       });
-      onClose();
-    };
+    }
+  };
 
-  const openEditModal = (field: keyof RegisterClientFormInputs) => {
+  const openEditModal = (field: keyof UpdateClientFormInputs) => {
     setCurrentField(field);
     onOpen();
   };
 
   const renderEditableField = (
     label: string,
-    fieldName: keyof RegisterClientFormInputs
+    fieldName: keyof UpdateClientFormInputs
     //isPassword = false
   ) => (
     <GridItem colSpan={1} key={fieldName}>
@@ -111,7 +151,7 @@ const EditProfileClient: React.FC = () => {
 
   const renderLockedField = (
     label: string,
-    fieldName: keyof RegisterClientFormInputs
+    fieldName: keyof UpdateClientFormInputs
   ) => (
     <GridItem colSpan={1} key={fieldName}>
       <FormControl>
@@ -144,7 +184,7 @@ const EditProfileClient: React.FC = () => {
 */
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={5000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -235,12 +275,7 @@ const EditProfileClient: React.FC = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="red"
-              bg="#A4161A"
-              mr={3}
-              onClick={handleSubmit(onSubmit)}
-            >
+            <Button colorScheme="red" bg="#A4161A" mr={3} onClick={onClose}>
               Salvar
             </Button>
             <Button variant="ghost" onClick={onClose}>
