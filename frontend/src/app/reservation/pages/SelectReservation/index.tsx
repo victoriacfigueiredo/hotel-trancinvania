@@ -2,7 +2,7 @@ import React from 'react';
 import { JustSpider } from '../../components/just-spider';
 import { useNavigate } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
-import { FaMapMarkerAlt, FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
 import { FaWhatsapp, FaTwitter, FaFacebook } from 'react-icons/fa';
 import { NavBar } from '../../../../shared/components/nav-bar';
