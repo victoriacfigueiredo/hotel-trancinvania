@@ -10,7 +10,7 @@ import { AllPublishedReservation } from "./app/PublishedReservation/pages/Reserv
 import { ReservationDetails } from "./app/PublishedReservation/pages/ReservationDetails";
 import { HomePage } from "./app/home/pages/homepage";
 import { Profile } from "./app/Profile";
-import  { Rate }  from "./app/Rate/pages/myRates";
+import   Rate   from "./app/Rate/pages/myRates";
 import { Rating } from "./app/Rate/pages/rating";
 import { Whishlist } from "./app/Wishlist/pages/myWhishlist";
 import LoginClient from "./app/auth/pages/client/login";
