@@ -18,7 +18,6 @@ When("eu seleciono {string}", (button: string) => {
 Then(
   "eu vejo um toast de sucesso com a mensagem {string}",
   (message: string) => {
-    cy.wait(3000);
     cy.get(".Toastify__toast-body").should("contain.text", message);
   }
 );
@@ -28,7 +27,6 @@ Then("eu vejo um toast de erro com a mensagem {string}", (message: string) => {
 });
 
 Then("eu sou redirecionado para a página {string}", (page: string) => {
-  cy.wait(3000);
   cy.url().should("include", page);
 });
 Then("eu continuo na página {string}", (page: string) => {
