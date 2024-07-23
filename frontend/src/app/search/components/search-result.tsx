@@ -138,7 +138,7 @@ export const SearchResult = () => {
         <Text fontSize="6xl" m={3} fontFamily="trancinfont" letterSpacing={"-0.07em"}>
             resulTados de busca
         </Text>
-        <Flex flexWrap="wrap" gap="75px" mt="30px" fontFamily="Inter">
+        <Flex flexWrap="wrap" gap="75px" mt="30px"  mx={3} fontFamily="Inter">
         {reservations.length == 0 && <Box fontFamily="Inter" mx={3} fontSize="xl" id="reservenotfound">Nenhuma reserva foi encontrada</Box>}
         {reservations.map(reservation => (
             <ReservationCard key={reservation.id} reservation={reservation} promotionValue={promotion[reservation.id]} />

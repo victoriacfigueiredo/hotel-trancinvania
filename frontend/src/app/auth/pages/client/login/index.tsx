@@ -105,7 +105,7 @@ const LoginClient: React.FC = () => {
                       <FormLabel htmlFor="username">Username</FormLabel>
                       <Input
                         data-cy="username-c"
-                        id="username"
+                        id="username-c"
                         placeholder="Username"
                         {...register("username")}
                       />
@@ -118,7 +118,7 @@ const LoginClient: React.FC = () => {
                       <InputGroup>
                         <Input
                           data-cy="password-c"
-                          id="password"
+                          id="password-c"
                           alignSelf={"center"}
                           type={showPassword ? "text" : "password"}
                           placeholder="Senha"
@@ -144,6 +144,7 @@ const LoginClient: React.FC = () => {
                   <ButtonGroup spacing={4}>
                     <Button
                       data-cy="login-button-c"
+                      id="login-button-c"
                       type="submit"
                       colorScheme="red"
                       fontWeight={400}

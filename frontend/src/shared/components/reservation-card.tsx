@@ -36,7 +36,7 @@ export const ReservationCard: React.FC<Props> = ({reservation, promotionValue}: 
                 </Box>
             </Flex>
             <Flex textAlign="start" fontSize="20px" color="#eaeaea">
-                <Text data-cy="reservation_price">
+                <Text data-cy="reservation_price" mr={2}>
                     {reservation.new_price.toLocaleString("pt-br", {style: "currency", currency: "BRL"})}
                 </Text>
 

@@ -1,4 +1,4 @@
-import { PublishedReservation } from "../controllers/publishedReservation.controller";
+import { PublishedReservation} from "../controllers/publishedReservation.controller";
 import prisma from "../database";
 import { HttpNotFoundError } from "../utils/errors/http.error";
 import { IGetReservationsByFilters } from "../controllers/publishedReservation.controller";
@@ -94,7 +94,8 @@ export default class PublishedReservationRepository {
         return reservation as PublishedReservation;
     }
 
-    // async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservation> {
+    // async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservationWHotelier> {
+    //     console.log(`Repository called with id: ${id}`);
     //     const reservation = await prisma.publishedReservation.findUnique({
     //         where: { id: id },
     //         include: {

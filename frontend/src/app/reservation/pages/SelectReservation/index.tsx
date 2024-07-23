@@ -1,8 +1,8 @@
 import React from 'react';
 import { JustSpider } from '../../components/just-spider';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
-import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,21 +13,28 @@ import { PublishedReservationModel } from '../../../PublishedReservation/models/
 import { SaveModel } from '../../../Wishlist/models';
 import { ToastContainer, toast } from 'react-toastify'; 
 import { useClientData } from '../../../auth/hooks/useUserData';
-//import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
-//import { PublishedHotelierModel } from '../../models/publishedhotelier'
+import { useReservationContext } from '../../../PublishedReservation/context';
+// import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
+// import { PublishedHotelierModel } from '../../models/publishedhotelier'
+import { getHotelierById } from '../../../auth/services';
+import { HotelierModel } from '../../models/publishedhotelier';
 
 const SelectReservation: React.FC = () => {
     const { data } = useClientData();
     const clientId = Number(data?.id);
-    const { reservation_id } = useParams();
+    const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
+    const { selectedReservation } = useReservationContext();
+    //const { reservation_id } = useParams();
     //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
+    //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     useEffect(() => {
         const fetchReservationData = async () => {
-            if (reservation_id) {
+            if (selectedReservation?.id) {
                 try {
                     //console.log('Fetching reservation data for ID:', reservation_id);
-                    const response = await getPublishedReservationById(+reservation_id) ?? '';
+                    const response = await getPublishedReservationById(selectedReservation?.id) ?? '';
+                    //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
                     //console.log('Fetched reservation data:', response);
                     setReservationData(response);
                 } catch (error) {
@@ -37,18 +44,36 @@ const SelectReservation: React.FC = () => {
         };
 
         fetchReservationData();
-    }, [reservation_id]);
+    }, [selectedReservation?.id]);
+
+    useEffect(() => {
+        const fetchHotelierData = async () => {
+            if (selectedReservation?.hotelier_id) {
+                try {
+                    //console.log('Fetching reservation data for ID:', reservation_id);
+                    const response = await getHotelierById(selectedReservation?.hotelier_id) ?? '';
+                    //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
+                    //console.log('Fetched reservation data:', response);
+                    setHotelier(response);
+                } catch (error) {
+                    console.error('Erro ao obter os dados da reserva:', error);
+                }
+            }
+        };
+
+        fetchHotelierData();
+    }, [selectedReservation?.hotelier_id]);
 
     // if (!reservationData || !reservationData.hotelier) {
     //     return <div>Loading...</div>;
     // }
     
-    // const hotelName = reservationData.hotelier.hotel;
-    // const city = reservationData.hotelier.city;
-    // const uf = reservationData.hotelier.UF;
-    // const street = reservationData.hotelier.address;
-    // const nStreet = reservationData.hotelier.n_adress;
-    // const cep = reservationData.hotelier.cep;
+    const hotelName = hotelier.hotel;
+    const city = hotelier.city;
+    const uf = hotelier.UF;
+    const street = hotelier.address;
+    const nStreet = hotelier.n_address;
+    const cep = hotelier.cep;
     
 
 
@@ -122,7 +147,7 @@ const SelectReservation: React.FC = () => {
                         <Icon as={FaPerson} color="#EAEAEA" />
                         {reservationData.people} hóspedes
                     </Text>
-                    {/* <VStack align="flex-start" spacing={4}> */}
+                    
                         <HStack mt="10px" justify="center" spacing={4}>
                             {reservationData.wifi &&  <ServicesComponent value="Wi-Fi" icon={FaWifi} />}
                             {reservationData.room_service &&  <ServicesComponent value="Serviço de Quarto" icon={FaConciergeBell} />}
@@ -130,13 +155,13 @@ const SelectReservation: React.FC = () => {
                             {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake} />}
                             {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar} />}
                         </HStack>
-                        {/* <HStack align="center" mt="2">
+                        <HStack align="center" mt="3">
                             <Icon as={FaMapMarkerAlt} color="#eaeaea" />
-                            <Text color="#eaeaea">
-                                {hotelName}: {street}, {nStreet}, {city} - {uf}, {cep}
+                            <Text color="#eaeaea" fontSize = "13px" >
+                                {hotelName}: {street}, {nStreet} / {city} - {uf}, {cep} 
                         </Text>
-                        </HStack> */}
-                    {/* </VStack> */}
+                        </HStack>
+                    
                 </Box>
 
                 {/* Botões empilhados à direita da imagem de aranha */}
@@ -147,6 +172,7 @@ const SelectReservation: React.FC = () => {
                     spacing={6}
                 >
                     <Button
+                        data-cy = "realizar-reserva"
                         height="50px"
                         width="250px"
                         bg="#6A0572"
@@ -154,7 +180,7 @@ const SelectReservation: React.FC = () => {
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaCheck} />}
-                        onClick={() => navigate(`/create-reservation/${reservationData.id}`)}
+                        onClick={() => navigate(`/create-reservation`)}
                     >
                         Realizar Reserva
                     </Button>
@@ -189,7 +215,7 @@ const SelectReservation: React.FC = () => {
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaArrowLeft} />}
-                        onClick={() => navigate(`/reservations`)}
+                        onClick={() => navigate(-1)}
                     >
                         Voltar
                     </Button>

@@ -46,6 +46,38 @@ export interface PublishedReservation{
     imageUrl?: string | null;
 }
 
+// export interface Hotelier{
+//     id: number;
+//     name: string;
+//     email: string; 
+//     username: string; 
+//     password: string; 
+//     hotel: string;
+//     city: string; 
+//     cep: string; 
+//     adress: string; 
+//     n_adress: string; 
+//     UF: string; 
+//     cnpj: string; 
+// }
+
+// export interface PublishedReservationWHotelier{
+//     id: number;
+//     name: string;
+//     rooms: number; 
+//     people: number; 
+//     wifi: boolean;
+//     breakfast: boolean;  
+//     airConditioner: boolean; 
+//     parking: boolean;
+//     room_service: boolean;
+//     price: number;
+//     new_price: number;
+//     promotion_id?: number | null;
+//     hotelier_id: number;
+//     hotelier: Hotelier;
+//     imageUrl?: string | null;
+// }
 export interface IGetReservationsByFilters{
     num_rooms: number;
     num_adults: number;
@@ -117,6 +149,7 @@ export default class PublishedReservationController{
     
     // private getPublishedReservationWithHotelierById(req: Request, res: Response) {
     //     const { id } = req.params;
+    //     console.log(`Request received with id: ${id}`);
     //     const reservation =
     //         this.publishedReservationService.getPublishedReservationWithHotelierById(+id);
     //     res.status(200).json(reservation);
