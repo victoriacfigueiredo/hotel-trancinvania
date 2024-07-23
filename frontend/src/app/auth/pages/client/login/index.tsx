@@ -172,7 +172,7 @@ const LoginClient: React.FC = () => {
               </form>
               <Box textAlign="left" mt={6}>
                 <Text>
-                  Ainda nÃ£o possui conta? <br />
+                  Ainda não possui conta? <br />
                   Cadastre-se como{" "}
                   <Link
                     color="#0097B2"
@@ -181,7 +181,7 @@ const LoginClient: React.FC = () => {
                   >
                     Cliente
                   </Link>
-                  , para fazer reservas incrÃ­veis.
+                  , para fazer reservas incríveis.
                   <br />
                 </Text>
               </Box>

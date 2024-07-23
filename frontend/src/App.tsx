@@ -24,6 +24,7 @@ import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
+import  Cartoes  from "./app/PaymentMethods/pages/MyCards";
 import EditProfileHotelier from "./app/auth/pages/hotelier/profile";
 import { AuthWrapper } from "./shared/components/auth-wrapper";
 import NotFoundPage from "./app/home/pages/notfound";
@@ -192,6 +193,14 @@ const router = createBrowserRouter([
   {
     path: "/reservations",
     Component: AllPublishedReservationClient,
+  },
+  {
+    path : '/client/paymentMethods',
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Cartoes/>
+      </AuthWrapper>
+    ),
   },
 ]);
 

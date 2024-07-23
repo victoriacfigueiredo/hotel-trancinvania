@@ -150,7 +150,7 @@ export const NavBar: React.FC = () => {
                       <MenuItem as={RouterLink} to="/client/profile">
                         Meu Perfil
                       </MenuItem>
-                      <MenuItem as={RouterLink} to="/client/payment">
+                      <MenuItem as={RouterLink} to="/client/paymentMethods">
                         Pagamento
                       </MenuItem>
                     </>
@@ -208,7 +208,7 @@ export const NavBar: React.FC = () => {
               onClick={onClose}
             >
               <FaSpider style={{ marginRight: "6px" }} />
-              <Text>Início</Text>
+              <Text>InÃ­cio</Text>
             </Link>
 
             <Box mb={4}>
@@ -290,7 +290,7 @@ export const NavBar: React.FC = () => {
                         </Link>
                         <Link
                           as={RouterLink}
-                          to="/client/payment"
+                          to="/client/paymentMethods"
                           display="block"
                           textDecoration="none"
                           color="#000000"
