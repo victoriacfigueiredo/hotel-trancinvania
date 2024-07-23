@@ -17,6 +17,7 @@ Para rodar as migrations:
 
 npx prisma migrate dev --name init
 
+sudo docker exec -i backend-postgres-1 psql -U htrancinvania -d htrancinvania < ./dump.sql
 
 ## Table of Contents
 
