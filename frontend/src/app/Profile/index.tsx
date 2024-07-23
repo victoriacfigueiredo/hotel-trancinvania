@@ -1,9 +1,11 @@
-//import React from "react";
+
+import React from "react";
 import { Box, Image, Text, Container, Button } from "@chakra-ui/react";
+
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { BottomLeftTopRightImages } from "../../shared/components/spider-images";
 import { Global } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NavBar } from "../../shared/components/nav-bar";
 //import { Fonts } from "../../shared/theme/Fonts";
 
@@ -15,7 +17,13 @@ const iconsUrls = [
   "https://imgur.com/yt1pmFB.png",
 ];
 
-export const Profile = () => {
+export const Profile: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleMyReservations= () => {
+    navigate(`/my-reservations`)
+  };
+
   return (
     <>
       <Global
@@ -96,6 +104,7 @@ export const Profile = () => {
                 justifyContent="space-between"
                 paddingRight="20px"
                 leftIcon={<Image src={iconsUrls[1]} boxSize="30px" />}
+                onClick = {handleMyReservations}
               >
                 <Box flex="1" textAlign="left">
                   Minhas Reservas

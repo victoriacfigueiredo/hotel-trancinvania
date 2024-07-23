@@ -130,7 +130,7 @@ export const NavBar: React.FC = () => {
               display="flex"
               alignItems="center"
             >
-              <Text>
+              <Text data-cy="usernameNavBar">
                 {isLoading
                   ? "Loading..."
                   : isError

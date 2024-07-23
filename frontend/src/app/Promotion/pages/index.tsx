@@ -8,7 +8,7 @@ import {
   Flex, 
   Select, 
   Text, 
-  Box, 
+  Box,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
 import aranhaImg from './aranha.png';

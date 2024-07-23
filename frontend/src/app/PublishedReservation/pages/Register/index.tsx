@@ -134,10 +134,38 @@ export const CheckboxComponent = ({ value, checked, onChange }) => {
 }
 
 export const LabelComponent = ({ id, value, type, input, onChange, placeholder, dataCy }) => {
+    
+    const handleInput = (e) => {
+        if (id === "desconto") {
+            const { value } = e.target;
+            if (value < 0) {
+                e.target.value = 0;
+            } else if (value > 100) {
+                e.target.value = 100;
+            }
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (id === "desconto" || id === "price") {
+            const key = e.key;
+            // Permite números, ponto, vírgula, Backspace e Tab
+            if (!/[0-9.,]/.test(key) && key !== 'Backspace' && key !== 'Tab') {
+                e.preventDefault();
+            }
+        }else if(type === "number"){
+            const key = e.key;
+            // Permite números, ponto, vírgula, Backspace e Tab
+            if (!/[0-9]/.test(key) && key !== 'Backspace' && key !== 'Tab') {
+                e.preventDefault();
+            }
+        }
+    };
+
     return (
         <FormControl mb="15px">
             <FormLabel htmlFor={id} color="white" mb="8px">{value}</FormLabel>
-            <Input isRequired data-cy={dataCy} id={ id } type={type} min={0} max={100} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
+            <Input isRequired data-cy={dataCy} id={ id } type={type} min={0} onKeyDown={handleKeyDown} max={100} onInput={handleInput} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
         </FormControl>
     );
 };

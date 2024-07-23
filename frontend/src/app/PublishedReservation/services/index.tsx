@@ -10,6 +10,11 @@ export async function getPublishedReservationById(reservation_id: number){
     return response.data;
 }
 
+// export async function getPublishedReservationWithHotelierById(reservation_id: number){
+//     const response = await apiService.get(`/reservations/hotelier/${reservation_id}`);
+//     return response.data;
+// }
+
 export async function createPublishedReservation(hotelier_id: number, name: string, rooms: number, people: number, wifi: boolean, breakfast: boolean, airConditioner: boolean, parking: boolean, room_service: boolean, price: number){
     const response = await apiService.post(`/hotelier/${hotelier_id}/reservations`, {name: name, rooms: rooms, people: people, wifi: wifi, breakfast: breakfast, airConditioner: airConditioner, parking: parking, room_service: room_service, price:price});
     return response.data;
