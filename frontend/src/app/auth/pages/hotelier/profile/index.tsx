@@ -202,12 +202,12 @@ const EditProfileHotelier: React.FC = () => {
                 Meus Dados
               </Text>
             </HStack>
-            <Text mb={10}>
+            <Text mb={10} mt={-7}>
               Você pode visualizar seu cadastro e editar e-mail, username e
               senha.
             </Text>
             <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
-              <VStack spacing={10} alignItems={"flex-start"}>
+              <VStack spacing={10} alignItems={"flex-start"} mt={-7}>
                 <SimpleGrid
                   columns={{ base: 1, md: 2 }}
                   spacing={6}
