@@ -99,16 +99,16 @@ export const AllPublishedReservation = () => {
             <Box p="50px" position="relative">
                     
                 <Flex gap="20px">
-                    <ButtonComponent id="publicReservationButton" label="Publicar Reserva" onClick={() => navigate('/publishedReservation')}/>
-                    <ButtonComponent id="cadastrar-promocao" label="Cadastrar Promoção" onClick={() => navigate('/promotions?action=createAll')}/>
-                    <ButtonDeleteComponent id="deletar-promocoes" label="Deletar Promoções" onClick={handleDeletePromotion}/>
+                    <ButtonComponent  dataCy="publicReservationButton" id="publicReservationButton" label="Publicar Reserva" onClick={() => navigate('/publishedReservation')}/>
+                    <ButtonComponent dataCy="cadastrar-promocao" id="cadastrar-promocao" label="Cadastrar Promoção" onClick={() => navigate('/promotions?action=createAll')}/>
+                    <ButtonDeleteComponent dataCy="deletar-promocoes" id="deletar-promocoes" label="Deletar Promoções" onClick={handleDeletePromotion}/>
                 </Flex>
                 
                 <Flex flexWrap="wrap" gap="75px" mt="50px">
                     {reservations.filter(reservation => reservation.hotelier_id === Number(data?.id)).sort((a, b) => a.id - b.id).map(reservation => (
-                        <Box id={`${replaceSpacesAndRemoveAccents(reservation.name)}`} position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
+                        <Box data-cy={`${replaceSpacesAndRemoveAccents(reservation.name)}`} id={`${replaceSpacesAndRemoveAccents(reservation.name)}`} position="relative" w="250px" h="300px" _hover={{transform: 'translateY(-5px)'}}>
                             {reservation.promotion_id && (
-                                <Flex id="bat" alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" style={{ backgroundImage: `url(${morcegoImg})` }}> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
+                                <Flex data-cy="bat" id="bat" alignItems="center" justifyContent="center" color="#eaeaea" fontSize="20px" textAlign="center" position="absolute" bottom="77%" left="80%" width="90px" height="90px" backgroundSize="contain" backgroundRepeat="no-repeat" zIndex="1" style={{ backgroundImage: `url(${morcegoImg})` }}> <Box transform={'translateY(-60%)'} fontSize="13px">{promotion[reservation.id] !== 0 && `${promotion[reservation.id]}%`}</Box></Flex>
                             )}
                             <Box position="relative" w="270px" h="300px" bg="transparent"  borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer" key={reservation.id} onClick={() => handleReservationClick(reservation)}>
                                 <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px"  style={{backgroundImage: `url(http://localhost:5001${reservation.imageUrl})`}}></Box>
@@ -126,20 +126,20 @@ export const AllPublishedReservation = () => {
     );
 }
 
-const ButtonComponent = ({id, label, onClick}) => {
+const ButtonComponent = ({id, label, onClick, dataCy}) => {
     return (
-        <Button id={id} bg="#eaeaea" onClick={onClick}>
+        <Button data-cy={dataCy} id={id} bg="#eaeaea" onClick={onClick}>
             {label}
         </Button>
     )
 }
 
-const ButtonDeleteComponent = ({id, label, onClick}) => {
+const ButtonDeleteComponent = ({id, label, onClick, dataCy}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     return (
         <Box>
-            <Button id={id} bg="#eaeaea" onClick={onOpen}>
+            <Button data-cy={dataCy} id={id} bg="#eaeaea" onClick={onOpen}>
                 {label}
             </Button>
             <AlertDialog 
@@ -161,7 +161,7 @@ const ButtonDeleteComponent = ({id, label, onClick}) => {
                         <Button ref={cancelRef} onClick={onClose}>
                         Não
                         </Button>
-                        <Button id="yes-button"  ml={3} onClick={() => {
+                        <Button data-cy="yes-button" id="yes-button"  ml={3} onClick={() => {
                             onClick();
                             onClose(); 
                         }}>

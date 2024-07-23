@@ -104,10 +104,10 @@ export const PublishedReservation = () => {
                             </Flex>
                         </Box>
                         <Box>
-                            <LabelComponent id="name" value="Nome" type="text" input={name} onChange={handleDataChange(setName)} placeholder={""}/>
-                            <LabelComponent id="rooms" value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)} placeholder={""}/>
-                            <LabelComponent id="people" value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)} placeholder={""}/>
-                            <LabelComponent id="price" value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)} placeholder={"R$"}/>
+                            <LabelComponent dataCy="name" id="name" value="Nome" type="text" input={name} onChange={handleDataChange(setName)} placeholder={""}/>
+                            <LabelComponent dataCy="rooms" id="rooms" value="Quantidade de Quartos" type="number" input={rooms} onChange={handleDataChange(setRooms)} placeholder={""}/>
+                            <LabelComponent dataCy="people" id="people" value="Quantidade de Pessoas" type="number" input={people} onChange={handleDataChange(setPeople)} placeholder={""}/>
+                            <LabelComponent dataCy="price" id="price" value="Valor" type="number" input={price} onChange={handleDataChange(setPrice)} placeholder={"R$"}/>
 
                         </Box>
                     </Flex>
@@ -133,11 +133,39 @@ export const CheckboxComponent = ({ value, checked, onChange }) => {
     );
 }
 
-export const LabelComponent = ({ id, value, type, input, onChange, placeholder }) => {
+export const LabelComponent = ({ id, value, type, input, onChange, placeholder, dataCy }) => {
+    
+    const handleInput = (e) => {
+        if (id === "desconto") {
+            const { value } = e.target;
+            if (value < 0) {
+                e.target.value = 0;
+            } else if (value > 100) {
+                e.target.value = 100;
+            }
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (id === "desconto" || id === "price") {
+            const key = e.key;
+            // Permite números, ponto, vírgula, Backspace e Tab
+            if (!/[0-9.,]/.test(key) && key !== 'Backspace' && key !== 'Tab') {
+                e.preventDefault();
+            }
+        }else if(type === "number"){
+            const key = e.key;
+            // Permite números, ponto, vírgula, Backspace e Tab
+            if (!/[0-9]/.test(key) && key !== 'Backspace' && key !== 'Tab') {
+                e.preventDefault();
+            }
+        }
+    };
+
     return (
         <FormControl mb="15px">
             <FormLabel htmlFor={id} color="white" mb="8px">{value}</FormLabel>
-            <Input isRequired id={ id } type={type} min={0} max={100} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
+            <Input isRequired data-cy={dataCy} id={ id } type={type} min={0} onKeyDown={handleKeyDown} max={100} onInput={handleInput} value={input} onChange={onChange} bg="#6A0572" color="white" p="10px" borderRadius="4px" border="1px solid #eaeaea" fontSize="16px" placeholder={placeholder} _placeholder={{color: "#eaeaea"}}/>
         </FormControl>
     );
 };

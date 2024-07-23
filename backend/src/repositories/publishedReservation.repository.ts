@@ -94,6 +94,16 @@ export default class PublishedReservationRepository {
         return reservation as PublishedReservation;
     }
 
+    // async getPublishedReservationWithHotelierById(id: number): Promise<PublishedReservation> {
+    //     const reservation = await prisma.publishedReservation.findUnique({
+    //         where: { id: id },
+    //         include: {
+    //             hotelier: true,
+    //         },
+    //     });
+    //     return reservation as PublishedReservation;
+    // }
+
     async insertPublishedReservation(params: PublishedReservation): Promise <number> {
         const result = await prisma.publishedReservation.create({data: params});
         return result.id;
@@ -128,12 +138,14 @@ export default class PublishedReservationRepository {
                 people: {
                     gte: (num_adults + (num_children*0.5))
                 },
-                rooms: num_rooms,
+                rooms: {
+                    gte: num_rooms
+                },
             }
         });
 
         if (!reservations) {
-            throw new Error('Nenhuma reserva encontrada para o período especificado');
+            throw new Error('Nenhuma reserva encontrada para o perï¿½odo especificado');
         }
 
         return reservations as PublishedReservation[];

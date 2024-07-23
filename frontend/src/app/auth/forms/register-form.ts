@@ -19,7 +19,7 @@ export const RegisterClientSchema = z
       .string()
       .regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, { message: "Telefone inválido" }),
     birthDate: z.string(),
-    confirmPassword: passwordValidation,
+    confirmPassword: z.string(),
   })
   .refine(
     (data) => {
@@ -63,21 +63,19 @@ export const RegisterHotelierSchema = z
     hotel: z.string().min(1, { message: "Nome do Hotel é obrigatório" }),
     cep: z
       .string()
-      .min(8, { message: "CEP é obrigatório e deve ter 8 dígitos" })
-      .max(8, { message: "CEP deve ter 8 dígitos" }),
+      .min(9, { message: "CEP é obrigatório e deve ter 8 dígitos" })
+      .max(9, { message: "CEP deve ter 8 dígitos" }),
     address: z.string().min(1, { message: "Endereço do Hotel é obrigatório" }),
     city: z.string().min(1, { message: "Cidade é obrigatória" }),
-    n_address: z
-      .string()
-      .min(1, { message: "Número do Endereço é obrigatório" }),
+    n_address: z.string().min(1, { message: "Nº é obrigatório" }),
     UF: z
       .string()
-      .min(2, { message: "UF é obrigatório e deve ter 2 caracteres" })
+      .min(2, { message: "UF é obrigatório" })
       .max(2, { message: "UF deve ter 2 caracteres" }),
     cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, {
       message: "CNPJ Inválido",
     }),
-    confirmPassword: passwordValidation,
+    confirmPassword: z.string(),
   })
   .refine(
     (data) => {

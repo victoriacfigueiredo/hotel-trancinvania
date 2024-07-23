@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,9 @@ import {
   Link,
   Text,
   VStack,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,14 +26,17 @@ import { useLoginClientMutation } from "../../../hooks";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const moonImage = "https://i.imgur.com/QxLtz78.png";
-//const barImage = "https://i.imgur.com/JamSVlX.png";
 const barImage = "https://i.imgur.com/GTJmsKo.png";
 const ghostFrontImage = "https://i.imgur.com/RF0q2DH.png";
 const ghostSideImage = "https://i.imgur.com/WzIJXdV.png";
 
 const LoginClient: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClick = () => setShowPassword(!showPassword);
   const navigate = useNavigate();
   const loginClientMutation = useLoginClientMutation();
   const {
@@ -46,7 +52,7 @@ const LoginClient: React.FC = () => {
       await loginClientMutation.mutateAsync(data);
       toast.success(`Login bem-sucedido! Bem-vindo, ${data.username}!`);
       setTimeout(() => {
-        navigate("/reservation");
+        navigate("/reservations");
       }, 3000);
     } catch (error) {
       toast.error("Falha ao fazer login. Tente novamente.");
@@ -108,13 +114,26 @@ const LoginClient: React.FC = () => {
                     </FormControl>
                     <FormControl isInvalid={!!errors.password} maxWidth="400px">
                       <FormLabel htmlFor="password">Senha</FormLabel>
-                      <Input
-                        id="password"
-                        alignSelf={"center"}
-                        type="password"
-                        placeholder="Senha"
-                        {...register("password")}
-                      />
+                      <InputGroup>
+                        <Input
+                          id="password"
+                          alignSelf={"center"}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Senha"
+                          {...register("password")}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <IconButton
+                            h="1.75rem"
+                            size="sm"
+                            onClick={handleClick}
+                            icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                            aria-label={""}
+                            variant="
+                             unstyled"
+                          />
+                        </InputRightElement>
+                      </InputGroup>
                       {errors.password && (
                         <Text color="red.500">{errors.password.message}</Text>
                       )}

@@ -6,8 +6,13 @@ import { RecoveryFormInputs } from "../forms/recovery-form";
 import { RecoveryEmailResponse } from "../models/PasswordModel";
 import {
   RegisterClientFormInputsWithoutConfirmPassword,
-  RegisterHotelierFormInputs,
+  RegisterHotelierFormInputsWithoutConfirmPassword,
 } from "../forms/register-form";
+import {
+  UpdateClientFormInputs,
+  UpdateHotelierFormInputs,
+} from "../forms/update-form";
+import { sessionManager } from "../../../shared/config/session-manager";
 
 export async function loginClient({
   username,
@@ -17,9 +22,8 @@ export async function loginClient({
     username,
     password,
   });
-  localStorage.setItem("accessToken", response.data.token);
-  localStorage.setItem("userType", "client");
-  localStorage.setItem("userName", username);
+  sessionManager.setToken(response.data.token);
+  sessionManager.setUserType("client");
   return response.data;
 }
 
@@ -53,8 +57,25 @@ export async function registerClient(
   return response.data;
 }
 
+export async function updateClientData(
+  data: UpdateClientFormInputs,
+  id: string
+): Promise<void> {
+  const response = await apiService.patch(`/client/update/${id}`, data);
+  //console.log(response.data);
+  return response.data;
+}
+
+export async function updateHotelierData(
+  data: UpdateHotelierFormInputs,
+  id: string
+): Promise<void> {
+  const response = await apiService.patch(`/hotelier/update/${id}`, data);
+  //console.log(response.data);
+  return response.data;
+}
 export async function registerHotelier(
-  data: RegisterHotelierFormInputs
+  data: RegisterHotelierFormInputsWithoutConfirmPassword
 ): Promise<void> {
   const response = await apiService.post("/hotelier/create", data);
   console.log(response.data);
@@ -72,9 +93,8 @@ export async function loginHotelier({
       password,
     }
   );
-  localStorage.setItem("accessToken", response.data.token);
-  localStorage.setItem("userType", "hotelier");
-  localStorage.setItem("userName", username);
+  sessionManager.setToken(response.data.token);
+  sessionManager.setUserType("hotelier");
   return response.data;
 }
 
@@ -98,4 +118,8 @@ export async function sendRecoveryEmailHotelier({
     }
   );
   return response.data;
+}
+
+export function logout(): void {
+  sessionManager.logout();
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -13,7 +13,11 @@ import {
   SimpleGrid,
   GridItem,
   Image,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import InputMask from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +36,8 @@ const tombstoneImage = "https://i.imgur.com/yLVjxc0.png";
 const coffinImage = "https://i.imgur.com/F9i7OQE.png";
 
 const RegisterClient: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClick = () => setShowPassword(!showPassword);
   const navigate = useNavigate();
   const registerClientMutation = useRegisterClientMutation();
   const {
@@ -55,9 +61,9 @@ const RegisterClient: React.FC = () => {
         password: data.password,
       };
       await registerClientMutation.mutateAsync(newData);
-      toast.success(`Cadastro bem-sucedido! Bem-vindo, ${data.username}!`, {
+      toast.success(`Cadastro bem-sucedido! Obrigado, ${data.username}!`, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
       });
       setTimeout(() => {
         navigate("/client/login");
@@ -73,7 +79,7 @@ const RegisterClient: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
-      <ToastContainer position="top-right" theme="dark" autoClose={5000} />
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -228,13 +234,28 @@ const RegisterClient: React.FC = () => {
                     <GridItem colSpan={1}>
                       <FormControl isInvalid={!!errors.password}>
                         <FormLabel htmlFor="password">Senha</FormLabel>
-                        <Input
-                          id="password"
-                          type="password"
-                          placeholder="Digite sua senha"
-                          {...register("password")}
-                          maxW={{ base: "100%", md: "300px" }}
-                        />
+                        <InputGroup>
+                          <Input
+                            id="password"
+                            alignSelf={"center"}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Digite sua senha"
+                            {...register("password")}
+                          />
+                          <InputRightElement width="4.5rem">
+                            <IconButton
+                              h="1.75rem"
+                              size="sm"
+                              onClick={handleClick}
+                              icon={
+                                showPassword ? <ViewOffIcon /> : <ViewIcon />
+                              }
+                              aria-label={""}
+                              variant="
+                             unstyled"
+                            />
+                          </InputRightElement>
+                        </InputGroup>
                         {errors.password && (
                           <Text color="red.500">{errors.password.message}</Text>
                         )}
@@ -245,13 +266,29 @@ const RegisterClient: React.FC = () => {
                         <FormLabel htmlFor="confirmPassword">
                           Confirmação de Senha
                         </FormLabel>
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          placeholder="Digite a senha novamente"
-                          {...register("confirmPassword")}
-                          maxW={{ base: "100%", md: "300px" }}
-                        />
+                        <InputGroup>
+                          <Input
+                            id="confirmPassword"
+                            alignSelf={"center"}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Digite a senha novamente"
+                            {...register("confirmPassword")}
+                          />
+                          <InputRightElement width="4.5rem">
+                            <IconButton
+                              h="1.75rem"
+                              size="sm"
+                              onClick={handleClick}
+                              icon={
+                                showPassword ? <ViewOffIcon /> : <ViewIcon />
+                              }
+                              aria-label={""}
+                              variant="
+                             unstyled"
+                            />
+                          </InputRightElement>
+                        </InputGroup>
+
                         {errors.confirmPassword && (
                           <Text color="red.500">
                             {errors.confirmPassword.message}

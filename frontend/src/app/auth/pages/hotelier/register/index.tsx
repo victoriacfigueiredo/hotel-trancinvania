@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -22,11 +22,14 @@ import {
   StepStatus,
   StepTitle,
   Stepper,
-  useToast,
   ButtonGroup,
   Progress,
+  useToast,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
-import InputMask from "react-input-mask";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +40,8 @@ import {
 } from "../../../forms/register-form";
 import { BottomLeftTopRightImages } from "../../../../../shared/components/spider-images";
 import { NavBar } from "../../../../../shared/components/nav-bar";
+import CustomInputMask from "./CustomInputMask";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const tombstoneImage = "https://i.imgur.com/yLVjxc0.png";
@@ -45,11 +50,12 @@ const witchImage = "https://i.imgur.com/2GXn2sj.png";
 const steps = [{ title: "Seus Dados" }, { title: "Dados do Hotel" }];
 
 const RegisterHotelier: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClick = () => setShowPassword(!showPassword);
   const { activeStep, setActiveStep } = useSteps();
   const navigate = useNavigate();
   const registerHotelierMutation = useRegisterHotelierMutation();
-  const toast = useToast();
-
+  const toastChakra = useToast();
   const {
     register,
     handleSubmit,
@@ -62,25 +68,32 @@ const RegisterHotelier: React.FC = () => {
 
   const onSubmit = async (data: RegisterHotelierFormInputs) => {
     try {
-      await registerHotelierMutation.mutateAsync(data);
-      toast({
-        title: "Cadastro bem-sucedido!",
-        description: `Bem-vindo, ${data.username}!`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
+      const newData = {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        password: data.password,
+        hotel: data.hotel,
+        cnpj: data.cnpj,
+        address: data.address,
+        n_address: data.n_address,
+        city: data.city,
+        UF: data.UF,
+        cep: data.cep.replace(/\D/g, ""),
+      };
+      await registerHotelierMutation.mutateAsync(newData);
+      toast.success(`Cadastro bem-sucedido! Obrigado, ${data.username}!`, {
+        position: "top-right",
+        autoClose: 3000,
       });
       setTimeout(() => {
         navigate("/hotelier/login");
       }, 3000);
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
-      toast({
-        title: "Erro no cadastro",
-        description: error.response?.data?.message || "Erro desconhecido",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
+      toast.error(error.response?.data?.message || "Erro desconhecido", {
+        position: "top-right",
+        autoClose: 5000,
       });
     }
   };
@@ -101,7 +114,7 @@ const RegisterHotelier: React.FC = () => {
           setValue("city", data.localidade);
           setValue("UF", data.uf);
         } else {
-          toast({
+          toastChakra({
             title: "Erro",
             description: "CEP não encontrado.",
             status: "error",
@@ -111,7 +124,7 @@ const RegisterHotelier: React.FC = () => {
         }
       } catch (error) {
         console.error("Erro ao buscar o CEP:", error);
-        toast({
+        toastChakra({
           title: "Erro",
           description: "Erro ao buscar o CEP.",
           status: "error",
@@ -126,6 +139,7 @@ const RegisterHotelier: React.FC = () => {
 
   return (
     <Box bg="#191919" color="white" minH="100vh" fontFamily="Inter, sans-serif">
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <NavBar />
       <BottomLeftTopRightImages />
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
@@ -156,7 +170,7 @@ const RegisterHotelier: React.FC = () => {
                 Tem um hotel para monstros ou humanos? Cadastre-o conosco e seja
                 bem-vindo ao Hotel Trancinvânia!
               </Text>
-              <Box position="relative">
+              <Box position="relative" mb={3}>
                 <Stepper index={activeStep}>
                   {steps.map((step, index) => (
                     <Step key={index}>
@@ -238,13 +252,28 @@ const RegisterHotelier: React.FC = () => {
                       <GridItem colSpan={1}>
                         <FormControl isInvalid={!!errors.password}>
                           <FormLabel htmlFor="password">Senha</FormLabel>
-                          <Input
-                            id="password"
-                            type="password"
-                            placeholder="Digite sua senha"
-                            {...register("password")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
+                          <InputGroup>
+                            <Input
+                              id="password"
+                              alignSelf={"center"}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Digite sua senha"
+                              {...register("password")}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <IconButton
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                                icon={
+                                  showPassword ? <ViewOffIcon /> : <ViewIcon />
+                                }
+                                aria-label={""}
+                                variant="
+                             unstyled"
+                              />
+                            </InputRightElement>
+                          </InputGroup>
                           {errors.password && (
                             <Text color="red.500">
                               {errors.password.message}
@@ -257,13 +286,29 @@ const RegisterHotelier: React.FC = () => {
                           <FormLabel htmlFor="confirmPassword">
                             Confirmação de Senha
                           </FormLabel>
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Digite a senha novamente"
-                            {...register("confirmPassword")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
+                          <InputGroup>
+                            <Input
+                              id="confirmPassword"
+                              alignSelf={"center"}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Digite a senha novamente"
+                              {...register("confirmPassword")}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <IconButton
+                                h="1.75rem"
+                                size="sm"
+                                onClick={handleClick}
+                                icon={
+                                  showPassword ? <ViewOffIcon /> : <ViewIcon />
+                                }
+                                aria-label={""}
+                                variant="
+                             unstyled"
+                              />
+                            </InputRightElement>
+                          </InputGroup>
+
                           {errors.confirmPassword && (
                             <Text color="red.500">
                               {errors.confirmPassword.message}
@@ -313,14 +358,34 @@ const RegisterHotelier: React.FC = () => {
                         </FormControl>
                       </GridItem>
                       <GridItem colSpan={1}>
+                        <FormControl isInvalid={!!errors.cnpj}>
+                          <FormLabel htmlFor="cnpj">CNPJ</FormLabel>
+                          <Controller
+                            name="cnpj"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomInputMask
+                                mask="99.999.999/9999-99"
+                                id="cnpj"
+                                placeholder="00.000.000/0000-00"
+                                {...field}
+                                maxW={{ base: "100%", md: "300px" }}
+                              />
+                            )}
+                          />
+                          {errors.cnpj && (
+                            <Text color="red.500">{errors.cnpj.message}</Text>
+                          )}
+                        </FormControl>
+                      </GridItem>
+                      <GridItem colSpan={1}>
                         <FormControl isInvalid={!!errors.cep}>
                           <FormLabel htmlFor="cep">CEP</FormLabel>
                           <Controller
                             name="cep"
                             control={control}
                             render={({ field }) => (
-                              <Input
-                                as={InputMask}
+                              <CustomInputMask
                                 mask="99999-999"
                                 id="cep"
                                 placeholder="00000-000"
@@ -366,61 +431,37 @@ const RegisterHotelier: React.FC = () => {
                         </FormControl>
                       </GridItem>
                       <GridItem colSpan={1}>
-                        <FormControl isInvalid={!!errors.n_address}>
-                          <FormLabel htmlFor="n_address">
-                            Número do Endereço
-                          </FormLabel>
-                          <Input
-                            id="n_address"
-                            placeholder="Número do Endereço"
-                            {...register("n_address")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
-                          {errors.n_address && (
-                            <Text color="red.500">
-                              {errors.n_address.message}
-                            </Text>
-                          )}
-                        </FormControl>
-                      </GridItem>
-                      <GridItem colSpan={1}>
-                        <FormControl isInvalid={!!errors.UF}>
-                          <FormLabel htmlFor="UF">UF</FormLabel>
-                          <Input
-                            id="UF"
-                            placeholder="UF"
-                            {...register("UF")}
-                            maxW={{ base: "100%", md: "300px" }}
-                          />
-                          {errors.UF && (
-                            <Text color="red.500">{errors.UF.message}</Text>
-                          )}
-                        </FormControl>
-                      </GridItem>
-                      <GridItem colSpan={1}>
-                        <FormControl isInvalid={!!errors.cnpj}>
-                          <FormLabel htmlFor="cnpj">CNPJ</FormLabel>
-                          <Controller
-                            name="cnpj"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                as={InputMask}
-                                mask="99.999.999/9999-99"
-                                id="cnpj"
-                                placeholder="00.000.000/0000-00"
-                                {...field}
-                                maxW={{ base: "100%", md: "300px" }}
-                              />
+                        <HStack spacing={4}>
+                          <FormControl isInvalid={!!errors.UF}>
+                            <FormLabel htmlFor="uf">UF</FormLabel>
+                            <Input
+                              id="UF"
+                              placeholder="UF"
+                              {...register("UF")}
+                              maxW={{ base: "100%", md: "140px" }}
+                            />
+                            {errors.UF && (
+                              <Text color="red.500">{errors.UF.message}</Text>
                             )}
-                          />
-                          {errors.cnpj && (
-                            <Text color="red.500">{errors.cnpj.message}</Text>
-                          )}
-                        </FormControl>
+                          </FormControl>
+                          <FormControl isInvalid={!!errors.n_address}>
+                            <FormLabel htmlFor="n_address">Nº</FormLabel>
+                            <Input
+                              id="n_address"
+                              placeholder="Nº"
+                              {...register("n_address")}
+                              maxW={{ base: "100%", md: "140px" }}
+                            />
+                            {errors.n_address && (
+                              <Text color="red.500">
+                                {errors.n_address.message}
+                              </Text>
+                            )}
+                          </FormControl>
+                        </HStack>
                       </GridItem>
                     </SimpleGrid>
-                    <ButtonGroup spacing={4}>
+                    <ButtonGroup spacing={4} alignSelf="flex-end">
                       <Button onClick={handleBack} colorScheme="gray">
                         Voltar
                       </Button>
@@ -463,9 +504,13 @@ const RegisterHotelier: React.FC = () => {
                 </VStack>
               </HStack>
               <VStack spacing={2} align="center">
-                <Image src={witchImage} width={"173px"} height={"auto"} />
-                <Text>Procurando novas aventuras?</Text>
+                <HStack spacing={4} align="center">
+                  <Image src={witchImage} width={"80px"} height={"auto"} />
+                  <Text>Procurando novas aventuras?</Text>
+                </HStack>
                 <Button
+                  alignSelf="flex-start"
+                  mt={2}
                   onClick={() => navigate("/client/register")}
                   bg="#6A0572"
                   colorScheme="purple"
