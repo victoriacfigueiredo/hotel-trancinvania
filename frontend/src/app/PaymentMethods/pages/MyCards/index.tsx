@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getPayMethodsByClient, deletePayMethodsById, postPayMethods, editPayMethods } from '../../services';
 import {
   Box,
@@ -23,8 +23,16 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { NavBar } from '../../../../shared/components/nav-bar';
-import { colors } from '../../../PaymentMethods/models/colors'; // Importe o arquivo de cores
+import { colors } from '../../context/colors'; // Importe o arquivo de cores
 import { CardModel, CardType } from '../../models/card';
+import { useClientData } from "../../../auth/hooks/useUserData";
+
+const { data } = useClientData();
+const client_id = Number(data?.id);
+
+const getCardColor = (cvv) => {
+  return colors.cardColors[cvv % 3];
+};
 
 const CartaoItem = ({ cartao, selecionado, onClick }) => (
   <Box
@@ -36,12 +44,13 @@ const CartaoItem = ({ cartao, selecionado, onClick }) => (
     display="flex"
     alignItems="center"
     width="100%"
+    height= "80%"
     borderWidth={selecionado ? 2 : 1}
     borderColor={selecionado ? colors.cardBorderSelected : colors.cardBorder}
   >
-    <Box bg={colors.cardBackground} width="80px" height="30px" mr={4} />
-    <Box>
-      <Text fontSize="sm">Cartão de crédito terminando em **** {cartao.numCard ? cartao.numCard.slice(-4) : 'Número desconhecido'}</Text>
+    <Box bg={getCardColor(cartao.cvv)} width="50px" height="30px" mr={4} />
+    <Box flex="1">
+      <Text fontSize="sm">Cartão de {cartao.type === CardType.CREDITO ? 'crédito' : 'débito'} terminando em **** {cartao.numCard ? cartao.numCard.slice(-4) : 'Número desconhecido'}</Text>
     </Box>
   </Box>
 );
@@ -51,12 +60,12 @@ const CartaoDetalhes = ({ cartao, onEdit, onDelete }) => {
     return null;
   }
 
-  const { name, numCard, type } = cartao;
+  const { name, numCard, type, cvv } = cartao;
 
   return (
     <Box bg="#EAEAEA" p={6} borderRadius="md" boxShadow="md" width={{ base: '100%', md: '500px' }} mt={{ base: 4, md: 0 }}>
       <Box
-        bg={colors.cardBackground}
+        bg={getCardColor(cvv)}
         height="250px"
         borderRadius="md"
         mb={4}
@@ -74,7 +83,7 @@ const CartaoDetalhes = ({ cartao, onEdit, onDelete }) => {
           top={4}
           left={4}
         >
-          {type || 'Tipo desconhecido'}
+          {type === CardType.CREDITO ? 'Crédito' : 'Débito'}
         </Text>
         <Text
           fontSize="md"
@@ -113,10 +122,10 @@ const Cartoes = () => {
     cvv: 0,
     expiryDate: '',
     type: CardType.CREDITO,
-    clientId: 7, // Substitua isso pelo método real de obter o clientId
+    clientId: client_id, // Substitua isso pelo método real de obter o clientId
     cpf: '',
   });
-  const clientId = 7; // Substitua isso pelo método real de obter o clientId
+  const clientId = client_id; // Substitua isso pelo método real de obter o clientId
   const toast = useToast();
 
   useEffect(() => {
@@ -237,7 +246,7 @@ const Cartoes = () => {
 
   return (
     <Box bg={colors.background} minH="100vh" color={colors.text} display="flex" flexDirection="column" alignItems="center">
-      <Box width="100%">
+      <Box width="100%" zIndex={3} position="relative"> {/* Adicionando position relative */}
         <NavBar />
       </Box>
       <Flex
@@ -250,6 +259,8 @@ const Cartoes = () => {
         width="100%"
         direction={{ base: 'column', md: 'row' }}
         align="flex-start"
+        zIndex={3} // Mantendo zIndex para garantir sobreposição
+        position="relative" // Adicionando position relative
       >
         <Flex
           flexDirection="row"
@@ -268,9 +279,11 @@ const Cartoes = () => {
               maxH="200px"
               overflowY="auto"
               boxShadow="md"
+              zIndex={3} // Garantir que fique sobre a imagem
+              position="relative"
             >
-              <Text fontSize="4xl" mb={4} fontWeight="bold" color={colors.title}>Carteira</Text>
-              <Text mb={4} color={colors.title}>Cartões Cadastrados</Text>
+              <Text fontSize="6xl" mb={4} fontFamily="Trancinfont" fontWeight="400" letterSpacing={"-0.07em"} color={colors.title}>CarTeira</Text>
+              <Text fontSize="3xl" mb={4} fontFamily="Trancinfont" fontWeight="400" letterSpacing={"-0.07em"} color={colors.title}>CarTões CadasTrados</Text>
             </Box>
             <Box
               bg={colors.cardBackground}
@@ -278,9 +291,11 @@ const Cartoes = () => {
               borderRadius="md"
               mb={4}
               width="100%"
-              maxH="500px"
+              maxH="200px"
               overflowY="auto"
               boxShadow="md"
+              zIndex={3} // Garantir que fique sobre a imagem
+              position="relative"
             >
               <VStack spacing={4} width="100%">
                 {cartoes.map(cartao => (
@@ -314,7 +329,7 @@ const Cartoes = () => {
             </Box>
           </Flex>
           {cartaoSelecionado && (
-            <Box ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} width={{ base: '100%', md: '500px' }} display="flex" alignItems="center">
+            <Box ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} width={{ base: '100%', md: '500px' }} display="flex" alignItems="center" position="relative">
               <CartaoDetalhes
                 cartao={cartaoSelecionado}
                 onEdit={handleEditCartao}
@@ -324,7 +339,7 @@ const Cartoes = () => {
           )}
         </Flex>
       </Flex>
-
+  
       {/* Modal for adding/editing card */}
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalOverlay />
@@ -342,6 +357,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Número do Cartão</FormLabel>
               <Input
+                maxLength={16}
                 value={formValues.numCard}
                 onChange={(e) => setFormValues({ ...formValues, numCard: e.target.value })}
               />
@@ -350,6 +366,7 @@ const Cartoes = () => {
               <FormLabel>CVV</FormLabel>
               <Input
                 type="number"
+                maxLength={3}
                 value={formValues.cvv}
                 onChange={(e) => setFormValues({ ...formValues, cvv: Number(e.target.value) })}
               />
@@ -357,6 +374,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Data de Expiração</FormLabel>
               <Input
+                maxLength={7}
                 value={formValues.expiryDate}
                 onChange={(e) => setFormValues({ ...formValues, expiryDate: e.target.value })}
               />
@@ -374,6 +392,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>CPF</FormLabel>
               <Input
+                maxLength={11}
                 value={formValues.cpf}
                 onChange={(e) => setFormValues({ ...formValues, cpf: e.target.value })}
               />
@@ -387,8 +406,45 @@ const Cartoes = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+  
+      {/* Imagem de fundo 1 */}
+      <Box
+        position="absolute"
+        bottom={0}
+        right={0}
+        width={{ base: '150px', sm: '200px', md: '230px' }}
+        height={{ base: '250px', sm: '300px', md: '350px' }}
+        zIndex={1} // Garantir que fique atrás de outros elementos
+        overflow="hidden"
+        border="none"
+      >
+        <img
+          src="https://i.imgur.com/En0qPaO.png"
+          alt="mago"
+          style={{ width: '100%', height: '100%', objectFit: 'contain', border: 'none' }}
+        />
+      </Box>
+  
+      {/* Imagem de fundo 2 */}
+      <Box
+        position="absolute"
+        top={{ base: '60px', sm: '70px', md: '80px' }} // Ajuste conforme a altura da sua NavBar
+        left={0}
+        width={{ base: '150px', sm: '180px', md: '200px' }}
+        height={{ base: '200px', sm: '230px', md: '250px' }}
+        zIndex={1} // Garantir que fique atrás de outros elementos
+        overflow="hidden"
+        border="none"
+      >
+        <img
+          src="https://i.imgur.com/9Nrhfzb.png"
+          alt="aranha"
+          style={{ width: '100%', height: '100%', objectFit: 'contain', border: 'none' }}
+        />
+      </Box>
     </Box>
   );
+  
 };
 
 export default Cartoes;
