@@ -2,8 +2,9 @@ import React from 'react';
 import { JustSpider } from '../../components/just-spider';
 import { useNavigate } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
-import { FaMapMarkerAlt, FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
+import { FaWhatsapp, FaTwitter, FaFacebook } from 'react-icons/fa';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
@@ -11,7 +12,7 @@ import { saveReservation } from '../../../Wishlist/services';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { SaveModel } from '../../../Wishlist/models';
-import { ToastContainer, toast } from 'react-toastify'; 
+import { ToastContainer, toast } from 'react-toastify';
 import { useClientData } from '../../../auth/hooks/useUserData';
 import { useReservationContext } from '../../../PublishedReservation/context';
 // import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
@@ -80,8 +81,13 @@ const SelectReservation: React.FC = () => {
     const navigate = useNavigate();
 
     const handleSaveReservation = async () => {
-        if (!reservationData.id) {
+        if (!selectedReservation?.id) {
             toast.error('ID da reserva não encontrado.');
+            return;
+        }
+
+        if (!clientId) {
+            toast.error('Você precisa estar logado para salvar a reserva.');
             return;
         }
 
@@ -97,6 +103,11 @@ const SelectReservation: React.FC = () => {
             toast.error('Erro ao salvar a reserva.');
         }
     };
+
+    const baseUrl = 'https://hoteltrancinvania.vercel.app/select-reservation/';
+    const share_facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseUrl + reservationData.id)}`;
+    const share_twitter = `https://twitter.com/intent/tweet?url=${encodeURIComponent(baseUrl + reservationData.id)}&text=Confira%20essa%20oferta%20de%20arrepiar!!`;
+    const share_whatsapp = `https://wa.me/?text=${encodeURIComponent(baseUrl + reservationData.id + ' Confira essa oferta de arrepiar!!')}`;
 
     return (
         <Box width="100vw" height="100vh" display="flex" flexDirection="column">
@@ -203,22 +214,37 @@ const SelectReservation: React.FC = () => {
                         color="#EAEAEA"
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
-                        leftIcon={<Icon as={FaShareAlt} />}
-                    >
-                        Compartilhar Reserva
-                    </Button>
-                    <Button
-                        height="50px"
-                        width="250px"
-                        bg="#6A0572"
-                        color="#EAEAEA"
-                        border="1px solid #EAEAEA"
-                        _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaArrowLeft} />}
                         onClick={() => navigate(-1)}
                     >
                         Voltar
                     </Button>
+                    <HStack spacing={6} mt={4}>
+                        <a href={share_facebook} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaFacebook} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                        <a href={share_twitter} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaTwitter} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                        <a href={share_whatsapp} target="_blank" rel="noopener noreferrer">
+                            <Icon 
+                                as={FaWhatsapp} 
+                                color="#EAEAEA" 
+                                boxSize={6} 
+                                _hover={{ color: '#6A0572' }}
+                            />
+                        </a>
+                    </HStack>
                 </VStack>
             </Box>
             <ToastContainer position="top-right" theme="dark" autoClose={3000} /> {/* Adicione esta linha */}
