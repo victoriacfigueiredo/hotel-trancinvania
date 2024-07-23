@@ -91,7 +91,7 @@ const RegisterHotelier: React.FC = () => {
       }, 3000);
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
-      toast.error(error.response?.data?.message || "Erro desconhecido", {
+      toast.error("E-mail ou nome de usuário já existe.", {
         position: "top-right",
         autoClose: 5000,
       });

@@ -33,5 +33,5 @@ So that realizar ações de acordo com o nível de autorização
     And eu preencho o campo "cep" com "51160220"
     And eu preencho o campo "numero-hotel" com "13"
     And eu seleciono "confirmar-cadastro-h"
-    Then eu vejo um toast de sucesso com a mensagem "E-mail ou nome de usuário já existe."
+    Then eu vejo um toast de erro com a mensagem "E-mail ou nome de usuário já existe."
     And eu continuo na página "/hotelier/register"
