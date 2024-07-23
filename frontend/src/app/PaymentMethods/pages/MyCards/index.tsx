@@ -33,7 +33,7 @@ const getCardColor = (cvv) => {
 
 const CartaoItem = ({ cartao, selecionado, onClick }) => (
   <Box
-    data-cy="cartao-item"
+    //data-cy="cartao-item"
     onClick={onClick}
     bg={selecionado ? colors.cardHoverBackground : colors.cardBackground}
     p={4}
@@ -47,8 +47,8 @@ const CartaoItem = ({ cartao, selecionado, onClick }) => (
     borderColor={selecionado ? colors.cardBorderSelected : colors.cardBorder}
   >
     <Box bg={getCardColor(cartao.cvv)} width="50px" height="30px" mr={4} />
-    <Box flex="1">
-      <Text fontSize="sm">Cartão de {cartao.type === CardType.CREDITO ? 'crédito' : 'débito'} terminando em **** {cartao.numCard ? cartao.numCard.slice(-4) : 'Número desconhecido'}</Text>
+    <Box flex="1" >
+      <Text fontSize="sm" data-cy="cartao-item-text">Cartão de {cartao.type === CardType.CREDITO ? 'crédito' : 'débito'} com final **** {cartao.numCard ? cartao.numCard.slice(-4) : 'Número desconhecido'}</Text>
     </Box>
   </Box>
 );
@@ -200,7 +200,7 @@ const Cartoes = () => {
       id: 0,
       name: '',
       numCard: '',
-      cvv: 0,
+      cvv: NaN,
       expiryDate: '',
       type: CardType.CREDITO,
       clientId: clientId,
@@ -302,6 +302,7 @@ const Cartoes = () => {
               <VStack spacing={4} width="100%">
                 {cartoes.map(cartao => (
                   <CartaoItem
+                    //data-cy="cartao-item"
                     key={cartao.id}
                     cartao={cartao}
                     selecionado={cartaoSelecionado && cartao.id === cartaoSelecionado.id}
@@ -322,6 +323,7 @@ const Cartoes = () => {
                     <Text>Adicione um método de pagamento</Text>
                     <IconButton
                       icon={<AddIcon />}
+                      data-cy="add-card-button"
                       colorScheme="teal"
                       aria-label="Adicionar novo método de pagamento"
                     />
@@ -352,7 +354,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Nome</FormLabel>
               <Input
-                data-cy="name-input"
+                data-cy="name"
                 value={formValues.name}
                 onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
               />
@@ -360,7 +362,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Número do Cartão</FormLabel>
               <Input
-                data-cy="num-card-input"
+                data-cy="numCard"
                 maxLength={16}
                 value={formValues.numCard}
                 onChange={(e) => setFormValues({ ...formValues, numCard: e.target.value })}
@@ -369,7 +371,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>CVV</FormLabel>
               <Input
-                data-cy="cvv-input"
+                data-cy="cvv"
                 type="number"
                 maxLength={3}
                 value={formValues.cvv}
@@ -379,7 +381,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>Data de Expiração</FormLabel>
               <Input
-                data-cy="expiry-date-input"
+                data-cy="expiryDate"
                 maxLength={7}
                 value={formValues.expiryDate}
                 onChange={(e) => setFormValues({ ...formValues, expiryDate: e.target.value })}
@@ -399,7 +401,7 @@ const Cartoes = () => {
             <FormControl isRequired mb={4}>
               <FormLabel>CPF</FormLabel>
               <Input
-                data-cy="cpf-input"
+                data-cy="cpf"
                 maxLength={11}
                 value={formValues.cpf}
                 onChange={(e) => setFormValues({ ...formValues, cpf: e.target.value })}
