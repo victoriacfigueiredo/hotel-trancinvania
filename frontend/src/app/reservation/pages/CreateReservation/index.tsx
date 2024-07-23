@@ -22,6 +22,7 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import {
+  FaMapMarkerAlt,
   FaArrowLeft,
   FaArrowRight,
   FaCalendarAlt,
@@ -52,6 +53,8 @@ import { useClientData } from "../../../auth/hooks/useUserData"
 import { createReservation } from '../../services';
 import { getAllPayMethod } from '../../../payment/services'
 import { useReservationContext } from '../../../PublishedReservation/context';
+import { getHotelierById } from '../../../auth/services';
+import { HotelierModel } from '../../models/publishedhotelier';
 
 interface OptionType {
   value: string;
@@ -133,6 +136,7 @@ const CreateReservation: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<SingleValue<OptionType>>(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [paymentOptions, setPaymentOptions] = useState<OptionType[]>([]);
+  const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
   const { data } = useClientData();
 
   const navigate = useNavigate();
@@ -150,6 +154,32 @@ const CreateReservation: React.FC = () => {
     };
     fetchReservationData();
 }, [selectedReservation?.id]);
+
+useEffect(() => {
+  const fetchHotelierData = async () => {
+      if (selectedReservation?.hotelier_id) {
+          try {
+              //console.log('Fetching reservation data for ID:', reservation_id);
+              const response = await getHotelierById(selectedReservation?.hotelier_id) ?? '';
+              //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
+              //console.log('Fetched reservation data:', response);
+              setHotelier(response);
+          } catch (error) {
+              console.error('Erro ao obter os dados da reserva:', error);
+          }
+      }
+  };
+
+  fetchHotelierData();
+}, [selectedReservation?.hotelier_id]);
+
+const hotelName = hotelier.hotel;
+const city = hotelier.city;
+const uf = hotelier.UF;
+const street = hotelier.address;
+const nStreet = hotelier.n_address;
+const cep = hotelier.cep;
+    
 
 useEffect(() => {
   const calculateDays = (startDate: Date | null, endDate: Date | null) => {
@@ -328,6 +358,12 @@ useEffect(() => {
                         {reservationData.breakfast &&  <ServicesComponent value="Café da Manhã" icon={FaCoffee}/>}
                         {reservationData.airConditioner &&  <ServicesComponent value="Ar-condicionado" icon={FaSnowflake}/>}
                         {reservationData.parking &&  <ServicesComponent value="Estacionamento" icon={FaCar}/>}
+          </HStack>
+          <HStack align="center" mt="3">
+              <Icon as={FaMapMarkerAlt} color="#eaeaea" />
+                  <Text color="#eaeaea" fontSize = "13px" >
+                        {hotelName}: {street}, {nStreet} / {city} - {uf}, {cep} 
+                  </Text>
           </HStack>
         </Box>
         <Stepper index={activeStep}>

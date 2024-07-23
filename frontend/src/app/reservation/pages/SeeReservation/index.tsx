@@ -9,7 +9,7 @@ import { Box, Text, Button, HStack, VStack, Icon, Divider, AlertDialog,
   AlertDialogCloseButton,
   useDisclosure } from '@chakra-ui/react';
 import {DeleteIcon} from '@chakra-ui/icons'
-import { FaBed, FaChild, FaUser, FaCalendarAlt, FaEdit, FaWifi, FaConciergeBell, FaCoffee, FaSnowflake, FaCar, FaCreditCard, FaDollarSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaBed, FaChild, FaUser, FaCalendarAlt, FaEdit, FaWifi, FaConciergeBell, FaCoffee, FaSnowflake, FaCar, FaCreditCard, FaDollarSign } from 'react-icons/fa';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { getReservationById, cancelReservation } from '../../services';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
@@ -18,8 +18,11 @@ import { PublishedReservationModel } from '../../../PublishedReservation/models/
 import { FaPerson } from 'react-icons/fa6';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getHotelierById } from '../../../auth/services';
+import { HotelierModel } from '../../models/publishedhotelier';
 
 const SeeReservation: React.FC = () => {
+  const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
   const { reserve_id } = useParams<{ reserve_id: string }>();
   const [reservation, setReservation] = useState<ReserveModel>({} as ReserveModel);
   const [publishedReservation, setPublishedReservation] = useState<PublishedReservationModel>({} as PublishedReservationModel);
@@ -43,6 +46,31 @@ const SeeReservation: React.FC = () => {
 
     fetchReservation();
   }, [reserve_id]);
+
+  useEffect(() => {
+    const fetchHotelierData = async () => {
+        if (publishedReservation?.hotelier_id) {
+            try {
+                //console.log('Fetching reservation data for ID:', reservation_id);
+                const response = await getHotelierById(publishedReservation?.hotelier_id) ?? '';
+                //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
+                //console.log('Fetched reservation data:', response);
+                setHotelier(response);
+            } catch (error) {
+                console.error('Erro ao obter os dados da reserva:', error);
+            }
+        }
+    };
+  
+    fetchHotelierData();
+  }, [publishedReservation?.hotelier_id]);
+
+const hotelName = hotelier.hotel;
+const city = hotelier.city;
+const uf = hotelier.UF;
+const street = hotelier.address;
+const nStreet = hotelier.n_address;
+const cep = hotelier.cep;
 
   if (!reservation || !publishedReservation) {
     return <Box>Carregando...</Box>;
@@ -127,6 +155,12 @@ const SeeReservation: React.FC = () => {
             {publishedReservation.breakfast && <ServicesComponent value="Café da Manhã" icon={FaCoffee} />}
             {publishedReservation.airConditioner && <ServicesComponent value="Ar-condicionado" icon={FaSnowflake} />}
             {publishedReservation.parking && <ServicesComponent value="Estacionamento" icon={FaCar} />}
+          </HStack>
+          <HStack align="center" mt="3">
+              <Icon as={FaMapMarkerAlt} color="#eaeaea" />
+                  <Text color="#eaeaea" fontSize = "13px" >
+                        {hotelName}: {street}, {nStreet} / {city} - {uf}, {cep} 
+                  </Text>
           </HStack>
         </Box>
         <Box

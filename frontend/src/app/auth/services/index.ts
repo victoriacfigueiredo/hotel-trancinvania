@@ -13,6 +13,7 @@ import {
   UpdateHotelierFormInputs,
 } from "../forms/update-form";
 import { sessionManager } from "../../../shared/config/session-manager";
+import { HotelierModel } from "../../reservation/models/publishedhotelier";
 
 export async function loginClient({
   username,
@@ -122,4 +123,9 @@ export async function sendRecoveryEmailHotelier({
 
 export function logout(): void {
   sessionManager.logout();
+}
+
+export async function getHotelierById(reservation_id: number): Promise<HotelierModel>{
+  const response = await apiService.get(`/hotelier/${reservation_id}`);
+  return response.data;
 }
