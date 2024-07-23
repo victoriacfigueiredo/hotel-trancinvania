@@ -1,5 +1,5 @@
 import React, {ForwardedRef } from 'react';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { JustSpider } from "../../components/just-spider";
 import {
   Box,
@@ -537,6 +537,7 @@ useEffect(() => {
                       border="1px solid #EAEAEA"
                       width="100%"
                       _hover={{ bg: '#EAEAEA', color: '#191919' }}
+                      onClick={() => navigate(`/client/paymentMethods`)}
                     >
                       Cadastrar método de pagamento
                     </Button>

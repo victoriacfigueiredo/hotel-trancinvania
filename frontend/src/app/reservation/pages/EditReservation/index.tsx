@@ -400,6 +400,7 @@ const EditReservation: React.FC = () => {
                       color="#EAEAEA"
                       border="1px solid #EAEAEA"
                       width="100%"
+                      onClick={() => navigate(`/client/paymentMethods`)}
                       _hover={{ bg: '#EAEAEA', color: '#191919' }}
                     >
                       Cadastrar método de pagamento
