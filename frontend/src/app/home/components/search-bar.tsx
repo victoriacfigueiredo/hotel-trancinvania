@@ -17,16 +17,17 @@ import { ISearch } from "../../search/models";
 import { useNavigate } from "react-router-dom";
 
 export const SearchBar = () => {
+  const today = new Date();
+  const todayPlusFive = new Date();
+  todayPlusFive.setDate(today.getDate() + 5);
+
   const [destino, setDestino] = useState("");
-  const [checkin, setCheckin] = useState("");
-  const [checkout, setCheckout] = useState("");
+  const [checkin, setCheckin] = useState(today.toISOString().split("T")[0]);
+  const [checkout, setCheckout] = useState(todayPlusFive.toISOString().split("T")[0]);
   const [numAdultos, setNumAdultos] = useState(0);
   const [numCriancas, setNumCriancas] = useState(0);
   const [numRooms, setNumRooms] = useState(0);
 
-  const today = new Date();
-  const todayPlusFive = new Date();
-  todayPlusFive.setDate(today.getDate() + 5);
 
   const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export const SearchBar = () => {
     }
 
     if(search.num_rooms == 0){
-      toast.warning("Preencha todos os campos");
+      toast.warning("Quantidade de quartos precisa ser maior que 0");
       return false;
     }
 
