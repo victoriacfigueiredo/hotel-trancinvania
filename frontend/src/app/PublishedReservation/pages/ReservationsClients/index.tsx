@@ -74,7 +74,7 @@ export const AllPublishedReservationClient = () => {
         <Box bg="#191919" minH="100vh" display="flex" flexDirection="column">
             <NavBar/>
             <Box p="50px" position="relative">
-                <Box fontFamily="Trancinfont" mt="-15px" fontSize="50px" textAlign="center" color="#eaeaea">Faça já a sua reserva!</Box>
+                <Box fontFamily="Trancinfont" mt="-15px" fontSize="50px"  letterSpacing={"-0.07em"} textAlign="center" color="#eaeaea">Faça já a sua reserva!</Box>
                     <Flex flexWrap="wrap" gap="75px" mt="42px">
                         {reservations.sort((a, b) => a.id - b.id).map(reservation => (
                             <Box data-cy = {`${replaceSpacesAndRemoveAccents(reservation.name)}`} id={`${replaceSpacesAndRemoveAccents(reservation.name)}`} position="relative" mb="-3%" w="250px" h="320px" _hover={{transform: 'translateY(-5px)'}}>
