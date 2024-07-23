@@ -193,6 +193,7 @@ const router = createBrowserRouter([
     path: "/reservations",
     Component: AllPublishedReservationClient,
   },
+  
 ]);
 
 export default function App() {
