@@ -194,6 +194,7 @@ const router = createBrowserRouter([
     path: "/reservations",
     Component: AllPublishedReservationClient,
   },
+
   {
     path : '/client/paymentMethods',
     element: (
