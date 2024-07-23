@@ -104,8 +104,8 @@ const LoginClient: React.FC = () => {
                     <FormControl isInvalid={!!errors.username} maxWidth="400px">
                       <FormLabel htmlFor="username">Username</FormLabel>
                       <Input
-                        id="username"
                         data-cy="username-c"
+                        id="username-c"
                         placeholder="Username"
                         {...register("username")}
                       />
@@ -117,8 +117,8 @@ const LoginClient: React.FC = () => {
                       <FormLabel htmlFor="password">Senha</FormLabel>
                       <InputGroup>
                         <Input
-                          id="password"
                           data-cy="password-c"
+                          id="password-c"
                           alignSelf={"center"}
                           type={showPassword ? "text" : "password"}
                           placeholder="Senha"
@@ -144,6 +144,7 @@ const LoginClient: React.FC = () => {
                   <ButtonGroup spacing={4}>
                     <Button
                       data-cy="login-button-c"
+                      id="login-button-c"
                       type="submit"
                       colorScheme="red"
                       fontWeight={400}
@@ -170,7 +171,7 @@ const LoginClient: React.FC = () => {
               </form>
               <Box textAlign="left" mt={6}>
                 <Text>
-                  Ainda nÃ£o possui conta? <br />
+                  Ainda não possui conta? <br />
                   Cadastre-se como{" "}
                   <Link
                     color="#0097B2"
@@ -179,7 +180,7 @@ const LoginClient: React.FC = () => {
                   >
                     Cliente
                   </Link>
-                  , para fazer reservas incrÃ­veis.
+                  , para fazer reservas incríveis.
                   <br />
                 </Text>
               </Box>
