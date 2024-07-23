@@ -1,6 +1,6 @@
 import React from 'react';
 import { JustSpider } from '../../components/just-spider';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Text, Icon, HStack, Button, VStack, Divider } from '@chakra-ui/react';
 import { FaArrowLeft, FaWifi, FaCar, FaCoffee, FaSnowflake, FaConciergeBell, FaCheck, FaHeart, FaShareAlt } from 'react-icons/fa';
 import { FaPerson } from 'react-icons/fa6';
@@ -13,21 +13,23 @@ import { PublishedReservationModel } from '../../../PublishedReservation/models/
 import { SaveModel } from '../../../Wishlist/models';
 import { ToastContainer, toast } from 'react-toastify'; 
 import { useClientData } from '../../../auth/hooks/useUserData';
+import { useReservationContext } from '../../../PublishedReservation/context';
 //import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
 //import { PublishedHotelierModel } from '../../models/publishedhotelier'
 
 const SelectReservation: React.FC = () => {
     const { data } = useClientData();
     const clientId = Number(data?.id);
-    const { reservation_id } = useParams();
+    const { selectedReservation } = useReservationContext();
+    //const { reservation_id } = useParams();
     //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
     useEffect(() => {
         const fetchReservationData = async () => {
-            if (reservation_id) {
+            if (selectedReservation?.id) {
                 try {
                     //console.log('Fetching reservation data for ID:', reservation_id);
-                    const response = await getPublishedReservationById(+reservation_id) ?? '';
+                    const response = await getPublishedReservationById(selectedReservation?.id) ?? '';
                     //console.log('Fetched reservation data:', response);
                     setReservationData(response);
                 } catch (error) {
@@ -37,7 +39,7 @@ const SelectReservation: React.FC = () => {
         };
 
         fetchReservationData();
-    }, [reservation_id]);
+    }, [selectedReservation?.id]);
 
     // if (!reservationData || !reservationData.hotelier) {
     //     return <div>Loading...</div>;
@@ -147,6 +149,7 @@ const SelectReservation: React.FC = () => {
                     spacing={6}
                 >
                     <Button
+                        data-cy = "realizar-reserva"
                         height="50px"
                         width="250px"
                         bg="#6A0572"
@@ -154,7 +157,7 @@ const SelectReservation: React.FC = () => {
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaCheck} />}
-                        onClick={() => navigate(`/create-reservation/${reservationData.id}`)}
+                        onClick={() => navigate(`/create-reservation`)}
                     >
                         Realizar Reserva
                     </Button>
@@ -189,7 +192,7 @@ const SelectReservation: React.FC = () => {
                         border="1px solid #EAEAEA"
                         _hover={{ bg: '#EAEAEA', color: '#6A0572' }}
                         leftIcon={<Icon as={FaArrowLeft} />}
-                        onClick={() => navigate(`/reservations`)}
+                        onClick={() => navigate(-1)}
                     >
                         Voltar
                     </Button>

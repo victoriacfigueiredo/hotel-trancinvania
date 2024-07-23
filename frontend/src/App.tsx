@@ -110,7 +110,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/create-reservation/:reservation_id",
+    path: "/create-reservation",
     element: (
       <AuthWrapper allowedUserTypes={["client"]}>
         <CreateReservation />
@@ -126,7 +126,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/select-reservation/:reservation_id",
+    path: "/select-reservation",
     Component: SelectReservation,
   },
   {

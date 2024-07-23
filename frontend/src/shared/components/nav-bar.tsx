@@ -117,6 +117,7 @@ export const NavBar: React.FC = () => {
 
           <Menu isOpen={isPerfilMenuOpen}>
             <MenuButton
+              data-cy="menu-c-button"
               as={Button}
               leftIcon={<FaUser />}
               onMouseEnter={onPerfilMenuOpen}
@@ -130,7 +131,7 @@ export const NavBar: React.FC = () => {
               display="flex"
               alignItems="center"
             >
-              <Text data-cy="username">
+              <Text data-cy="usernameNavBar">
                 {isLoading
                   ? "Loading..."
                   : isError

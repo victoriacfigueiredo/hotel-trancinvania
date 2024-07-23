@@ -94,6 +94,7 @@ export const Profile: React.FC = () => {
               </Link>
 
               <Button
+                data-cy="my-reservations-button"
                 bg="#784A95"
                 color="#EAEAEA"
                 _hover={{ bg: "#5e3a72" }}

@@ -8,7 +8,7 @@ Given('eu estou na página inicial', () => {
 })
 
 Given('eu não estou logado', () => {
-    cy.get('[data-cy="username"]').should("contain.text", "Conta");
+    cy.get('[data-cy="usernameNavBar"]').should("contain.text", "Conta");
 })
 
 When('eu preencho o campo {string} com {string}', (campo: string, valor: string) => {
