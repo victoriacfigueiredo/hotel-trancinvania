@@ -16,7 +16,7 @@ Scenario: Cadastro da promoção realizado com sucesso
 
 Scenario: Tentativa de cadastro da promoção com algum campo não preenchido
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
-    And eu estou na página "/promotions" da reserva do "Quarto-Outono" com o valor da diária por "1000"
+    And eu estou na página "/promotions" da reserva do "Quarto-Ruby" com o valor da diária por "1000"
     When eu preencho o campo "desconto" com "20"
     And eu seleciono a promoção "Limite de Quarto"
     And eu seleciono "confirmar"
@@ -25,7 +25,7 @@ Scenario: Tentativa de cadastro da promoção com algum campo não preenchido
 
 Scenario: Tentativa de cadastro da promoção com desconto menor que 5% ou maior que 60%
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
-    And eu estou na página "/promotions" da reserva do "Quarto-Outono" com o valor da diária por "1000" 
+    And eu estou na página "/promotions" da reserva do "Quarto-Ruby" com o valor da diária por "1000" 
     When eu preencho o campo "desconto" com "70"
     And eu seleciono a promoção "Ilimitada"
     And eu seleciono "confirmar"
@@ -46,8 +46,8 @@ Scenario: Edição na promoção de uma reserva
 
 Scenario: Edição na promoção de uma reserva sem promoção cadastrada
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
-    And eu estou na página "/reservationDetails" da reserva do "Quarto-Outono"
-    And o "Quarto-Outono" não possui nenhuma promoção cadastrada
+    And eu estou na página "/reservationDetails" da reserva do "Quarto-Ruby"
+    And o "Quarto-Ruby" não possui nenhuma promoção cadastrada
     When eu seleciono "editar-promocao"
     And eu preencho o campo "desconto" com "60"
     And eu seleciono a promoção "Ilimitada"
@@ -76,23 +76,23 @@ Scenario: Cadastrar uma promoção em todas as reservas publicadas
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  
     And eu estou na página "/hotelier-reservations"
     And o "Quarto Esmeralda" está nas reservas publicadas com o valor de "700" a diária
-    And o "Quarto Outono" está nas reservas publicadas com o valor de "1000" a diária
+    And o "Quarto Ruby" está nas reservas publicadas com o valor de "1000" a diária
     When eu seleciono "cadastrar-promocao" 
     And eu preencho o campo "desconto" com "10"
     And eu seleciono "confirmar"
     Then eu vejo um toast de sucesso com a mensagem "Promoção cadastrada com sucesso!"
     And eu vejo o "Quarto Esmeralda" com o valor de "630" 
-    And eu vejo o "Quarto Outono" com o valor de "900"
+    And eu vejo o "Quarto Ruby" com o valor de "900"
 
 Scenario: Deletar todas as promoções
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234" 
     And eu estou na página "/hotelier-reservations"
     And o "Quarto Esmeralda" com o valor promocional de "630" a diária
-    And o "Quarto Outono" com o valor promocional de "900" a diária
+    And o "Quarto Ruby" com o valor promocional de "900" a diária
     When eu tento deletar as promoções
     Then eu vejo um toast de sucesso com a mensagem "Promoções deletadas com sucesso!"
     And eu vejo o "Quarto Esmeralda" com o valor de "700"
-    And eu vejo o "Quarto Outono" com o valor de "1000"
+    And eu vejo o "Quarto Ruby" com o valor de "1000"
 
 Scenario: Deletar todas as promoções com nenhuma promoção cadastrada
     Given eu estou logado como hoteleiro com o username "viccesar" e a senha "vic1234"  

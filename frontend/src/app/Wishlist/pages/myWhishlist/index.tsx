@@ -87,7 +87,7 @@ export const Whishlist = () => {
                                       >
                                         <DeleteIcon boxSize="16px" />
                                       </Button>
-                                      <Link to={`/select-reservation/${reservation.id}`}>
+                                      <Link to={`/select-reservation`}>
                                         <Button
                                           variant="ghost"
                                           color="#EAEAEA"
