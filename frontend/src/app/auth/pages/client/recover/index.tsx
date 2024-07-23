@@ -111,6 +111,7 @@ export const RecoverPasswordClient: React.FC = () => {
                   >
                     <FormLabel htmlFor="email">Email</FormLabel>
                     <Input
+                      data-cy="email-rp-c"
                       id="email"
                       type="email"
                       placeholder="Digite seu e-mail"
@@ -121,6 +122,7 @@ export const RecoverPasswordClient: React.FC = () => {
                     </FormErrorMessage>
                   </FormControl>
                   <Button
+                    data-cy="enviar-rp-c"
                     mt={6}
                     colorScheme="red"
                     bg="#A4161A"

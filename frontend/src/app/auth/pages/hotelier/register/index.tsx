@@ -91,7 +91,7 @@ const RegisterHotelier: React.FC = () => {
       }, 3000);
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
-      toast.error(error.response?.data?.message || "Erro desconhecido", {
+      toast.error("E-mail ou nome de usuário já existe.", {
         position: "top-right",
         autoClose: 5000,
       });
@@ -209,6 +209,7 @@ const RegisterHotelier: React.FC = () => {
                         <FormControl isInvalid={!!errors.name}>
                           <FormLabel htmlFor="name">Nome</FormLabel>
                           <Input
+                            data-cy="name-rh"
                             id="name"
                             placeholder="Nome Completo"
                             {...register("name")}
@@ -223,6 +224,7 @@ const RegisterHotelier: React.FC = () => {
                         <FormControl isInvalid={!!errors.email}>
                           <FormLabel htmlFor="email">E-mail</FormLabel>
                           <Input
+                            data-cy="email-rh"
                             id="email"
                             placeholder="Digite seu e-mail"
                             {...register("email")}
@@ -237,6 +239,7 @@ const RegisterHotelier: React.FC = () => {
                         <FormControl isInvalid={!!errors.username}>
                           <FormLabel htmlFor="username">Username</FormLabel>
                           <Input
+                            data-cy="username-rh"
                             id="username"
                             placeholder="Username"
                             {...register("username")}
@@ -254,6 +257,7 @@ const RegisterHotelier: React.FC = () => {
                           <FormLabel htmlFor="password">Senha</FormLabel>
                           <InputGroup>
                             <Input
+                              data-cy="password-rh"
                               id="password"
                               alignSelf={"center"}
                               type={showPassword ? "text" : "password"}
@@ -288,6 +292,7 @@ const RegisterHotelier: React.FC = () => {
                           </FormLabel>
                           <InputGroup>
                             <Input
+                              data-cy="confirmPassword-rh"
                               id="confirmPassword"
                               alignSelf={"center"}
                               type={showPassword ? "text" : "password"}
@@ -324,6 +329,7 @@ const RegisterHotelier: React.FC = () => {
                           align="flex-end"
                         >
                           <Button
+                            data-cy="continuar-rh"
                             onClick={handleNext}
                             colorScheme="red"
                             fontWeight={400}
@@ -347,6 +353,7 @@ const RegisterHotelier: React.FC = () => {
                         <FormControl isInvalid={!!errors.hotel}>
                           <FormLabel htmlFor="hotel">Nome do Hotel</FormLabel>
                           <Input
+                            data-cy="nome-hotel"
                             id="hotel"
                             placeholder="Nome do Hotel"
                             {...register("hotel")}
@@ -367,6 +374,7 @@ const RegisterHotelier: React.FC = () => {
                               <CustomInputMask
                                 mask="99.999.999/9999-99"
                                 id="cnpj"
+                                data-cy="cnpj"
                                 placeholder="00.000.000/0000-00"
                                 {...field}
                                 maxW={{ base: "100%", md: "300px" }}
@@ -388,6 +396,7 @@ const RegisterHotelier: React.FC = () => {
                               <CustomInputMask
                                 mask="99999-999"
                                 id="cep"
+                                data-cy="cep"
                                 placeholder="00000-000"
                                 {...field}
                                 maxW={{ base: "100%", md: "300px" }}
@@ -448,6 +457,7 @@ const RegisterHotelier: React.FC = () => {
                             <FormLabel htmlFor="n_address">Nº</FormLabel>
                             <Input
                               id="n_address"
+                              data-cy="numero-hotel"
                               placeholder="Nº"
                               {...register("n_address")}
                               maxW={{ base: "100%", md: "140px" }}
@@ -466,6 +476,7 @@ const RegisterHotelier: React.FC = () => {
                         Voltar
                       </Button>
                       <Button
+                        data-cy="confirmar-cadastro-h"
                         type="submit"
                         colorScheme="red"
                         fontWeight={400}

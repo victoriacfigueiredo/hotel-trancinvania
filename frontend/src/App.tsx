@@ -25,6 +25,7 @@ import RegisterHotelier from "./app/auth/pages/hotelier/register";
 import { PublishedReservationUpdate } from "./app/PublishedReservation/pages/Update";
 import { AllPublishedReservationClient } from "./app/PublishedReservation/pages/ReservationsClients";
 import { SearchPage } from "./app/search/pages/search";
+import  Cartoes  from "./app/PaymentMethods/pages/MyCards";
 import EditProfileHotelier from "./app/auth/pages/hotelier/profile";
 import { AuthWrapper } from "./shared/components/auth-wrapper";
 import NotFoundPage from "./app/home/pages/notfound";
@@ -111,7 +112,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/create-reservation/:reservation_id",
+    path: "/create-reservation",
     element: (
       <AuthWrapper allowedUserTypes={["client"]}>
         <CreateReservation />
@@ -127,7 +128,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/select-reservation/:reservation_id",
+    path: "/select-reservation",
     Component: SelectReservation,
   },
   {
@@ -199,6 +200,15 @@ const router = createBrowserRouter([
     element: (
       <AuthWrapper allowedUserTypes={["client"]}>
         <Rating />
+      </AuthWrapper>
+    ),
+  },
+
+  {
+    path : '/client/paymentMethods',
+    element: (
+      <AuthWrapper allowedUserTypes={["client"]}>
+        <Cartoes/>
       </AuthWrapper>
     ),
   },

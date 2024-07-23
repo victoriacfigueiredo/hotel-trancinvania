@@ -54,7 +54,7 @@ const LoginHotelier: React.FC = () => {
         navigate("/hotelier-reservations");
       }, 2000);
     } catch (error) {
-      toast.error("Falha ao fazer login. Tente novamente.");
+      toast.error("Usuário ou senha incorretos. Tente novamente.");
     }
   };
   const handleForgotPasswordClick = () => {
@@ -151,6 +151,7 @@ const LoginHotelier: React.FC = () => {
                       Entrar
                     </Button>
                     <Button
+                      data-cy="esqueci-senha-h"
                       variant="outline"
                       borderColor="#A4161A"
                       fontWeight={400}

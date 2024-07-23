@@ -1,11 +1,11 @@
 
 -- Hoteleiro
 
-insert into "public"."hotelier" ("UF", "address", "cep", "city", "cnpj", "email", "hotel", "id", "n_address", "name", "password", "username") values ('PE', 'Rua das cinzas', '52030010', 'Recife', '23.709.573/0001-94', 'victeste@gmail.com', 'Hotel Cinzas', 1, '4567', 'Victoria Teste', '$2b$10$GX2x9jwYEC/ya4An7HIwJOQwl5InQgmjMonK1MNRuX7pIHC6aeICe', 'VICCESAR');
+insert into "public"."hotelier" ("UF", "address", "cep", "city", "cnpj", "email", "hotel", "id", "n_address", "name", "password", "username") values ('PE', 'Rua das cinzas', '52030010', 'Recife', '23.709.573/0001-94', 'victeste@gmail.com', 'Hotel Cinzas', 1, '4567', 'Victoria Teste', '$2a$12$de9JM9zZ1UPtcQWXdZSrOeSgHkF49gGv6fn6p8C.SF7dFU3n2TliG', 'viccesar');
 
 -- promocao
 
-insert into "public"."promotion" ("discount", "id", "num_rooms", "type") values (15, 1, 3, 'LIMITE_QUARTO');
+insert into "public"."promotion" ("discount", "id", "num_rooms", "type") values (60, 1, 3, 'LIMITE_QUARTO');
 
 
 -- reserva publicadas

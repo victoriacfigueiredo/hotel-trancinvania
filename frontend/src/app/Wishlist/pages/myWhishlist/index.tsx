@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -8,10 +8,13 @@ import {
 import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 //import { Global } from "@emotion/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
-import { ToastContainer, toast } from 'react-toastify';
-import { getSavedReservationByClientId, deleteSavedReservationById } from "../../services";
+import { ToastContainer, toast } from "react-toastify";
+import {
+  getSavedReservationByClientId,
+  deleteSavedReservationById,
+} from "../../services";
 import { useClientData } from "../../../auth/hooks/useUserData";
-import { Link } from 'react-router-dom'; // Verifique a importação
+import { Link } from "react-router-dom"; // Verifique a importação
 
 export const Whishlist = () => {
   const { data } = useClientData();
@@ -21,16 +24,16 @@ export const Whishlist = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       if (!clientId) {
-        toast.error('ID do cliente não encontrado.');
+        toast.error("ID do cliente não encontrado.");
         return;
       }
-      
+
       try {
         const Reservationdata = await getSavedReservationByClientId(clientId);
         setReservations(Reservationdata);
       } catch (error) {
-        console.error('Erro ao obter as reservas salvas:', error);
-        toast.error('Erro ao obter as reservas salvas.');
+        console.error("Erro ao obter as reservas salvas:", error);
+        toast.error("Erro ao obter as reservas salvas.");
       }
     };
 
@@ -39,17 +42,19 @@ export const Whishlist = () => {
 
   const handleDelete = async (reservationId: number) => {
     if (!clientId) {
-      toast.error('ID do cliente não encontrado.');
+      toast.error("ID do cliente não encontrado.");
       return;
     }
 
     try {
       await deleteSavedReservationById(clientId, reservationId);
-      setReservations(prev => prev.filter(reservation => reservation.id !== reservationId));
-      toast.success('Reserva apagada com sucesso!');
+      setReservations((prev) =>
+        prev.filter((reservation) => reservation.id !== reservationId)
+      );
+      toast.success("Reserva apagada com sucesso!");
     } catch (error) {
-      console.error('Erro ao deletar a reserva:', error);
-      toast.error('Erro ao deletar a reserva.');
+      console.error("Erro ao deletar a reserva:", error);
+      toast.error("Erro ao deletar a reserva.");
     }
   };
 

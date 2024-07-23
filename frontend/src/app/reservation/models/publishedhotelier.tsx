@@ -8,7 +8,7 @@ export interface HotelierModel{
     city: string; 
     cep: string; 
     address: string; 
-    n_adress: string; 
+    n_address: string; 
     UF: string; 
     cnpj: string; 
 }
